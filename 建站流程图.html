@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weilin — 建站全流程</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --white: #f0eee8;
+  --dim: rgba(240,238,232,0.45);
+  --faint: rgba(240,238,232,0.08);
+  --coral: #E8686A;
+  --mint: #7ECFC0;
+  --gold: #E8C06A;
+  --peach: #E8A06A;
+  --mono: 'DM Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --body: 'Noto Sans SC', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 80px 40px 120px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ── */
+.header {
+  margin-bottom: 80px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.header-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--coral);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.header-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.header-title em {
+  font-style: normal;
+  color: var(--coral);
+}
+
+.header-meta {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.meta-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+}
+
+/* ── TOTAL TIME BANNER ── */
+.time-banner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--faint);
+  border: 1px solid rgba(240,238,232,0.1);
+  border-left: 3px solid var(--gold);
+  padding: 24px 32px;
+  margin-bottom: 80px;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.time-banner-number {
+  font-family: var(--display);
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.time-banner-text h3 {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.time-banner-text p {
+  font-size: 13px;
+  color: var(--dim);
+  font-family: var(--mono);
+}
+
+.time-arrow {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  text-align: right;
+  line-height: 1.8;
+}
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--faint);
+}
+
+/* ── STEPS ── */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 80px;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 24px;
+  align-items: start;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--faint);
+  position: relative;
+  animation: fadeUp 0.6s ease both;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step:nth-child(1) { animation-delay: 0.15s; }
+.step:nth-child(2) { animation-delay: 0.2s; }
+.step:nth-child(3) { animation-delay: 0.25s; }
+.step:nth-child(4) { animation-delay: 0.3s; }
+.step:nth-child(5) { animation-delay: 0.35s; }
+.step:nth-child(6) { animation-delay: 0.4s; }
+.step:nth-child(7) { animation-delay: 0.45s; }
+.step:nth-child(8) { animation-delay: 0.5s; }
+
+/* connector line */
+.step:not(:last-child) .step-num::after {
+  content: '';
+  position: absolute;
+  left: 29px;
+  top: 72px;
+  width: 1px;
+  height: calc(100% - 40px);
+  background: linear-gradient(to bottom, var(--faint), transparent);
+}
+
+.step-num {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.step.phase1 .step-num { background: rgba(232,104,106,0.15); color: var(--coral); border: 1px solid rgba(232,104,106,0.3); }
+.step.phase2 .step-num { background: rgba(126,207,192,0.12); color: var(--mint); border: 1px solid rgba(126,207,192,0.25); }
+
+.step-body {}
+
+.step-phase {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.step.phase1 .step-phase { color: var(--coral); }
+.step.phase2 .step-phase { color: var(--mint); }
+
+.step-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.step-desc {
+  font-size: 13px;
+  color: var(--dim);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.step-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+
+.tag-tool { background: rgba(126,207,192,0.1); color: var(--mint); border: 1px solid rgba(126,207,192,0.2); }
+.tag-issue { background: rgba(232,104,106,0.1); color: var(--coral); border: 1px solid rgba(232,104,106,0.2); }
+.tag-ok { background: rgba(232,192,106,0.1); color: var(--gold); border: 1px solid rgba(232,192,106,0.2); }
+
+.step-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.time-pill {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+
+.time-unit {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── TOOLS GRID ── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 80px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.tool-card {
+  background: var(--bg2);
+  border: 1px solid var(--faint);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.tool-card:hover { border-color: rgba(240,238,232,0.2); }
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+}
+
+.tool-card:nth-child(1)::before { background: var(--coral); }
+.tool-card:nth-child(2)::before { background: var(--mint); }
+.tool-card:nth-child(3)::before { background: var(--gold); }
+.tool-card:nth-child(4)::before { background: var(--peach); }
+.tool-card:nth-child(5)::before { background: var(--coral); }
+.tool-card:nth-child(6)::before { background: var(--mint); }
+
+.tool-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.tool-name {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.tool-use {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+/* ── LESSON BOX ── */
+.lesson-box {
+  background: rgba(232,104,106,0.05);
+  border: 1px solid rgba(232,104,106,0.2);
+  border-left: 3px solid var(--coral);
+  padding: 28px 32px;
+  margin-bottom: 80px;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+
+.lesson-box h3 {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 16px;
+  letter-spacing: 0.02em;
+}
+
+.lesson-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lesson-list li {
+  font-size: 13px;
+  color: var(--dim);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.lesson-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--coral);
+  font-family: var(--mono);
+}
+
+/* ── NEXT TIME ── */
+.next-time {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: rgba(126,207,192,0.05);
+  border: 1px solid rgba(126,207,192,0.15);
+  padding: 28px 32px;
+  animation: fadeUp 0.8s 0.5s ease both;
+}
+
+.next-time-num {
+  font-family: var(--display);
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--mint);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.next-time-text h3 {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.next-time-text p {
+  font-size: 12px;
+  color: var(--dim);
+  font-family: var(--mono);
+  line-height: 1.6;
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--faint);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  animation: fadeUp 0.8s 0.6s ease both;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .wrap { padding: 48px 24px 80px; }
+  .step { grid-template-columns: 44px 1fr; }
+  .step-time { display: none; }
+  .time-banner { flex-wrap: wrap; }
+  .time-arrow { margin-left: 0; }
+  .header-meta { gap: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">weilinhu.com · 建站记录</div>
+    <h1 class="header-title">从<em>零</em>到上线<br>全流程记录</h1>
+    <div class="header-meta">
+      <div class="meta-item"><span class="meta-dot"></span>2026年4月9日</div>
+      <div class="meta-item"><span class="meta-dot" style="background:var(--coral)"></span>两个对话 · 8个步骤</div>
+      <div class="meta-item"><span class="meta-dot" style="background:var(--gold)"></span>最终网址：weilinhu.com</div>
+    </div>
+  </div>
+
+  <!-- TOTAL TIME -->
+  <div class="time-banner">
+    <div class="time-banner-number">3.5h</div>
+    <div class="time-banner-text">
+      <h3>两个对话，一个网站上线</h3>
+      <p>从设计讨论 → 代码生成 → GitHub 推送 → 域名配置 → LinkedIn 展示</p>
+    </div>
+    <div class="time-arrow">
+      15:17 开始<br>
+      ↓<br>
+      18:30 完成
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="section-title">完整步骤 · 8 ÉTAPES</div>
+  <div class="steps">
+
+    <div class="step phase1">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-phase">对话一 · Phase 1</div>
+        <div class="step-title">网站设计方向确认</div>
+        <div class="step-desc">确定 Dan Koe 深色极简风格、Figtree 字体、法语标语 "Entre deux mondes, j'apprends à construire le troisième."</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">Claude</span>
+          <span class="tag tag-tool">HTML/CSS</span>
+          <span class="tag tag-ok">index.html + blog.html 生成完毕</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">30</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase1">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-phase">对话一 · Phase 1</div>
+        <div class="step-title">GitHub MCP 授权尝试</div>
+        <div class="step-desc">尝试通过 Claude 连接器直接操作 GitHub，添加 MCP URL 并完成 OAuth 授权，但工具在当前对话中无法激活。</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">GitHub MCP</span>
+          <span class="tag tag-issue">工具未加载 → 需开新对话</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">30</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase2">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-phase">对话二 · Phase 2</div>
+        <div class="step-title">准备本地文件</div>
+        <div class="step-desc">整理 blog/ 文件夹，共 10 个文件：5 个 HTML 页面 + 5 张图片（头像 + 项目截图）。</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">Finder</span>
+          <span class="tag tag-ok">10 files ready</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">10</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase2">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-phase">对话二 · Phase 2</div>
+        <div class="step-title">SSH 认证配置</div>
+        <div class="step-desc">GitHub 2021 年起禁止密码推送。尝试 Token 方式后因 token 在聊天中泄露被自动撤销，最终改用 SSH Key 方式成功解决。</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">Terminal</span>
+          <span class="tag tag-tool">ssh-keygen</span>
+          <span class="tag tag-issue">Token 泄露被撤销</span>
+          <span class="tag tag-ok">SSH Key 成功</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">40</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase2">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-phase">对话二 · Phase 2</div>
+        <div class="step-title">推送文件到 GitHub</div>
+        <div class="step-desc">在 blog/ 目录执行 git init → git add → commit → push。首次 SSH 连接输入 yes 确认指纹，推送成功：10 files, 687 insertions。</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">Terminal</span>
+          <span class="tag tag-tool">Git</span>
+          <span class="tag tag-ok">687 insertions ✓</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">10</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase2">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-phase">对话二 · Phase 2</div>
+        <div class="step-title">开启 GitHub Pages</div>
+        <div class="step-desc">Settings → Pages → Branch: main → / (root) → Save。网站立即上线：weilinbellinahu.github.io/portfolio/</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">GitHub Pages</span>
+          <span class="tag tag-ok">免费托管 ✓</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">5</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase2">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <div class="step-phase">对话二 · Phase 2</div>
+        <div class="step-title">自定义域名配置</div>
+        <div class="step-desc">GitHub Pages 填入 weilinhu.com，Namecheap 删除旧 parking 记录，添加 3 条 A Record（GitHub IP）+ 1 条 CNAME（www）。DNS 传播 10 分钟～数小时。</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">Namecheap</span>
+          <span class="tag tag-tool">DNS</span>
+          <span class="tag tag-ok">weilinhu.com 绑定完成</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">15</div><div class="time-unit">分钟</div></div>
+    </div>
+
+    <div class="step phase2">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <div class="step-phase">对话二 · Phase 2</div>
+        <div class="step-title">LinkedIn 展示链接</div>
+        <div class="step-desc">个人资料 → Coordonnées → Modifier → Site web → 填入 https://weilinhu.com，类型选 "Portfolio professionnel"。</div>
+        <div class="step-tags">
+          <span class="tag tag-tool">LinkedIn</span>
+          <span class="tag tag-ok">Portfolio professionnel ✓</span>
+        </div>
+      </div>
+      <div class="step-time"><div class="time-pill">5</div><div class="time-unit">分钟</div></div>
+    </div>
+
+  </div>
+
+  <!-- TOOLS -->
+  <div class="section-title">用到的工具 · OUTILS</div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">🤖</div>
+      <div class="tool-name">Claude</div>
+      <div class="tool-use">生成网站代码、全程操作协助、Chrome 自动化</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🐙</div>
+      <div class="tool-name">GitHub</div>
+      <div class="tool-use">代码托管，portfolio 仓库 main 分支</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🌐</div>
+      <div class="tool-name">GitHub Pages</div>
+      <div class="tool-use">免费静态网站托管，自动部署</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔑</div>
+      <div class="tool-name">Terminal + SSH</div>
+      <div class="tool-use">git 命令操作，ed25519 密钥认证</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🌍</div>
+      <div class="tool-name">Namecheap</div>
+      <div class="tool-use">域名 weilinhu.com + DNS 管理</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">💼</div>
+      <div class="tool-name">LinkedIn</div>
+      <div class="tool-use">Coordonnées → Portfolio professionnel 展示</div>
+    </div>
+  </div>
+
+  <!-- LESSONS -->
+  <div class="lesson-box">
+    <h3>⚠️ 本次遇到的坑 — À RETENIR</h3>
+    <ul class="lesson-list">
+      <li>GitHub 从 2021 年起不支持密码推送，必须用 Token 或 SSH Key</li>
+      <li>Personal Access Token 绝对不能发给任何人——包括 AI 对话，GitHub 会自动撤销</li>
+      <li>GitHub MCP 连接器需要新对话才能激活，不能在同一对话中连接后立即使用</li>
+      <li>自定义域名配置后需等待 DNS 传播（10分钟～数小时），期间出现 SSL 警告属正常</li>
+      <li>DNS 生效 + SSL 证书生成后，记得回 GitHub Pages 勾选 Enforce HTTPS</li>
+    </ul>
+  </div>
+
+  <!-- NEXT TIME -->
+  <div class="section-title">下次预计 · PROCHAINE FOIS</div>
+  <div class="next-time">
+    <div class="next-time-num">30<span style="font-size:24px;color:var(--dim)">min</span></div>
+    <div class="next-time-text">
+      <h3>下次建同类网站只需 30 分钟</h3>
+      <p>SSH Key 已配置完毕，无需重新认证<br>
+      流程熟悉后：代码生成 → git push → Pages 开启 → 完成</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>WEILIN · weilinhu.com</span>
+    <span>2026.04.09 · 3.5 heures · 8 étapes</span>
+  </div>
+
+</div>
+</body>
+</html>
