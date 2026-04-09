@@ -8,77 +8,62 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #080808; --bg2: #0f0f0f;
-    --white: #ffffff;
-    --white-dim: rgba(255,255,255,0.55);
-    --white-faint: rgba(255,255,255,0.4);
-    --white-ghost: rgba(255,255,255,0.05);
-    --accent: #E8686A;
-    --mint: #9DC8B5;
-    --apricot: #E8C4A0;
-    --mono: 'DM Mono', 'Courier New', monospace;
-    --sans: 'Figtree', 'Arial Black', sans-serif;
-  }
-  body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; line-height: 1.6; overflow-x: hidden; }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0; opacity: 0.6;
-  }
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--white-ghost); background: rgba(8,8,8,0.85); backdrop-filter: blur(12px); }
-  .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; }
-  .nav-logo:hover { color: var(--white); }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover, .nav-links a.active { color: var(--white); }
-  .page-wrap { max-width: 960px; margin: 0 auto; padding: 10rem 2.5rem 6rem; position: relative; z-index: 1; }
-  .page-header { margin-bottom: 4rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s ease 0.1s forwards; }
-  .page-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; }
-  .page-title { font-weight: 900; font-size: clamp(2.5rem, 6vw, 4.5rem); letter-spacing: -0.035em; line-height: 1.0; margin-bottom: 1.5rem; }
-  .page-title span { color: rgba(255,255,255,0.12); }
-  .page-desc { font-size: 1rem; color: var(--white-dim); font-weight: 300; max-width: 500px; line-height: 1.75; }
-  .stats-bar { display: flex; gap: 3rem; margin-bottom: 4rem; padding: 1.5rem 0; border-top: 1px solid var(--white-ghost); border-bottom: 1px solid var(--white-ghost); opacity: 0; animation: fadeUp 0.6s ease 0.25s forwards; }
-  .stat-num { font-weight: 900; font-size: 2rem; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.2rem; }
-  .stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; color: var(--white-faint); text-transform: uppercase; }
-  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: transparent; border: none; }
-  .project-card { background: #0f0f0f; padding: 2.5rem; transition: background 0.25s; position: relative; overflow: hidden; border-radius: 14px; border: 1px solid rgba(255,255,255,0.07); opacity: 0; transform: translateY(16px); animation: fadeUp 0.6s ease forwards; }
-  .project-card:hover { background: #161616; }
-  .project-card.full { grid-column: 1 / -1; }
-  .badge { position: absolute; top: 1.5rem; right: 1.5rem; font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; padding: 3px 8px;  border-radius: 6px; }
-  .badge-live { border: 1px solid var(--accent); color: var(--accent); }
-  .badge-deployed { border: 1px solid var(--mint); color: var(--mint); }
-  .badge-beta { border: 1px solid var(--apricot); color: var(--apricot); }
-  .proj-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); margin-bottom: 1.5rem; }
-  .proj-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem; }
-  .proj-title { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1rem; }
-  .proj-desc { font-size: 0.85rem; color: var(--white-dim); font-weight: 300; line-height: 1.75; margin-bottom: 1rem; }
-  .proj-impact { font-size: 0.8rem; color: var(--mint); font-weight: 400; font-style: italic; margin-bottom: 1.4rem; padding-left: 0.8rem; border-left: 2px solid var(--mint); }
-  .proj-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.6rem; }
-  .proj-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.45);  border-radius: 6px; }
-  .proj-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--white-dim); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
-  .proj-link:hover { color: var(--white); border-color: var(--white-dim); }
-  .proj-placeholder { display: flex; align-items: center; justify-content: center; height: 56px; border: 1px dashed var(--white-ghost); margin-bottom: 1.6rem;  border-radius: 8px; }
-  .proj-placeholder span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); text-transform: uppercase; }
-  .full-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-  .workflow-item { padding: 1.2rem; border: 1px solid var(--white-ghost); background: var(--bg2); margin-bottom: 0.8rem;  border-radius: 8px; }
-  .workflow-desc { font-size: 0.82rem; color: var(--white-dim); font-weight: 300; }
-  footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; margin-top: 1px; }
-  footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); }
-  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-  @media (max-width: 680px) {
-    nav { padding: 1.2rem 1.5rem; } .nav-links { display: none; }
-    .page-wrap { padding: 8rem 1.5rem 4rem; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .full-inner { grid-template-columns: 1fr; gap: 2rem; }
-    .stats-bar { gap: 1.5rem; flex-wrap: wrap; }
-  }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #080808; --bg2: #0f0f0f; --white: #ffffff; --white-dim: rgba(255,255,255,0.55); --white-faint: rgba(255,255,255,0.4); --white-ghost: rgba(255,255,255,0.05); --accent: #E8686A; --mint: #9DC8B5; --apricot: #E8C4A0; --mono: 'DM Mono', 'Courier New', monospace; --sans: 'Figtree', 'Arial Black', sans-serif; }
+body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; line-height: 1.6; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.6; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--white-ghost); background: rgba(8,8,8,0.85); backdrop-filter: blur(12px); }
+.nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+.nav-logo:hover { color: var(--white); }
+.nav-logo:hover .nav-avatar { transform: scale(1.08); }
+.nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.12); background: #080808; }
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--white); }
+.page-wrap { max-width: 960px; margin: 0 auto; padding: 10rem 2.5rem 6rem; position: relative; z-index: 1; }
+.page-header { margin-bottom: 4rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.7s ease 0.1s forwards; }
+.page-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; }
+.page-title { font-weight: 900; font-size: clamp(2.5rem, 6vw, 4.5rem); letter-spacing: -0.035em; line-height: 1.0; margin-bottom: 1.5rem; }
+.page-title span { color: rgba(255,255,255,0.12); }
+.page-desc { font-size: 1rem; color: var(--white-dim); font-weight: 300; max-width: 500px; line-height: 1.75; }
+.stats-bar { display: flex; gap: 3rem; margin-bottom: 4rem; padding: 1.5rem 0; border-top: 1px solid var(--white-ghost); border-bottom: 1px solid var(--white-ghost); opacity: 0; animation: fadeUp 0.6s ease 0.25s forwards; }
+.stat-num { font-weight: 900; font-size: 2rem; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.2rem; }
+.stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; color: var(--white-faint); text-transform: uppercase; }
+.projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.project-card { background: #0f0f0f; padding: 2.5rem; transition: background 0.25s; position: relative; overflow: hidden; border-radius: 14px; border: 1px solid rgba(255,255,255,0.07); opacity: 0; transform: translateY(16px); animation: fadeUp 0.6s ease forwards; }
+.project-card:hover { background: #161616; }
+.project-card.full { grid-column: 1 / -1; }
+.badge { position: absolute; top: 1.5rem; right: 1.5rem; font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; padding: 3px 8px; border-radius: 6px; }
+.badge-live { border: 1px solid var(--accent); color: var(--accent); }
+.badge-deployed { border: 1px solid var(--mint); color: var(--mint); }
+.badge-beta { border: 1px solid var(--apricot); color: var(--apricot); }
+.proj-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); margin-bottom: 1.5rem; }
+.proj-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem; }
+.proj-title { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1rem; }
+.proj-desc { font-size: 0.85rem; color: var(--white-dim); font-weight: 300; line-height: 1.75; margin-bottom: 1rem; }
+.proj-impact { font-size: 0.8rem; color: var(--mint); font-weight: 400; font-style: italic; margin-bottom: 1.4rem; padding-left: 0.8rem; border-left: 2px solid var(--mint); }
+.proj-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.6rem; }
+.proj-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.45); border-radius: 6px; }
+.proj-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--white-dim); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.proj-link:hover { color: var(--white); border-color: var(--white-dim); }
+.proj-placeholder { display: flex; align-items: center; justify-content: center; height: 56px; border: 1px dashed var(--white-ghost); margin-bottom: 1.6rem; border-radius: 8px; }
+.proj-placeholder span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+.full-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.workflow-item { padding: 1.2rem; border: 1px solid var(--white-ghost); background: var(--bg2); margin-bottom: 0.8rem; border-radius: 8px; }
+.workflow-desc { font-size: 0.82rem; color: var(--white-dim); font-weight: 300; }
+footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; margin-top: 1px; }
+footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 680px) { nav { padding: 1.2rem 1.5rem; } .nav-links { display: none; } .page-wrap { padding: 8rem 1.5rem 4rem; } .projects-grid { grid-template-columns: 1fr; } .full-inner { grid-template-columns: 1fr; gap: 2rem; } .stats-bar { gap: 1.5rem; flex-wrap: wrap; } }
 </style>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">weilin.hu</a>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>
+    weilin.hu
+  </a>
   <ul class="nav-links">
     <li><a href="projets.html" class="active">Projets</a></li>
     <li><a href="blog.html">Blog</a></li>
@@ -88,92 +73,86 @@
 <div class="page-wrap">
   <div class="page-header">
     <p class="page-tag">Ce que je construis</p>
-    <h1 class="page-title">Projets <span>&</span><br>Automatisations</h1>
-    <p class="page-desc">Des outils concrets, des workflows qui tournent en production, des problèmes réels résolus — dans l'e-commerce franco-chinois et au-delà.</p>
+    <h1 class="page-title">Projets <span>&amp;</span><br>Automatisations</h1>
+    <p class="page-desc">Des outils concrets, des workflows qui tournent en production, des probl&#232;mes r&#233;els r&#233;solus &#8212; dans l'e-commerce franco-chinois et au-del&#224;.</p>
   </div>
   <div class="stats-bar">
     <div class="stat-item"><p class="stat-num">5</p><p class="stat-label">Projets actifs</p></div>
     <div class="stat-item"><p class="stat-num">4</p><p class="stat-label">En production</p></div>
     <div class="stat-item"><p class="stat-num">3</p><p class="stat-label">Langues couvertes</p></div>
-    <div class="stat-item"><p class="stat-num">FR/CN</p><p class="stat-label">Marchés ciblés</p></div>
+    <div class="stat-item"><p class="stat-num">FR/CN</p><p class="stat-label">March&#233;s cibl&#233;s</p></div>
   </div>
   <div class="projects-grid">
-
-    <div class="project-card" style="animation-delay: 0.2s">
+    <div class="project-card" style="animation-delay:0.2s">
       <span class="badge badge-live">LIVE</span>
       <p class="proj-num">01</p>
       <p class="proj-category">Application Web</p>
-      <h2 class="proj-title">MIAM — Suivi Calories par Photo</h2>
-      <p class="proj-desc">Photo du repas → reconnaissance IA → calcul automatique des calories. Suivi quotidien des apports et dépenses caloriques, historique, objectif perte de poids.</p>
-      <p class="proj-impact">En production avec domaine propre. Disponible en français et en chinois.</p>
-      <div class="proj-stack"><span class="proj-tag">Lovable</span><span class="proj-tag">Vision IA</span><span class="proj-tag">Français</span><span class="proj-tag">中文</span></div>
-      <a href="https://miamfr.app/" target="_blank" class="proj-link">miamfr.app →</a>
+      <h2 class="proj-title">MIAM &#8212; Suivi Calories par Photo</h2>
+      <p class="proj-desc">Photo du repas &#8594; reconnaissance IA &#8594; calcul automatique des calories. Suivi quotidien des apports et d&#233;penses caloriques, historique, objectif perte de poids.</p>
+      <p class="proj-impact">En production avec domaine propre. Disponible en fran&#231;ais et en chinois.</p>
+      <div class="proj-stack"><span class="proj-tag">Lovable</span><span class="proj-tag">Vision IA</span><span class="proj-tag">Fran&#231;ais</span><span class="proj-tag">&#20013;&#25991;</span></div>
+      <a href="https://miamfr.app/" target="_blank" class="proj-link">miamfr.app &#8594;</a>
     </div>
-
-    <div class="project-card" style="animation-delay: 0.3s">
-      <span class="badge badge-deployed">DÉPLOYÉ</span>
+    <div class="project-card" style="animation-delay:0.3s">
+      <span class="badge badge-deployed">D&#201;PLOY&#201;</span>
       <p class="proj-num">02</p>
       <p class="proj-category">Knowledge Base IA</p>
-      <h2 class="proj-title">Octopia Help Centre — Base de Connaissances IA</h2>
-      <p class="proj-desc">Scraping complet du Help Centre Octopia → conversion en fichiers Markdown → intégration dans Tencent IMA. Les vendeurs interrogent la base en langage naturel directement depuis WeChat Entreprise.</p>
-      <p class="proj-impact">Connecté à WeChat Entreprise, en service actif en production.</p>
+      <h2 class="proj-title">Octopia Help Centre &#8212; Base de Connaissances IA</h2>
+      <p class="proj-desc">Scraping complet du Help Centre Octopia &#8594; conversion en fichiers Markdown &#8594; int&#233;gration dans Tencent IMA. Les vendeurs interrogent la base en langage naturel directement depuis WeChat Entreprise.</p>
+      <p class="proj-impact">Connect&#233; &#224; WeChat Entreprise, en service actif en production.</p>
       <div class="proj-stack"><span class="proj-tag">Web Scraping</span><span class="proj-tag">Markdown</span><span class="proj-tag">Tencent IMA</span><span class="proj-tag">WeChat API</span><span class="proj-tag">RAG</span></div>
     </div>
-
-    <div class="project-card" style="animation-delay: 0.4s">
-      <span class="badge badge-beta">BÊTA</span>
+    <div class="project-card" style="animation-delay:0.4s">
+      <span class="badge badge-beta">B&#202;TA</span>
       <p class="proj-num">03</p>
       <p class="proj-category">Agent IA Vocal</p>
-      <h2 class="proj-title">Voice AI — Prise de RDV Automatisée</h2>
-      <p class="proj-desc">Agent vocal pour salons de coiffure français. Le client appelle, l'IA comprend sa demande en français, propose un créneau et confirme le rendez-vous — sans intervention humaine.</p>
-      <p class="proj-impact">Version simplifiée opérationnelle. En recherche d'un salon pilote pour test terrain.</p>
+      <h2 class="proj-title">Voice AI &#8212; Prise de RDV Automatis&#233;e</h2>
+      <p class="proj-desc">Agent vocal pour salons de coiffure fran&#231;ais. Le client appelle, l'IA comprend sa demande en fran&#231;ais, propose un cr&#233;neau et confirme le rendez-vous &#8212; sans intervention humaine.</p>
+      <p class="proj-impact">Version simplifi&#233;e op&#233;rationnelle. En recherche d'un salon pilote pour test terrain.</p>
       <div class="proj-stack"><span class="proj-tag">Twilio</span><span class="proj-tag">N8N</span><span class="proj-tag">Claude API</span><span class="proj-tag">French NLP</span></div>
-      <div class="proj-placeholder"><span>Démo vidéo à venir</span></div>
+      <div class="proj-placeholder"><span>D&#233;mo vid&#233;o &#224; venir</span></div>
     </div>
-
-    <div class="project-card" style="animation-delay: 0.5s">
+    <div class="project-card" style="animation-delay:0.5s">
       <span class="badge badge-live">LIVE</span>
       <p class="proj-num">04</p>
       <p class="proj-category">Outil E-commerce</p>
       <h2 class="proj-title">Calculateur de Profit Amazon vs Cdiscount</h2>
-      <p class="proj-desc">Comparaison des marges nettes entre marketplaces en temps réel. Conçu pour les vendeurs chinois qui sourcent des produits pour l'Europe — interface bilingue, calculs instantanés.</p>
-      <p class="proj-impact">Déployé sur GitHub Pages, utilisé par des vendeurs actifs.</p>
+      <p class="proj-desc">Comparaison des marges nettes entre marketplaces en temps r&#233;el. Con&#231;u pour les vendeurs chinois qui sourcent des produits pour l'Europe &#8212; interface bilingue, calculs instantan&#233;s.</p>
+      <p class="proj-impact">D&#233;ploy&#233; sur GitHub Pages, utilis&#233; par des vendeurs actifs.</p>
       <div class="proj-stack"><span class="proj-tag">HTML</span><span class="proj-tag">JavaScript</span><span class="proj-tag">GitHub Pages</span></div>
-      <a href="https://weilinbellinahu.github.io/profit-calculator/选品利润计算器.html" target="_blank" class="proj-link">Voir l'outil →</a>
+      <a href="https://weilinbellinahu.github.io/profit-calculator/" target="_blank" class="proj-link">Voir l'outil &#8594;</a>
     </div>
-
-    <div class="project-card full" style="animation-delay: 0.55s">
+    <div class="project-card full" style="animation-delay:0.55s">
       <span class="badge badge-deployed">EN PRODUCTION</span>
       <div class="full-inner">
         <div>
           <p class="proj-num">05</p>
-          <p class="proj-category">Écosystème N8N</p>
+          <p class="proj-category">&#201;cosyst&#232;me N8N</p>
           <h2 class="proj-title">Workflows d'Automatisation Personnelle</h2>
-          <p class="proj-desc">Plusieurs workflows N8N qui tournent quotidiennement. Pas des prototypes — des outils réels qui me font gagner du temps chaque jour.</p>
-          <p class="proj-impact">Tous en service actif. Automatisation réelle, pas des demos.</p>
+          <p class="proj-desc">Plusieurs workflows N8N qui tournent quotidiennement. Pas des prototypes &#8212; des outils r&#233;els qui me font gagner du temps chaque jour.</p>
+          <p class="proj-impact">Tous en service actif. Automatisation r&#233;elle, pas des demos.</p>
           <div class="proj-stack" style="margin-top:1.5rem"><span class="proj-tag">N8N</span><span class="proj-tag">Claude API</span><span class="proj-tag">WeChat</span><span class="proj-tag">YouTube API</span><span class="proj-tag">RSS</span></div>
         </div>
         <div>
           <div class="workflow-item">
-            <p style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:0.4rem">● LIVE &nbsp;▸ YouTube → Résumé structuré</p>
-            <p class="workflow-desc">Sélection de vidéos YouTube → transcription automatique → résumé structuré en français, livré à heure fixe. Utilisé quotidiennement.</p>
+            <p style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:0.4rem">&#9679; LIVE &nbsp;&#9658; YouTube &#8594; R&#233;sum&#233; structur&#233;</p>
+            <p class="workflow-desc">S&#233;lection de vid&#233;os YouTube &#8594; transcription automatique &#8594; r&#233;sum&#233; structur&#233; en fran&#231;ais, livr&#233; &#224; heure fixe. Utilis&#233; quotidiennement.</p>
           </div>
           <div class="workflow-item">
-            <p style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:0.4rem">● LIVE &nbsp;▸ Brief Quotidien WeChat</p>
-            <p class="workflow-desc">Chaque matin à heure fixe, un digest personnalisé des actualités IA, e-commerce et géopolitique — livré automatiquement sur WeChat.</p>
+            <p style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:0.4rem">&#9679; LIVE &nbsp;&#9658; Brief Quotidien WeChat</p>
+            <p class="workflow-desc">Chaque matin &#224; heure fixe, un digest personnalis&#233; des actualit&#233;s IA, e-commerce et g&#233;opolitique &#8212; livr&#233; automatiquement sur WeChat.</p>
           </div>
           <div class="workflow-item">
-            <p style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:0.4rem">▸ Pipeline Recrutement Vendeurs — En cours</p>
-            <p class="workflow-desc">6 phases : vérification leads → prospection multicanal → onboarding automatisé. En développement actif.</p>
+            <p style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:0.4rem">&#9658; Pipeline Recrutement Vendeurs &#8212; En cours</p>
+            <p class="workflow-desc">6 phases : v&#233;rification leads &#8594; prospection multicanal &#8594; onboarding automatis&#233;. En d&#233;veloppement actif.</p>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 <footer>
-  <span>© 2026 Weilin Hu</span>
+  <span>&#169; Weilin Hu</span>
   <span>Entre deux mondes.</span>
   <span>Bordeaux, France</span>
 </footer>

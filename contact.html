@@ -34,7 +34,7 @@ nav {
 .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
 .nav-logo:hover .nav-avatar { transform: scale(1.08); }
 .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.12); }
-.nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; mix-blend-mode: multiply; }
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; background: #080808; }
 .nav-logo:hover { color: var(--white); }
 .nav-links { display: flex; gap: 2rem; list-style: none; }
 .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
@@ -114,7 +114,7 @@ nav {
       <a href="#" class="contact-item" id="email-link">
         <div class="ci-left">
           <span class="ci-type">Email</span>
-          <span class="ci-value" id="email-val">weilin.bellina.hu@gmail.com</span>
+          <span class="ci-value" id="email-val"><span class="__cf_email__" data-cfemail="403725292c292e6e22252c2c292e216e283500272d21292c6e232f2d">[email&#160;protected]</span></span>
         </div>
         <span class="ci-arrow">&#8594;</span>
       </a>
@@ -128,15 +128,8 @@ nav {
     </div>
   </div>
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 document.getElementById('email-link').addEventListener('click', function(e) {
   e.preventDefault();
   navigator.clipboard.writeText('weilin.bellina.hu@gmail.com').then(() => {
-    const val = document.getElementById('email-val');
-    val.textContent = 'Copi&#233; !';
-    setTimeout(() => { val.textContent = 'weilin.bellina.hu@gmail.com'; }, 2000);
-  });
-});
-</script>
-</body>
-</html>
+ 

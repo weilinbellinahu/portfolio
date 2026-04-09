@@ -3,141 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>J'ai licencié Google News. Mon IA fait ça maintenant. — Weilin Hu</title>
+<title>J'ai licenci&#233; Google News. Mon IA fait &#231;a maintenant. &#8212; Weilin Hu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #080808; --bg2: #0f0f0f;
-    --white: #ffffff;
-    --white-dim: rgba(255,255,255,0.72);
-    --white-faint: rgba(255,255,255,0.4);
-    --white-ghost: rgba(255,255,255,0.06);
-    --accent: #E8686A;
-    --mono: 'DM Mono', 'Courier New', monospace;
-    --sans: 'Figtree', sans-serif;
-  }
-  body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; line-height: 1.8; overflow-x: hidden; }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0; opacity: 0.6;
-  }
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--white-ghost); background: rgba(8,8,8,0.9); backdrop-filter: blur(12px); }
-  .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-faint); text-decoration: none; transition: color 0.2s; }
-  .nav-logo:hover { color: var(--white); }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-faint); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--white); }
-
-  .article-wrap { max-width: 640px; margin: 0 auto; padding: 9rem 2.5rem 8rem; position: relative; z-index: 1; }
-
-  .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); text-decoration: none; margin-bottom: 3rem; transition: color 0.2s; }
-  .back-link:hover { color: var(--white); }
-
-  .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem; flex-wrap: wrap; }
-  .meta-category { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 3px 10px; border-radius: 6px; }
-  .meta-date { font-family: var(--mono); font-size: 10px; color: var(--white-faint); }
-  .meta-read { font-family: var(--mono); font-size: 10px; color: var(--white-faint); }
-
-  .article-title { font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.03em; line-height: 1.08; margin-bottom: 1.6rem; }
-  .article-title em { font-style: italic; font-weight: 300; color: rgba(255,255,255,0.38); }
-
-  .article-intro { font-size: 1.05rem; color: var(--white-dim); font-weight: 300; line-height: 1.75; border-left: 2px solid var(--accent); padding-left: 1.5rem; margin-bottom: 2.5rem; }
-
-  .divider { width: 40px; height: 1px; background: var(--white-ghost); margin: 2rem 0; }
-
-  .article-body { font-size: 1rem; color: var(--white-dim); font-weight: 300; line-height: 1.85; }
-  .article-body p { margin-bottom: 1.4rem; }
-  .article-body strong { color: var(--white); font-weight: 600; }
-
-  .pull-quote { margin: 2.5rem 0; padding: 1.6rem 2rem; background: var(--bg2); border-radius: 14px; border: 1px solid var(--white-ghost); }
-  .pull-quote p { font-size: 1.05rem; font-weight: 300; font-style: italic; color: var(--white); line-height: 1.65; margin: 0; }
-
-  .screenshot-wrap { margin: 2.5rem auto; max-width: 300px; }
-  .screenshot-wrap img { width: 100%; border-radius: 24px; border: 5px solid #1a1a1a; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: block; }
-  .screenshot-caption { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--white-faint); margin-top: 0.8rem; text-align: center; text-transform: uppercase; }
-
-  .article-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid var(--white-ghost); }
-  .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; padding: 4px 12px; border: 1px solid var(--white-ghost); border-radius: 6px; color: var(--white-faint); text-transform: uppercase; }
-
-  footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display: flex; justify-content: space-between; position: relative; z-index: 1; }
-  footer span { font-family: var(--mono); font-size: 10px; color: var(--white-faint); }
-
-  @media (max-width: 680px) {
-    nav { padding: 1.2rem 1.5rem; } .nav-links { display: none; }
-    .article-wrap { padding: 7rem 1.5rem 5rem; }
-  }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #080808; --bg2: #0f0f0f; --white: #ffffff; --white-dim: rgba(255,255,255,0.72); --white-faint: rgba(255,255,255,0.4); --white-ghost: rgba(255,255,255,0.06); --accent: #E8686A; --mono: 'DM Mono', 'Courier New', monospace; --sans: 'Figtree', sans-serif; }
+body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; line-height: 1.8; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.6; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--white-ghost); background: rgba(8,8,8,0.9); backdrop-filter: blur(12px); }
+.nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-faint); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+.nav-logo:hover { color: var(--white); }
+.nav-logo:hover .nav-avatar { transform: scale(1.08); }
+.nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.12); background: #080808; }
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-faint); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a:hover { color: var(--white); }
+.article-wrap { max-width: 640px; margin: 0 auto; padding: 9rem 2.5rem 8rem; position: relative; z-index: 1; }
+.back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white-faint); text-decoration: none; margin-bottom: 3rem; transition: color 0.2s; }
+.back-link:hover { color: var(--white); }
+.article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem; flex-wrap: wrap; }
+.meta-category { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 3px 10px; border-radius: 6px; }
+.meta-read { font-family: var(--mono); font-size: 10px; color: var(--white-faint); }
+.article-title { font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.03em; line-height: 1.08; margin-bottom: 1.6rem; }
+.article-title em { font-style: italic; font-weight: 300; color: rgba(255,255,255,0.38); }
+.article-intro { font-size: 1.05rem; color: var(--white-dim); font-weight: 300; line-height: 1.75; border-left: 2px solid var(--accent); padding-left: 1.5rem; margin-bottom: 2.5rem; }
+.divider { width: 40px; height: 1px; background: var(--white-ghost); margin: 2rem 0; }
+.article-body { font-size: 1rem; color: var(--white-dim); font-weight: 300; line-height: 1.85; }
+.article-body p { margin-bottom: 1.4rem; }
+.article-body strong { color: var(--white); font-weight: 600; }
+.pull-quote { margin: 2.5rem 0; padding: 1.6rem 2rem; background: var(--bg2); border-radius: 14px; border: 1px solid var(--white-ghost); }
+.pull-quote p { font-size: 1.05rem; font-weight: 300; font-style: italic; color: var(--white); line-height: 1.65; margin: 0; }
+.screenshot-wrap { margin: 2.5rem auto; max-width: 300px; }
+.screenshot-wrap img { width: 100%; border-radius: 24px; border: 5px solid #1a1a1a; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: block; }
+.screenshot-caption { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--white-faint); margin-top: 0.8rem; text-align: center; text-transform: uppercase; }
+.article-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid var(--white-ghost); }
+.tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; padding: 4px 12px; border: 1px solid var(--white-ghost); border-radius: 6px; color: var(--white-faint); text-transform: uppercase; }
+footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display: flex; justify-content: space-between; position: relative; z-index: 1; }
+footer span { font-family: var(--mono); font-size: 10px; color: var(--white-faint); }
+@media (max-width: 680px) { nav { padding: 1.2rem 1.5rem; } .nav-links { display: none; } .article-wrap { padding: 7rem 1.5rem 5rem; } }
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="index.html" class="nav-logo">weilin.hu</a>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>
+    weilin.hu
+  </a>
   <ul class="nav-links">
     <li><a href="projets.html">Projets</a></li>
     <li><a href="blog.html">Blog</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
 </nav>
-
 <div class="article-wrap">
-
-  <a href="blog.html" class="back-link">← Retour au blog</a>
-
+  <a href="blog.html" class="back-link">&#8592; Retour au blog</a>
   <div class="article-meta">
-    <span class="meta-category">IA & Productivité</span>
-    <span class="meta-date">Avril 2026</span>
+    <span class="meta-category">IA &amp; Productivit&#233;</span>
     <span class="meta-read">2 min de lecture</span>
   </div>
-
-  <h1 class="article-title">J'ai licencié Google News.<br><em>Mon IA fait ça maintenant.</em></h1>
-
-  <p class="article-intro">Chaque matin à 7h, un assistant IA me prépare un briefing d'actualités personnalisé — et me le lit à voix haute si je n'ai pas le temps de lire.</p>
-
+  <h1 class="article-title">J'ai licenci&#233; Google News.<br><em>Mon IA fait &#231;a maintenant.</em></h1>
+  <p class="article-intro">Chaque matin &#224; 7h, un assistant IA me pr&#233;pare un briefing d'actualit&#233;s personnalis&#233; &#8212; et me le lit &#224; voix haute si je n'ai pas le temps de lire.</p>
   <div class="divider"></div>
-
   <div class="article-body">
-
-    <p>Avant, je passais 45 minutes chaque matin à ouvrir des dizaines d'onglets — Le Monde, newsletters, groupes WeChat — pour finir par ne rien retenir d'important. J'avais l'impression d'avoir travaillé avant même d'avoir commencé.</p>
-
-    <p>Maintenant, à <strong>7h00 pile</strong>, un message arrive dans mon Telegram. Six domaines couverts : actualité française, e-commerce, cross-border, IA, carrière, géopolitique. Pour chaque domaine, <strong>3 points clés</strong> — différents de la veille — avec résumé et lien source.</p>
-
-    <p>Temps de lecture : <strong>5 minutes</strong>. Pas de pub. Pas de clickbait.</p>
-
-    <p>Et si je n'ai même pas ces 5 minutes ? L'assistant génère aussi une version audio, lue par une voix posée, envoyée en MP3 directement sur Telegram. J'appuie sur play en préparant mon café.</p>
-
+    <p>Avant, je passais 45 minutes chaque matin &#224; ouvrir des dizaines d'onglets &#8212; Le Monde, newsletters, groupes WeChat &#8212; pour finir par ne rien retenir d'important. J'avais l'impression d'avoir travaill&#233; avant m&#234;me d'avoir commenc&#233;.</p>
+    <p>Maintenant, &#224; <strong>7h00 pile</strong>, un message arrive dans mon Telegram. Six domaines couverts&#160;: actualit&#233; fran&#231;aise, e-commerce, cross-border, IA, carri&#232;re, g&#233;opolitique. Pour chaque domaine, <strong>3 points cl&#233;s</strong> &#8212; diff&#233;rents de la veille &#8212; avec r&#233;sum&#233; et lien source.</p>
+    <p>Temps de lecture&#160;: <strong>5 minutes</strong>. Pas de pub. Pas de clickbait.</p>
+    <p>Et si je n'ai m&#234;me pas ces 5 minutes&#160;? L'assistant g&#233;n&#232;re aussi une version audio, lue par une voix pos&#233;e, envoy&#233;e en MP3 directement sur Telegram. J'appuie sur play en pr&#233;parant mon caf&#233;.</p>
     <div class="screenshot-wrap">
-      <img src="brief-france.png" alt="Brief quotidien du 9 avril 2026 — Actualités France">
-      <p class="screenshot-caption">Le brief du 9 avril — section Actualités France</p>
+      <img src="brief-france.png" alt="Brief quotidien &#8212; Actualit&#233;s France">
+      <p class="screenshot-caption">Le brief &#8212; section Actualit&#233;s France</p>
     </div>
-
-    <p>L'assistant s'appelle <strong>丁丁 (Tintin)</strong> — comme le reporter belge dans la bande dessinée, et c'est intentionnel. Il scrape des flux RSS publics gratuits, filtre, dédoublonne, rédige, et envoie. Zéro API payante. Zéro intervention manuelle.</p>
-
-    <p>Ça m'a pris quelques heures à configurer. Maintenant ça tourne tout seul.</p>
-
+    <p>L'assistant s'appelle <strong>&#19969;&#19969; (Tintin)</strong> &#8212; comme le reporter belge dans la bande dessin&#233;e, et c'est intentionnel. Il scrape des flux RSS publics gratuits, filtre, d&#233;doublonne, r&#233;dige, et envoie. Z&#233;ro API payante. Z&#233;ro intervention manuelle.</p>
+    <p>&#199;a m'a pris quelques heures &#224; configurer. Maintenant &#231;a tourne tout seul.</p>
     <div class="pull-quote">
-      <p>"La meilleure automatisation, c'est celle qu'on oublie qu'on a mise en place — parce qu'elle fonctionne sans qu'on y pense."</p>
+      <p>&#171;&#160;La meilleure automatisation, c'est celle qu'on oublie qu'on a mise en place &#8212; parce qu'elle fonctionne sans qu'on y pense.&#160;&#187;</p>
     </div>
-
   </div>
-
   <div class="article-tags">
     <span class="tag">Automatisation</span>
-    <span class="tag">OpenClaw</span>
+    <span class="tag">N8N</span>
     <span class="tag">Agents IA</span>
-    <span class="tag">Productivité</span>
+    <span class="tag">Productivit&#233;</span>
   </div>
-
 </div>
-
 <footer>
-  <span>© 2026 Weilin Hu</span>
+  <span>&#169; Weilin Hu</span>
   <span>Entre deux mondes.</span>
   <span>Bordeaux, France</span>
 </footer>
-
 </body>
 </html>
