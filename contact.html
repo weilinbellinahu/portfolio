@@ -1,95 +1,83 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — Weilin Hu</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Weilin Hu</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+ <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #080808;
-    --white: #ffffff;
-    --white-dim: rgba(255,255,255,0.55);
-    --white-ghost: rgba(255,255,255,0.05);
-    --accent: #E8686A;
-    --mono: 'DM Mono', 'Courier New', monospace;
-    --sans: 'Figtree', 'Arial Black', sans-serif;
-  }
+  :root { --bg: #080808; --white: #ffffff; --white-dim: rgba(255,255,255,0.55); --white-ghost: rgba(255,255,255,0.05); --accent: #E8686A; --mono: 'DM Mono', 'Courier New', monospace; --sans: 'Figtree', 'Arial Black', sans-serif; }
   html, body { height: 100%; overflow: hidden; }
   body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0; opacity: 0.6;
-  }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.6; }
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--white-ghost); }
   .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; }
   .nav-logo:hover { color: var(--white); }
   .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover, .nav-links a.active { color: var(--white); }
-
-  .contact-wrap {
-    position: fixed; inset: 0; display: flex; flex-direction: column;
-    justify-content: center; padding: 0 2.5rem; padding-top: 60px;
-    max-width: 800px; z-index: 1;
-  }
-
+  .contact-outer { position: fixed; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 60px 5vw 0; }
+  .contact-wrap { width: 100%; max-width: 800px; display: flex; flex-direction: column; }
   .page-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.1s forwards; }
-
   .contact-title { font-weight: 900; font-size: clamp(2.2rem, 5vw, 4rem); letter-spacing: -0.035em; line-height: 1.0; margin-bottom: 1.2rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease 0.2s forwards; }
   .contact-title em { font-style: italic; font-weight: 300; color: rgba(255,255,255,0.35); }
-
   .contact-desc { font-size: 0.95rem; color: var(--white-dim); font-weight: 300; max-width: 420px; line-height: 1.75; margin-bottom: 2.5rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.4s forwards; }
-
-  .contact-items { display: flex; flex-direction: column; gap: 0.8rem; border-top: none; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.6s forwards; }
-
+  .contact-items { display: flex; flex-direction: column; gap: 0.8rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.6s forwards; }
   .contact-item { display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 1.6rem; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; background: #0f0f0f; text-decoration: none; color: inherit; transition: all 0.2s; }
-  .contact-item:hover { background: #161616; border-color: rgba(255,255,255,0.14); padding-left: 1.6rem; }
+  .contact-item:hover { background: #161616; border-color: rgba(255,255,255,0.14); }
   .contact-item:hover .ci-value { color: var(--white); }
   .contact-item:hover .ci-arrow { opacity: 1; transform: translateX(4px); }
-
   .ci-left { display: flex; flex-direction: column; gap: 0.35rem; }
   .ci-type { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; }
-  /* 细体，不粗 */
-  .ci-value { font-weight: 300; font-size: 1rem; letter-spacing: 0.01em; color: var(--white-dim); transition: color 0.2s; font-family: var(--mono); }
+  .ci-value { font-weight: 300; font-size: 1rem; color: var(--white-dim); transition: color 0.2s; font-family: var(--mono); }
   .ci-arrow { font-size: 1rem; color: rgba(255,255,255,0.25); transition: opacity 0.2s, transform 0.2s; opacity: 0; }
-
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
-  @media (max-width: 680px) {
-    nav { padding: 1.2rem 1.5rem; }
-    .contact-wrap { padding: 0 1.5rem; padding-top: 70px; }
-  }
-</style>
-</head>
-<body>
-<nav>
-  <a href="index.html" class="nav-logo">weilin.hu</a>
-  <ul class="nav-links">
-    <li><a href="projets.html">Projets</a></li>
-    <li><a href="blog.html">Blog</a></li>
-    <li><a href="contact.html" class="active">Contact</a></li>
-  </ul>
-</nav>
-
-<div class="contact-wrap">
-  <p class="page-tag">Me contacter</p>
-  <h1 class="contact-title">Parlons.<br><em>Construisons quelque chose ensemble.</em></h1>
-  <p class="contact-desc">Projets d'automatisation, collaborations, ou juste une conversation sur l'IA appliquée à l'e-commerce franco-chinois.</p>
-
-  <div class="contact-items">
-    <a href="#" class="contact-item" id="email-link">
-      <div class="ci-left">
-        <span class="ci-type">Email</span>
-        <span class="ci-value" id="email-val">weilin.bellina.hu@gmail.com</span>
-      </div>
-      <span class="ci-arrow">→</span>
-    </a>
-    <a href="https://www.linkedin.com/in/weilin-b-b68416303/" target="_blank" class="contact-item">
-      <div class="ci-left">
-        <span class="ci-type">LinkedIn</span>
-        <span cl
+  @media (max-width: 680px) { nav { padding: 1.2rem 1.5rem; } .contact-outer { padding: 0 1.5rem; } .contact-wrap { padding-top: 80px; } }
+  </style>
+ </head>
+ <body>
+  <nav>
+     <a href="index.html" class="nav-logo">weilin.hu</a>a>
+     <ul class="nav-links">
+          <li><a href="projets.html">Projets</a>a></li>
+         <li><a href="blog.html">Blog</a>a></li>
+         <li><a href="contact.html" class="active">Contact</a>a></li>
+     </ul>ul>
+  </nav>
+ <div class="contact-outer">
+   <div class="contact-wrap">
+       <p class="page-tag">Me contacter</p>p>
+       <h1 class="contact-title">Parlons.<br><em>Construisons quelque chose ensemble.</em></h1>h1>
+       <p class="contact-desc">Projets d'automatisation, collaborations, ou juste une conversation sur l'IA.</p>p>
+       <div class="contact-items">
+             <a href="#" class="contact-item" id="email-link">
+                     <div class="ci-left"><span class="ci-type">Email</span>span><span class="ci-value" id="email-val">weilin.bellina.hu@gmail.com</span>span></div>div>
+                     <span class="ci-arrow">&#8594;</span>span>
+             </a>a>
+             <a href="https://www.linkedin.com/in/weilin-b-b68416303/" target="_blank" class="contact-item">
+                     <div class="ci-left"><span class="ci-type">LinkedIn</span>span><span class="ci-value">weilin-b-b68416303</span>span></div>div>
+                     <span class="ci-arrow">&#8594;</span>span>
+             </a>a>
+       </div>div>
+   </div>div>
+ </div>div>
+ <script>
+  document.getElementById('email-link').addEventListener('click', function(e) {
+     e.preventDefault();
+     navigator.clipboard.writeText('weilin.bellina.hu@gmail.com').then(() => {
+          const val = document.getElementById('email-val');
+          val.textContent = 'Copie!';
+          setTimeout(() => { val.textContent = 'weilin.bellina.hu@gmail.com'; }, 2000);
+     });
+  });
+ </script>
+ </body>
+</html>html>
+ </script></em></li></li>
+  </nav>
+ </body>
+ </style></title>
+ </head>
