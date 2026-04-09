@@ -4,160 +4,301 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comment j'ai construit ce site en 3h30 avec Claude - Weilin Hu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;800&family=DM+Mono:wght@300;400&family=Figtree:ital,wght@0,300;0,400;0,900&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --bg: #0a0a0f; --bg2: #111118; --white: #f0eee8; --dim: rgba(240,238,232,0.45); --faint: rgba(240,238,232,0.08); --coral: #E8686A; --mint: #7ECFC0; --gold: #E8C06A; --peach: #E8A06A; --mono: 'DM Mono', monospace; --display: 'Jost', sans-serif; --body: 'Figtree', sans-serif; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--white); font-family: var(--body); min-height: 100vh; overflow-x: hidden; font-weight: 400; }
-    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.4; }
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(240,238,232,0.05); background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); }
-    .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
-    .nav-logo:hover { color: var(--white); }
-    .nav-logo:hover .nav-avatar { transform: scale(1.08); }
-    .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(240,238,232,0.12); background: #0a0a0f; }
-    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
-    .nav-links a:hover, .nav-links a.active { color: var(--white); }
-    .wrap { max-width: 900px; margin: 0 auto; padding: 120px 40px 120px; position: relative; z-index: 1; }
-    .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; margin-bottom: 48px; transition: color 0.2s; }
-    .back-link:hover { color: var(--white); }
-    .post-header { margin-bottom: 64px; }
-    .post-category { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--coral); text-transform: uppercase; margin-bottom: 20px; }
-    .post-title { font-family: var(--display); font-size: clamp(22px, 3.8vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
-    .post-title em { font-style: normal; color: var(--coral); }
-    .post-meta { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--dim); }
-    .post-meta span { display: flex; align-items: center; gap: 6px; }
-    .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
-    .time-banner { display: flex; align-items: center; gap: 24px; background: var(--faint); border: 1px solid rgba(240,238,232,0.1); border-left: 3px solid var(--gold); padding: 24px 32px; margin-bottom: 64px; }
-    .time-banner-number { font-family: var(--display); font-size: 56px; font-weight: 800; color: var(--gold); line-height: 1; letter-spacing: -0.03em; flex-shrink: 0; }
-    .time-banner-text h3 { font-family: var(--display); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-    .time-banner-text p { font-size: 13px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
-    .time-arrow { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--dim); text-align: right; line-height: 1.8; flex-shrink: 0; }
-    .section-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--dim); text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 16px; }
-    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--faint); }
-    .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 64px; }
-    .step { display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--faint); position: relative; }
-    .step:last-child { border-bottom: none; }
-    .step:not(:last-child) .step-num::after { content: ''; position: absolute; left: 29px; top: 68px; width: 1px; height: calc(100% - 36px); background: linear-gradient(to bottom, var(--faint), transparent); }
-    .step-num { position: relative; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 4px; }
-    .step.phase1 .step-num { background: rgba(232,104,106,0.15); color: var(--coral); border: 1px solid rgba(232,104,106,0.3); }
-    .step.phase2 .step-num { background: rgba(126,207,192,0.12); color: var(--mint); border: 1px solid rgba(126,207,192,0.25); }
-    .step-phase { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
-    .step.phase1 .step-phase { color: var(--coral); }
-    .step.phase2 .step-phase { color: var(--mint); }
-    .step-title { font-family: var(--display); font-size: 19px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
-    .step-desc { font-size: 13px; color: var(--dim); line-height: 1.75; max-width: 560px; }
-    .step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-    .tag { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 2px; letter-spacing: 0.05em; }
-    .tag-tool { background: rgba(126,207,192,0.1); color: var(--mint); border: 1px solid rgba(126,207,192,0.2); }
-    .tag-issue { background: rgba(232,104,106,0.1); color: var(--coral); border: 1px solid rgba(232,104,106,0.2); }
-    .tag-ok { background: rgba(232,192,106,0.1); color: var(--gold); border: 1px solid rgba(232,192,106,0.2); }
-    .step-time { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; padding-top: 4px; }
-    .time-pill { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--white); letter-spacing: -0.02em; }
-    .time-unit { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
-    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 64px; }
-    .tool-card { background: var(--bg2); border: 1px solid var(--faint); padding: 24px; position: relative; overflow: hidden; transition: border-color 0.2s; }
-    .tool-card:hover { border-color: rgba(240,238,232,0.2); }
-    .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; }
-    .tool-card:nth-child(1)::before { background: var(--coral); } .tool-card:nth-child(2)::before { background: var(--mint); } .tool-card:nth-child(3)::before { background: var(--gold); } .tool-card:nth-child(4)::before { background: var(--peach); } .tool-card:nth-child(5)::before { background: var(--coral); } .tool-card:nth-child(6)::before { background: var(--mint); }
-    .tool-icon { font-size: 28px; margin-bottom: 12px; }
-    .tool-name { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .tool-use { font-size: 12px; color: var(--dim); line-height: 1.5; }
-    .lesson-box { background: rgba(232,104,106,0.05); border: 1px solid rgba(232,104,106,0.2); border-left: 3px solid var(--coral); padding: 28px 32px; margin-bottom: 64px; }
-    .lesson-box h3 { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--coral); margin-bottom: 16px; }
-    .lesson-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .lesson-list li { font-size: 13px; color: var(--dim); padding-left: 20px; position: relative; line-height: 1.6; }
-    .lesson-list li::before { content: '->'; position: absolute; left: 0; color: var(--coral); font-family: var(--mono); }
-    .next-time { display: flex; align-items: center; gap: 32px; background: rgba(126,207,192,0.05); border: 1px solid rgba(126,207,192,0.15); padding: 28px 32px; margin-bottom: 64px; }
-    .next-time-num { font-family: var(--display); font-size: 48px; font-weight: 800; color: var(--mint); letter-spacing: -0.03em; line-height: 1; flex-shrink: 0; }
-    .next-time-text h3 { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .next-time-text p { font-size: 12px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
-    .post-footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--faint); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 600px) { nav { padding: 1.2rem 1.5rem; } .wrap { padding: 100px 24px 80px; } .step { grid-template-columns: 44px 1fr; } .step-time { display: none; } .time-banner { flex-wrap: wrap; } }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;800&family=DM+Mono:wght@300;400&family=Figtree:ital,wght@0,300;0,400;0,900&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root { --bg: #0a0a0f; --bg2: #111118; --white: #f0eee8; --dim: rgba(240,238,232,0.45); --faint: rgba(240,238,232,0.08); --coral: #E8686A; --mint: #7ECFC0; --gold: #E8C06A; --peach: #E8A06A; --mono: 'DM Mono', monospace; --display: 'Jost', sans-serif; --body: 'Figtree', sans-serif; }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--white); font-family: var(--body); min-height: 100vh; overflow-x: hidden; font-weight: 400; }
+      body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.4; }
+      nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(240,238,232,0.05); background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); }
+      .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+      .nav-logo:hover { color: var(--white); }
+      .nav-logo:hover .nav-avatar { transform: scale(1.08); }
+      .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(240,238,232,0.12); background: #0a0a0f; }
+      .nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .nav-links { display: flex; gap: 2rem; list-style: none; }
+      .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--white); }
+      .wrap { max-width: 900px; margin: 0 auto; padding: 120px 40px 120px; position: relative; z-index: 1; }
+      .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; margin-bottom: 48px; transition: color 0.2s; }
+      .back-link:hover { color: var(--white); }
+      .post-header { margin-bottom: 64px; }
+      .post-category { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--coral); text-transform: uppercase; margin-bottom: 20px; }
+      .post-title { font-family: var(--display); font-size: clamp(22px, 3.8vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
+      .post-title em { font-style: normal; color: var(--coral); }
+      .post-meta { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+      .post-meta span { display: flex; align-items: center; gap: 6px; }
+      .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
+      .time-banner { display: flex; align-items: center; gap: 24px; background: var(--faint); border: 1px solid rgba(240,238,232,0.1); border-left: 3px solid var(--gold); padding: 24px 32px; margin-bottom: 64px; }
+      .time-banner-number { font-family: var(--display); font-size: 56px; font-weight: 800; color: var(--gold); line-height: 1; letter-spacing: -0.03em; flex-shrink: 0; }
+      .time-banner-text h3 { font-family: var(--display); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+      .time-banner-text p { font-size: 13px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
+      .time-arrow { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--dim); text-align: right; line-height: 1.8; flex-shrink: 0; }
+      .section-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--dim); text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 16px; }
+      .section-title::after { content: ''; flex: 1; height: 1px; background: var(--faint); }
+      .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 64px; }
+      .step { display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--faint); position: relative; }
+      .step:last-child { border-bottom: none; }
+      .step:not(:last-child) .step-num::after { content: ''; position: absolute; left: 29px; top: 68px; width: 1px; height: calc(100% - 36px); background: linear-gradient(to bottom, var(--faint), transparent); }
+      .step-num { position: relative; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 4px; }
+      .step.phase1 .step-num { background: rgba(232,104,106,0.15); color: var(--coral); border: 1px solid rgba(232,104,106,0.3); }
+      .step.phase2 .step-num { background: rgba(126,207,192,0.12); color: var(--mint); border: 1px solid rgba(126,207,192,0.25); }
+      .step-phase { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+      .step.phase1 .step-phase { color: var(--coral); }
+      .step.phase2 .step-phase { color: var(--mint); }
+      .step-title { font-family: var(--display); font-size: 19px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+      .step-desc { font-size: 13px; color: var(--dim); line-height: 1.75; max-width: 560px; }
+      .step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+      .tag { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 2px; letter-spacing: 0.05em; }
+      .tag-tool { background: rgba(126,207,192,0.1); color: var(--mint); border: 1px solid rgba(126,207,192,0.2); }
+      .tag-issue { background: rgba(232,104,106,0.1); color: var(--coral); border: 1px solid rgba(232,104,106,0.2); }
+      .tag-ok { background: rgba(232,192,106,0.1); color: var(--gold); border: 1px solid rgba(232,192,106,0.2); }
+      .step-time { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; padding-top: 4px; }
+      .time-pill { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--white); letter-spacing: -0.02em; }
+      .time-unit { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+      .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 64px; }
+      .tool-card { background: var(--bg2); border: 1px solid var(--faint); padding: 24px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+      .tool-card:hover { border-color: rgba(240,238,232,0.2); }
+      .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; }
+      .tool-card:nth-child(1)::before { background: var(--coral); }
+      .tool-card:nth-child(2)::before { background: var(--mint); }
+      .tool-card:nth-child(3)::before { background: var(--gold); }
+      .tool-card:nth-child(4)::before { background: var(--peach); }
+      .tool-card:nth-child(5)::before { background: var(--coral); }
+      .tool-card:nth-child(6)::before { background: var(--mint); }
+      .tool-icon { font-size: 28px; margin-bottom: 12px; }
+      .tool-name { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+      .tool-use { font-size: 12px; color: var(--dim); line-height: 1.5; }
+      .lesson-box { background: rgba(232,104,106,0.05); border: 1px solid rgba(232,104,106,0.2); border-left: 3px solid var(--coral); padding: 28px 32px; margin-bottom: 64px; }
+      .lesson-box h3 { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--coral); margin-bottom: 16px; }
+      .lesson-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+      .lesson-list li { font-size: 13px; color: var(--dim); padding-left: 20px; position: relative; line-height: 1.6; }
+      .lesson-list li::before { content: '->'; position: absolute; left: 0; color: var(--coral); font-family: var(--mono); }
+      .next-time { display: flex; align-items: center; gap: 32px; background: rgba(126,207,192,0.05); border: 1px solid rgba(126,207,192,0.15); padding: 28px 32px; margin-bottom: 64px; }
+      .next-time-num { font-family: var(--display); font-size: 48px; font-weight: 800; color: var(--mint); letter-spacing: -0.03em; line-height: 1; flex-shrink: 0; }
+      .next-time-text h3 { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+      .next-time-text p { font-size: 12px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
+      .post-footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--faint); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); }
+      @media (max-width: 600px) { nav { padding: 1.2rem 1.5rem; } .wrap { padding: 100px 24px 80px; } .step { grid-template-columns: 44px 1fr; } .step-time { display: none; } .time-banner { flex-wrap: wrap; } }
     </style>
   </head>
   <body>
     <nav>
-        <a href="index.html" class="nav-logo">
-              <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>span>
-              weilin.hu
-        </a>a>
-        <ul class="nav-links">
-              <li><a href="projets.html">Projets</a>a></li>
-            <li><a href="blog.html" class="active">Blog</a>a></li>
-            <li><a href="contact.html">Contact</a>a></li>
-        </ul>ul>
+      <a href="index.html" class="nav-logo">
+        <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>
+        weilin.hu
+      </a>
+      <ul class="nav-links">
+        <li><a href="projets.html">Projets</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
     </nav>
-  <div class="wrap">
-    <a href="blog.html" class="back-link">Retour au blog</a>a>
-    <div class="post-header">
-        <p class="post-category">Projets - Apprentissage</p>p>
-        <h1 class="post-title">Comment j'ai construit ce site<br>en <em>3h30</em> avec Claude</h1>h1>
+
+    <div class="wrap">
+      <a href="blog.html" class="back-link">← Retour au blog</a>
+
+      <div class="post-header">
+        <p class="post-category">Projets — Apprentissage</p>
+        <h1 class="post-title">Comment j'ai construit ce site<br>en <em>3h30</em> avec Claude</h1>
         <div class="post-meta">
-              <span><span class="meta-dot"></span>weilinhu.com</span>
-              <span><span class="meta-dot" style="background:var(--coral)"></span>2 conversations - 8 etapes</span>
-              <span><span class="meta-dot" style="background:var(--gold)"></span>GitHub - DNS - LinkedIn</span>
-        </div>div>
-    </div>div>
-    <div class="time-banner">
-        <div class="time-banner-number">3.5h</div>div>
+          <span><span class="meta-dot"></span>weilinhu.com</span>
+          <span><span class="meta-dot" style="background:var(--coral)"></span>2 conversations — 8 étapes</span>
+          <span><span class="meta-dot" style="background:var(--gold)"></span>GitHub · DNS · LinkedIn</span>
+        </div>
+      </div>
+
+      <div class="time-banner">
+        <div class="time-banner-number">3.5h</div>
         <div class="time-banner-text">
-              <h3>Deux conversations, un site en ligne</h3>
-              <p>Design -> Generation du code -> Push GitHub -> Configuration DNS -> LinkedIn</p>
-        </div>div>
-        <div class="time-arrow">Debut : 15h17<br>|<br>Fin : 18h30</div>div>
-    </div>div>
-    <div class="section-title">Etapes completes - 8 ETAPES</div>div>
-    <div class="steps">
-        <div class="step phase1"><div class="step-num">1</div>div><div class="step-body"><div class="step-phase">Conversation 1 - Phase 1</div>div><div class="step-title">Definition du design</div>div><div class="step-desc">Choix du style Dan Koe (dark minimal), police Figtree 900, slogan : Entre deux mondes, j'apprends a construire le troisieme.</div>div><div class="step-tags"><span class="tag tag-tool">Claude</span><span class="tag tag-tool">HTML/CSS</span><span class="tag tag-ok">index.html + blog.html generes</span></div>div></div>div><div class="step-time"><div class="time-pill">30</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase1"><div class="step-num">2</div>div><div class="step-body"><div class="step-phase">Conversation 1 - Phase 1</div>div><div class="step-title">Tentative connexion GitHub MCP</div>div><div class="step-desc">Essai de connexion directe a GitHub via le connecteur Claude MCP OAuth. L'outil ne se charge pas - necessite une nouvelle conversation.</div>div><div class="step-tags"><span class="tag tag-tool">GitHub MCP</span><span class="tag tag-issue">Outil non charge -> nouvelle conversation requise</span></div>div></div>div><div class="step-time"><div class="time-pill">30</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase2"><div class="step-num">3</div>div><div class="step-body"><div class="step-phase">Conversation 2 - Phase 2</div>div><div class="step-title">Preparation des fichiers locaux</div>div><div class="step-desc">Organisation du dossier blog/ : 10 fichiers - 5 pages HTML + 5 images.</div>div><div class="step-tags"><span class="tag tag-tool">Finder</span><span class="tag tag-ok">10 fichiers prets</span></div>div></div>div><div class="step-time"><div class="time-pill">10</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase2"><div class="step-num">4</div>div><div class="step-body"><div class="step-phase">Conversation 2 - Phase 2</div>div><div class="step-title">Configuration SSH</div>div><div class="step-desc">GitHub n'accepte plus les mots de passe depuis 2021. Token revoque car partage dans le chat. Solution finale : cle SSH ed25519.</div>div><div class="step-tags"><span class="tag tag-tool">Terminal</span><span class="tag tag-tool">ssh-keygen</span><span class="tag tag-issue">Token expose -> revoque</span><span class="tag tag-ok">Cle SSH -> succes</span></div>div></div>div><div class="step-time"><div class="time-pill">40</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase2"><div class="step-num">5</div>div><div class="step-body"><div class="step-phase">Conversation 2 - Phase 2</div>div><div class="step-title">Push des fichiers vers GitHub</div>div><div class="step-desc">git init -> git add -> commit -> push. SSH confirme, push reussi : 10 fichiers, 687 insertions.</div>div><div class="step-tags"><span class="tag tag-tool">Terminal</span><span class="tag tag-tool">Git</span><span class="tag tag-ok">687 insertions ok</span></div>div></div>div><div class="step-time"><div class="time-pill">10</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase2"><div class="step-num">6</div>div><div class="step-body"><div class="step-phase">Conversation 2 - Phase 2</div>div><div class="step-title">Activation GitHub Pages</div>div><div class="step-desc">Settings -> Pages -> Branch main -> root -> Save. Site en ligne sur weilinbellinahu.github.io/portfolio/</div>div><div class="step-tags"><span class="tag tag-tool">GitHub Pages</span><span class="tag tag-ok">Hebergement gratuit ok</span></div>div></div>div><div class="step-time"><div class="time-pill">5</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase2"><div class="step-num">7</div>div><div class="step-body"><div class="step-phase">Conversation 2 - Phase 2</div>div><div class="step-title">Configuration du domaine</div>div><div class="step-desc">weilinhu.com dans GitHub Pages. Namecheap : 3 A records + 1 CNAME. Propagation DNS : 10 min a quelques heures.</div>div><div class="step-tags"><span class="tag tag-tool">Namecheap</span><span class="tag tag-tool">DNS</span><span class="tag tag-ok">weilinhu.com actif ok</span></div>div></div>div><div class="step-time"><div class="time-pill">15</div>div><div class="time-unit">min</div>div></div>div></div>div>
-        <div class="step phase2"><div class="step-num">8</div>div><div class="step-body"><div class="step-phase">Conversation 2 - Phase 2</div>div><div class="step-title">Ajout lien LinkedIn</div>div><div class="step-desc">Profil LinkedIn -> Coordonnees -> Site web -> https://weilinhu.com, type Portfolio professionnel.</div>div><div class="step-tags"><span class="tag tag-tool">LinkedIn</span><span class="tag tag-ok">Portfolio professionnel ok</span></div>div></div>div><div class="step-time"><div class="time-pill">5</div>div><div class="time-unit">min</div>div></div>div></div>div>
-    </div>div>
-    <div class="section-title">Outils utilises - OUTILS</div>div>
-    <div class="tools-grid">
-        <div class="tool-card"><div class="tool-icon">&#129302;</div>div><div class="tool-name">Claude</div>div><div class="tool-use">Generation du code, assistance complete</div>div></div>div>
-        <div class="tool-card"><div class="tool-icon">&#128025;</div>div><div class="tool-name">GitHub</div>div><div class="tool-use">Hebergement du code, depot portfolio</div>div></div>div>
-        <div class="tool-card"><div class="tool-icon">&#127760;</div>div><div class="tool-name">GitHub Pages</div>div><div class="tool-use">Hebergement statique gratuit</div>div></div>div>
-        <div class="tool-card"><div class="tool-icon">&#128273;</div>div><div class="tool-name">Terminal + SSH</div>div><div class="tool-use">Commandes git, cle ed25519</div>div></div>div>
-        <div class="tool-card"><div class="tool-icon">&#127757;</div>div><div class="tool-name">Namecheap</div>div><div class="tool-use">Domaine weilinhu.com + DNS</div>div></div>div>
-        <div class="tool-card"><div class="tool-icon">&#128188;</div>div><div class="tool-name">LinkedIn</div>div><div class="tool-use">Coordonnees -> Portfolio professionnel</div>div></div>div>
-    </div>div>
-    <div class="lesson-box">
+          <h3>Deux conversations, un site en ligne</h3>
+          <p>Design → Génération du code → Push GitHub → Configuration DNS → LinkedIn</p>
+        </div>
+        <div class="time-arrow">Début : 15h17<br>|<br>Fin : 18h30</div>
+      </div>
+
+      <div class="section-title">Étapes complètes — 8 ÉTAPES</div>
+
+      <div class="steps">
+        <div class="step phase1">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 1 — Phase 1</div>
+            <div class="step-title">Définition du design</div>
+            <div class="step-desc">Choix du style Dan Koe (dark minimal), police Figtree 900, slogan : Entre deux mondes, j'apprends à construire le troisième.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Claude</span>
+              <span class="tag tag-tool">HTML/CSS</span>
+              <span class="tag tag-ok">index.html + blog.html générés</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">30</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase1">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 1 — Phase 1</div>
+            <div class="step-title">Tentative connexion GitHub MCP</div>
+            <div class="step-desc">Essai de connexion directe à GitHub via le connecteur Claude MCP OAuth. L'outil ne se charge pas — nécessite une nouvelle conversation.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">GitHub MCP</span>
+              <span class="tag tag-issue">Outil non chargé → nouvelle conversation requise</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">30</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 2 — Phase 2</div>
+            <div class="step-title">Préparation des fichiers locaux</div>
+            <div class="step-desc">Organisation du dossier blog/ : 10 fichiers — 5 pages HTML + 5 images.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Finder</span>
+              <span class="tag tag-ok">10 fichiers prêts</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 2 — Phase 2</div>
+            <div class="step-title">Configuration SSH</div>
+            <div class="step-desc">GitHub n'accepte plus les mots de passe depuis 2021. Token révoqué car partagé dans le chat. Solution finale : clé SSH ed25519.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Terminal</span>
+              <span class="tag tag-tool">ssh-keygen</span>
+              <span class="tag tag-issue">Token exposé → révoqué</span>
+              <span class="tag tag-ok">Clé SSH → succès</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">40</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 2 — Phase 2</div>
+            <div class="step-title">Push des fichiers vers GitHub</div>
+            <div class="step-desc">git init → git add → commit → push. SSH confirmé, push réussi : 10 fichiers, 687 insertions.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Terminal</span>
+              <span class="tag tag-tool">Git</span>
+              <span class="tag tag-ok">687 insertions ok</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 2 — Phase 2</div>
+            <div class="step-title">Activation GitHub Pages</div>
+            <div class="step-desc">Settings → Pages → Branch main → root → Save. Site en ligne sur weilinbellinahu.github.io/portfolio/</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">GitHub Pages</span>
+              <span class="tag tag-ok">Hébergement gratuit ok</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">5</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 2 — Phase 2</div>
+            <div class="step-title">Configuration du domaine</div>
+            <div class="step-desc">weilinhu.com dans GitHub Pages. Namecheap : 3 A records + 1 CNAME. Propagation DNS : 10 min à quelques heures.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Namecheap</span>
+              <span class="tag tag-tool">DNS</span>
+              <span class="tag tag-ok">weilinhu.com actif ok</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">15</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">8</div>
+          <div class="step-body">
+            <div class="step-phase">Conversation 2 — Phase 2</div>
+            <div class="step-title">Ajout lien LinkedIn</div>
+            <div class="step-desc">Profil LinkedIn → Coordonnées → Site web → https://weilinhu.com, type Portfolio professionnel.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">LinkedIn</span>
+              <span class="tag tag-ok">Portfolio professionnel ok</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">5</div><div class="time-unit">min</div></div>
+        </div>
+      </div>
+
+      <div class="section-title">Outils utilisés — OUTILS</div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">🤖</div>
+          <div class="tool-name">Claude</div>
+          <div class="tool-use">Génération du code, assistance complète</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🐙</div>
+          <div class="tool-name">GitHub</div>
+          <div class="tool-use">Hébergement du code, dépôt portfolio</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🌐</div>
+          <div class="tool-name">GitHub Pages</div>
+          <div class="tool-use">Hébergement statique gratuit</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔑</div>
+          <div class="tool-name">Terminal + SSH</div>
+          <div class="tool-use">Commandes git, clé ed25519</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🌍</div>
+          <div class="tool-name">Namecheap</div>
+          <div class="tool-use">Domaine weilinhu.com + DNS</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">💼</div>
+          <div class="tool-name">LinkedIn</div>
+          <div class="tool-use">Coordonnées → Portfolio professionnel</div>
+        </div>
+      </div>
+
+      <div class="lesson-box">
         <h3>Ce qu'il faut retenir</h3>
         <ul class="lesson-list">
-              <li>GitHub n'accepte plus les mots de passe depuis 2021 - utiliser SSH</li>
-              <li>Ne jamais partager un Token dans un chat - GitHub le revoque automatiquement</li>
-              <li>Le connecteur GitHub MCP necessite une nouvelle conversation</li>
-              <li>Apres DNS, patienter 10 min a quelques heures - SSL warning est normal</li>
-              <li>Cocher Enforce HTTPS dans GitHub Pages apres generation du certificat</li>
-        </ul>ul>
-    </div>div>
-    <div class="section-title">La prochaine fois - PROCHAINE FOIS</div>div>
-    <div class="next-time">
-        <div class="next-time-num">30<span style="font-size:22px;color:var(--dim)">min</span></div>div>
+          <li>GitHub n'accepte plus les mots de passe depuis 2021 — utiliser SSH</li>
+          <li>Ne jamais partager un Token dans un chat — GitHub le révoque automatiquement</li>
+          <li>Le connecteur GitHub MCP nécessite une nouvelle conversation</li>
+          <li>Après DNS, patienter 10 min à quelques heures — SSL warning est normal</li>
+          <li>Cocher Enforce HTTPS dans GitHub Pages après génération du certificat</li>
+        </ul>
+      </div>
+
+      <div class="section-title">La prochaine fois — PROCHAINE FOIS</div>
+      <div class="next-time">
+        <div class="next-time-num">30<span style="font-size:22px;color:var(--dim)">min</span></div>
         <div class="next-time-text">
-              <h3>Creer un site similaire en 30 minutes</h3>
-              <p>Cle SSH configuree, plus besoin de reauthentification.<br>Code -> git push -> Pages -> en ligne.</p>
-        </div>div>
-    </div>div>
-    <div class="post-footer">
-        <span>WEILIN - weilinhu.com</span>
-        <span>3h30 - 8 etapes - 2 conversations</span>
-    </div>div>
-  </div>div>
+          <h3>Créer un site similaire en 30 minutes</h3>
+          <p>Clé SSH configurée, plus besoin de réauthentification.<br>Code → git push → Pages → en ligne.</p>
+        </div>
+      </div>
+
+      <div class="post-footer">
+        <span>WEILIN — weilinhu.com</span>
+        <span>3h30 · 8 étapes · 2 conversations</span>
+      </div>
+    </div>
   </body>
-</html>html></p></li></li></p></h3></span></span></em></li></li>
-    </nav>
-  </body>
-  </style></title>
-  </head>
+</html>
