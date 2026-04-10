@@ -90,9 +90,6 @@ footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; 
 
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 .nav-burger { display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
-.page-transition { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
-.page-transition::after { content: ''; position: absolute; inset: 0; background: #080808; transform: scaleX(1); transform-origin: right; transition: transform 0.45s cubic-bezier(0.86, 0, 0.07, 1); }
-.page-transition.done::after { transform: scaleX(0); }
 @media (max-width: 680px) {
   nav { padding: 1.2rem 1.5rem; }
   .nav-burger { display: block; }
@@ -102,6 +99,11 @@ footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; 
   .post-item { grid-template-columns: 1fr; gap: 0.5rem; }
   .post-arrow { display: none; }
 }
+/* Page transition - body fade */
+body { animation: pageIn 0.5s ease; }
+body.leaving { animation: pageOut 0.35s ease forwards; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pageOut { from { opacity: 1; } to { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -199,7 +201,6 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 </script>
-<div class="page-transition" id="pt"></div>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
 <script>
 tsParticles.load("sparkles-nav", {
@@ -220,10 +221,9 @@ tsParticles.load("sparkles-nav", {
 <script>
 const burger = document.querySelector('.nav-burger');
 if (burger) burger.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
-window.addEventListener('load', () => document.getElementById('pt').classList.add('done'));
 document.querySelectorAll('a[href]').forEach(a => {
   if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
-    a.addEventListener('click', e => { e.preventDefault(); document.getElementById('pt').classList.remove('done'); setTimeout(() => window.location = a.href, 350); });
+    a.addEventListener('click', e => { e.preventDefault(); document.document.body.classList.add("leaving"); setTimeout(() => window.location = a.href, 350); });
   }
 });
 </script>

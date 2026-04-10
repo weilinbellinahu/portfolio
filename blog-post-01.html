@@ -100,10 +100,12 @@
 /* Hamburger menu */
 .nav-burger { display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
 /* Page transition */
-.page-transition { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
-.page-transition::after { content: ''; position: absolute; inset: 0; background: #080808; transform: scaleX(1); transform-origin: right; transition: transform 0.45s cubic-bezier(0.86, 0, 0.07, 1); }
-.page-transition.done::after { transform: scaleX(0); }
 
+/* Page transition - body fade */
+body { animation: pageIn 0.5s ease; }
+body.leaving { animation: pageOut 0.35s ease forwards; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pageOut { from { opacity: 1; } to { opacity: 0; } }
 </style>
   </head>
   <body>
@@ -322,5 +324,31 @@
         <span>3h30 · 8 étapes · 2 conversations</span>
       </div>
     </div>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
+<script>
+tsParticles.load("sparkles-nav", {
+  background: { color: { value: "transparent" } },
+  fullScreen: { enable: false }, fpsLimit: 120,
+  particles: {
+    color: { value: "#ffffff" },
+    move: { enable: true, direction: "none", outModes: { default: "out" }, speed: { min: 0.05, max: 0.4 } },
+    number: { density: { enable: true, area: 50 }, value: 80 },
+    opacity: { value: { min: 0.2, max: 1 }, animation: { enable: true, speed: 2, sync: false, startValue: "random" } },
+    shape: { type: "circle" },
+    size: { value: { min: 0.5, max: 1.8 } },
+  }, detectRetina: true,
+});
+</script>
+<script>
+// Page transition
+document.querySelectorAll('a[href]').forEach(a => {
+  if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
+    a.addEventListener('click', e => { e.preventDefault(); document.body.classList.add('leaving'); setTimeout(() => window.location = a.href, 300); });
+  }
+});
+// Hamburger
+const burger = document.querySelector('.nav-burger');
+if (burger) burger.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
+</script>
+</body>
 </html>

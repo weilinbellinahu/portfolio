@@ -67,10 +67,12 @@ footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display
 footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); }
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 .nav-burger { display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
-.page-transition { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
-.page-transition::after { content: ''; position: absolute; inset: 0; background: #080808; transform: scaleX(1); transform-origin: right; transition: transform 0.45s cubic-bezier(0.86, 0, 0.07, 1); }
-.page-transition.done::after { transform: scaleX(0); }
 @media (max-width: 680px) { nav { padding: 1.2rem 1.5rem; } .nav-burger { display: block; } .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,8,8,0.95); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 2rem; gap: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); } .nav-links.open { display: flex; } .page-wrap { padding: 8rem 1.5rem 4rem; } .projects-grid { grid-template-columns: 1fr; } .full-inner { grid-template-columns: 1fr; gap: 2rem; } .stats-bar { gap: 1.5rem; flex-wrap: wrap; } }
+/* Page transition - body fade */
+body { animation: pageIn 0.5s ease; }
+body.leaving { animation: pageOut 0.35s ease forwards; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pageOut { from { opacity: 1; } to { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -173,7 +175,6 @@ footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; 
   <span>Entre deux mondes.</span>
   <span>Bordeaux, France</span>
 </footer>
-<div class="page-transition" id="pt"></div>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
 <script>
 tsParticles.load("sparkles-nav", {
@@ -194,10 +195,9 @@ tsParticles.load("sparkles-nav", {
 <script>
 const burger = document.querySelector('.nav-burger');
 if (burger) burger.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
-window.addEventListener('load', () => document.getElementById('pt').classList.add('done'));
 document.querySelectorAll('a[href]').forEach(a => {
   if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
-    a.addEventListener('click', e => { e.preventDefault(); document.getElementById('pt').classList.remove('done'); setTimeout(() => window.location = a.href, 350); });
+    a.addEventListener('click', e => { e.preventDefault(); document.document.body.classList.add("leaving"); setTimeout(() => window.location = a.href, 350); });
   }
 });
 </script>

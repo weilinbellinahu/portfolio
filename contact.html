@@ -26,7 +26,7 @@
   --mono: 'DM Mono', 'Courier New', monospace;
   --sans: 'Figtree', 'Arial Black', sans-serif;
 }
-html, body { height: 100%; overflow: hidden; }
+html, body { height: 100%; overflow: auto; }
 body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; }
 body::before {
   content: '';
@@ -53,9 +53,9 @@ nav {
 
 /* CENTERED LAYOUT */
 .contact-outer {
-  position: fixed; inset: 0; z-index: 1;
+  position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: center;
-  padding: 60px 5vw 0;
+  min-height: calc(100vh - 60px); padding: 100px 5vw 60px;
 }
 .contact-wrap {
   width: 100%; max-width: 800px;
@@ -101,9 +101,6 @@ nav {
 .ci-arrow { font-size: 1rem; color: rgba(255,255,255,0.25); transition: opacity 0.2s, transform 0.2s; opacity: 0; }
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 .nav-burger { display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
-.page-transition { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
-.page-transition::after { content: ''; position: absolute; inset: 0; background: #080808; transform: scaleX(1); transform-origin: right; transition: transform 0.45s cubic-bezier(0.86, 0, 0.07, 1); }
-.page-transition.done::after { transform: scaleX(0); }
 @media (max-width: 680px) {
   nav { padding: 1.2rem 1.5rem; }
   .nav-burger { display: block; }
@@ -112,6 +109,11 @@ nav {
   .contact-outer { padding: 0 1.5rem; }
   .contact-wrap { padding-top: 80px; }
 }
+/* Page transition - body fade */
+body { animation: pageIn 0.5s ease; }
+body.leaving { animation: pageOut 0.35s ease forwards; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pageOut { from { opacity: 1; } to { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -145,6 +147,17 @@ nav {
         <span class="ci-arrow">&#8594;</span>
       </a>
     </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form" style="margin-top: 2.5rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.8s forwards;">
+      <p style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem;">Envoyez-moi un message</p>
+      <form action="https://formspree.io/f/xovdqvpz" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="text" name="name" placeholder="Votre nom" required style="padding: 1rem 1.2rem; background: #0f0f0f; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; color: #fff; font-family: var(--sans); font-size: 0.9rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,104,106,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <input type="email" name="email" placeholder="Votre email" required style="padding: 1rem 1.2rem; background: #0f0f0f; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; color: #fff; font-family: var(--sans); font-size: 0.9rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,104,106,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <textarea name="message" placeholder="Votre message..." rows="4" required style="padding: 1rem 1.2rem; background: #0f0f0f; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; color: #fff; font-family: var(--sans); font-size: 0.9rem; resize: vertical; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,104,106,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'"></textarea>
+        <button type="submit" style="padding: 1rem 2rem; background: #fff; color: #080808; font-family: var(--sans); font-weight: 700; font-size: 14px; border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s, transform 0.2s; align-self: flex-start;" onmouseover="this.style.background='rgba(255,255,255,0.88)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#fff';this.style.transform='none'">Envoyer le message &#8594;</button>
+      </form>
+    </div>
   </div>
 </div>
 <script>
@@ -175,16 +188,14 @@ tsParticles.load("sparkles-nav", {
   detectRetina: true,
 });
 </script>
-<div class="page-transition" id="pt"></div>
 <script>
-const burger = document.querySelector('.nav-burger');
-if (burger) burger.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
-window.addEventListener('load', () => document.getElementById('pt').classList.add('done'));
 document.querySelectorAll('a[href]').forEach(a => {
   if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
-    a.addEventListener('click', e => { e.preventDefault(); document.getElementById('pt').classList.remove('done'); setTimeout(() => window.location = a.href, 350); });
+    a.addEventListener('click', e => { e.preventDefault(); document.body.classList.add('leaving'); setTimeout(() => window.location = a.href, 300); });
   }
 });
+const burger = document.querySelector('.nav-burger');
+if (burger) burger.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
 </script>
 </body>
 </html>
