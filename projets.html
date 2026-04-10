@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projets — Weilin Hu</title>
+<title>Projets & Automatisations — Weilin Hu</title>
+<meta name="description" content="Projets d'automatisation, workflows IA et outils e-commerce franco-chinois par Weilin Hu. MIAM, Octopia Help Centre, Cdiscount profit calculator.">
+<meta property="og:title" content="Projets & Automatisations — Weilin Hu">
+<meta property="og:description" content="Outils concrets, workflows en production, e-commerce franco-chinois.">
+<meta property="og:image" content="https://weilinhu.com/og-image.png">
+<meta property="og:url" content="https://weilinhu.com/projets.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://weilinhu.com/og-image.png">
+<link rel="icon" type="image/png" href="avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -57,6 +66,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 
 footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; margin-top: 1px; }
 footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); }
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.page-transition { position: fixed; inset: 0; background: var(--bg); z-index: 9999; opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
+.page-transition.done { opacity: 0; }
 @media (max-width: 680px) { nav { padding: 1.2rem 1.5rem; } .nav-links { display: none; } .page-wrap { padding: 8rem 1.5rem 4rem; } .projects-grid { grid-template-columns: 1fr; } .full-inner { grid-template-columns: 1fr; gap: 2rem; } .stats-bar { gap: 1.5rem; flex-wrap: wrap; } }
 </style>
 </head>
@@ -159,6 +170,7 @@ footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; 
   <span>Entre deux mondes.</span>
   <span>Bordeaux, France</span>
 </footer>
+<div class="page-transition" id="pt"></div>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
 <script>
 tsParticles.load("sparkles-nav", {
@@ -174,6 +186,14 @@ tsParticles.load("sparkles-nav", {
     size: { value: { min: 0.5, max: 1.8 } },
   },
   detectRetina: true,
+});
+</script>
+<script>
+window.addEventListener('load', () => document.getElementById('pt').classList.add('done'));
+document.querySelectorAll('a[href]').forEach(a => {
+  if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
+    a.addEventListener('click', e => { e.preventDefault(); document.getElementById('pt').classList.remove('done'); setTimeout(() => window.location = a.href, 350); });
+  }
 });
 </script>
 </body>

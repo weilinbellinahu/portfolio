@@ -3,7 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weilin Hu</title>
+<title>Weilin Hu — Automatisation, IA & E-commerce franco-chinois</title>
+<meta name="description" content="Weilin Hu, entre la France et la Chine. Automatisation, workflows IA, outils e-commerce. Basée à Bordeaux.">
+<meta name="keywords" content="Weilin Hu, automatisation, IA, e-commerce, franco-chinois, Cdiscount, n8n, Python, Bordeaux">
+<meta property="og:title" content="Weilin Hu — Entre deux mondes, je construis le troisième">
+<meta property="og:description" content="Automatisation, workflows IA & e-commerce franco-chinois. Bordeaux, France.">
+<meta property="og:image" content="https://weilinhu.com/og-image.png">
+<meta property="og:url" content="https://weilinhu.com">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Weilin Hu — Automatisation & IA">
+<meta name="twitter:description" content="Entre deux mondes, je construis le troisième.">
+<meta name="twitter:image" content="https://weilinhu.com/og-image.png">
+<link rel="icon" type="image/png" href="avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -99,10 +114,19 @@ nav {
 
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
+/* Page transition */
+.page-transition { position: fixed; inset: 0; background: var(--bg); z-index: 9999; opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
+.page-transition.done { opacity: 0; }
+
 @media (max-width: 780px) {
   .hero { padding: 0 1.5rem; }
-  .hero-inner { grid-template-columns: 1fr; padding-top: 80px; }
-  .hero-right { display: none; }
+  .hero-inner { grid-template-columns: 1fr; padding-top: 80px; text-align: center; }
+  .hero-right { margin-top: 2rem; }
+  .avatar-img { max-width: 180px; }
+  #sparkles-hero { width: 260px; height: 260px; }
+  .sparkles-fade { width: 260px; height: 260px; background: radial-gradient(ellipse 120px 120px at center, transparent 40%, var(--bg) 100%); }
+  .hero-cta { justify-content: center; }
+  .hero-keywords { text-align: center; }
   nav { padding: 1.2rem 1.5rem; }
   .nav-links { gap: 1.2rem; }
   .nav-links a { font-size: 10px; }
@@ -176,6 +200,22 @@ tsParticles.load("sparkles-hero", {
     },
   },
   detectRetina: true,
+});
+</script>
+<div class="page-transition" id="pt"></div>
+<script>
+// Page transition: fade in on load
+window.addEventListener('load', () => document.getElementById('pt').classList.add('done'));
+// Fade out on navigate
+document.querySelectorAll('a[href]').forEach(a => {
+  if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const pt = document.getElementById('pt');
+      pt.classList.remove('done');
+      setTimeout(() => window.location = a.href, 350);
+    });
+  }
 });
 </script>
 </body>

@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — Weilin Hu</title>
+<title>Contact — Weilin Hu | Automatisation & E-commerce</title>
+<meta name="description" content="Contactez Weilin Hu pour des projets d'automatisation, collaborations IA, ou e-commerce franco-chinois. Bordeaux, France.">
+<meta property="og:title" content="Contact — Weilin Hu">
+<meta property="og:description" content="Parlons. Construisons quelque chose ensemble.">
+<meta property="og:image" content="https://weilinhu.com/og-image.png">
+<meta property="og:url" content="https://weilinhu.com/contact.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://weilinhu.com/og-image.png">
+<link rel="icon" type="image/png" href="avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -91,6 +100,8 @@ nav {
 .ci-value { font-weight: 300; font-size: 1rem; color: var(--white-dim); transition: color 0.2s; font-family: var(--mono); }
 .ci-arrow { font-size: 1rem; color: rgba(255,255,255,0.25); transition: opacity 0.2s, transform 0.2s; opacity: 0; }
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.page-transition { position: fixed; inset: 0; background: var(--bg); z-index: 9999; opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
+.page-transition.done { opacity: 0; }
 @media (max-width: 680px) {
   nav { padding: 1.2rem 1.5rem; }
   .contact-outer { padding: 0 1.5rem; }
@@ -156,6 +167,15 @@ tsParticles.load("sparkles-nav", {
     size: { value: { min: 0.5, max: 1.8 } },
   },
   detectRetina: true,
+});
+</script>
+<div class="page-transition" id="pt"></div>
+<script>
+window.addEventListener('load', () => document.getElementById('pt').classList.add('done'));
+document.querySelectorAll('a[href]').forEach(a => {
+  if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
+    a.addEventListener('click', e => { e.preventDefault(); document.getElementById('pt').classList.remove('done'); setTimeout(() => window.location = a.href, 350); });
+  }
 });
 </script>
 </body>
