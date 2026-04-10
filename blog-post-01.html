@@ -102,10 +102,9 @@
 /* Page transition */
 
 /* Page transition - body fade */
-body { animation: pageIn 0.5s ease; }
-body.leaving { animation: pageOut 0.35s ease forwards; }
-@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pageOut { from { opacity: 1; } to { opacity: 0; } }
+body { opacity: 0; animation: pageIn 0.5s ease forwards; }
+body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 </style>
   </head>
   <body>
@@ -343,7 +342,7 @@ tsParticles.load("sparkles-nav", {
 // Page transition
 document.querySelectorAll('a[href]').forEach(a => {
   if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
-    a.addEventListener('click', e => { e.preventDefault(); document.body.classList.add('leaving'); setTimeout(() => window.location = a.href, 300); });
+    a.addEventListener('click', e => { e.preventDefault(); document.body.classList.add('leaving'); setTimeout(() => window.location.href = a.href, 300); });
   }
 });
 // Hamburger
