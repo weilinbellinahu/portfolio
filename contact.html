@@ -31,7 +31,9 @@ nav {
   display: flex; justify-content: space-between; align-items: center;
   border-bottom: 1px solid var(--white-ghost);
 }
-.nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+.nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; position: relative; }
+#sparkles-nav { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 50px; z-index: -1; }
+#sparkles-nav canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
 .nav-logo:hover .nav-avatar { transform: scale(1.08); }
 .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.12); }
 .nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; background: #080808; }
@@ -98,7 +100,7 @@ nav {
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo"><span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>weilin.hu</a>
+  <a href="index.html" class="nav-logo"><span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>weilin.hu<div id="sparkles-nav"></div></a>
   <ul class="nav-links">
     <li><a href="projets.html">Projets</a></li>
     <li><a href="blog.html">Blog</a></li>
@@ -132,4 +134,29 @@ nav {
 document.getElementById('email-link').addEventListener('click', function(e) {
   e.preventDefault();
   navigator.clipboard.writeText('weilin.bellina.hu@gmail.com').then(() => {
- 
+    const el = document.getElementById('email-val');
+    const orig = el.textContent;
+    el.textContent = 'Copié !';
+    setTimeout(() => { el.textContent = orig; }, 2000);
+  });
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
+<script>
+tsParticles.load("sparkles-nav", {
+  background: { color: { value: "transparent" } },
+  fullScreen: { enable: false },
+  fpsLimit: 120,
+  particles: {
+    color: { value: "#ffffff" },
+    move: { enable: true, direction: "none", outModes: { default: "out" }, speed: { min: 0.05, max: 0.4 } },
+    number: { density: { enable: true, area: 50 }, value: 80 },
+    opacity: { value: { min: 0.2, max: 1 }, animation: { enable: true, speed: 2, sync: false, startValue: "random" } },
+    shape: { type: "circle" },
+    size: { value: { min: 0.5, max: 1.8 } },
+  },
+  detectRetina: true,
+});
+</script>
+</body>
+</html>
