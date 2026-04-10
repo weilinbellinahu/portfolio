@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>J'ai licenci&#233; Google News. Mon IA fait &#231;a maintenant. &#8212; Weilin Hu</title>
+<meta name="description" content="Chaque matin, un assistant IA prépare un briefing d'actualités personnalisé sur Telegram. Workflow n8n + Claude.">
+<meta property="og:title" content="J'ai licencié Google News. Mon IA fait ça maintenant. — Weilin Hu">
+<meta property="og:description" content="Chaque matin, un assistant IA prépare un briefing d'actualités personnalisé sur Telegram. Workflow n8n + Claude.">
+<meta property="og:image" content="https://weilinhu.com/og-image.png">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://weilinhu.com/og-image.png">
+<link rel="icon" type="image/png" href="avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -43,7 +51,20 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 
 .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; padding: 4px 12px; border: 1px solid var(--white-ghost); border-radius: 6px; color: var(--white-faint); text-transform: uppercase; }
 footer { border-top: 1px solid var(--white-ghost); padding: 2rem 2.5rem; display: flex; justify-content: space-between; position: relative; z-index: 1; }
 footer span { font-family: var(--mono); font-size: 10px; color: var(--white-faint); }
-@media (max-width: 680px) { nav { padding: 1.2rem 1.5rem; } .nav-links { display: none; } .article-wrap { padding: 7rem 1.5rem 5rem; } }
+@media (max-width: 680px) { nav { padding: 1.2rem 1.5rem;  .nav-burger { display: block; } .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,8,8,0.95); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 2rem; gap: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); } .nav-links.open { display: flex; } } .nav-links { display: none; } .article-wrap { padding: 7rem 1.5rem 5rem; } }
+
+/* Sparkles nav */
+.nav-logo { position: relative; }
+#sparkles-nav { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 50px; z-index: -1; }
+#sparkles-nav canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
+
+/* Hamburger menu */
+.nav-burger { display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
+/* Page transition */
+.page-transition { position: fixed; inset: 0; background: #080808; z-index: 9999; pointer-events: none; }
+.page-transition::after { content: ''; position: absolute; inset: 0; background: #080808; transform: scaleX(1); transform-origin: right; transition: transform 0.45s cubic-bezier(0.86, 0, 0.07, 1); }
+.page-transition.done::after { transform: scaleX(0); }
+
 </style>
 </head>
 <body>
@@ -52,6 +73,7 @@ footer span { font-family: var(--mono); font-size: 10px; color: var(--white-fain
     <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>
     weilin.hu
   </a>
+  <button class="nav-burger" aria-label="Menu">&#9776;</button>
   <ul class="nav-links">
     <li><a href="projets.html">Projets</a></li>
     <li><a href="blog.html">Blog</a></li>
