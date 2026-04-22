@@ -16,13 +16,13 @@
     --t2: #9A96A0;
     --t3: #6A6670;
     --t4: #48464D;
-    --cell: clamp(4px, calc((100vh - 340px) / 90), 10px);
+    --cell: clamp(4px, calc((100dvh - 400px) / 90), 10px);
     --cgap: 1px;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
   body {
     background: var(--bg);
     color: var(--t1);
@@ -32,8 +32,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "ss01", "kern";
-    min-height: 100vh;
-    overflow-x: hidden;
+    min-height: 100dvh;
   }
 
   main {
