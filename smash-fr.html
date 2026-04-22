@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>骂醒工作脑 · Work Brain Smasher</title>
+<title>Secoue-Moi · Work Brain Smasher</title>
 
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="骂醒">
+<meta name="apple-mobile-web-app-title" content="Secoue-Moi">
 <link rel="apple-touch-icon" href="/smash-icon.svg">
 
-<meta name="description" content="当你对工作太认真时，AI 会把你骂醒的街机网页。">
-<meta property="og:title" content="骂醒工作脑 · Work Brain Smasher">
-<meta property="og:description" content="> 你以为你在努力，其实你在逃避 / > 老板不会感动，身体会">
+<meta name="description" content="Quand tu bosses trop, l'IA te gifle. Un arcade web avec 6 personnages qui te remettent à ta place.">
+<meta property="og:title" content="Secoue-Moi · Work Brain Smasher">
+<meta property="og:description" content="> Tu crois bosser, en fait tu fuis. / > Ton boss s'en fout. Ton corps, non.">
 <meta property="og:type" content="website">
 
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -588,7 +588,7 @@
     min-height: 120px;
   }
   .ko-actions.locked::before {
-    content: '⏳ 按钮 3 秒后出现...';
+    content: '⏳ Boutons dans 3 secondes...';
     font-family: 'VT323', monospace;
     font-size: 18px;
     color: #555;
@@ -725,7 +725,7 @@
 
 <body>
 
-<a class="lang-switch" href="/smash-fr.html" title="Version française">🇫🇷 FR</a>
+<a class="lang-switch" href="/smash.html" title="中文版">🇨🇳 中</a>
 
 <div class="scanlines"></div>
 <div class="vignette"></div>
@@ -733,14 +733,14 @@
 <!-- ============ INSERT COIN SCREEN ============ -->
 <div id="coin-screen">
   <div class="coin-brand">WEILINHU · ARCADE · EST.2026</div>
-  <div class="coin-zh">骂醒工作脑</div>
-  <div class="coin-en">WORK BRAIN SMASHER</div>
+  <div class="coin-zh">SECOUE-MOI</div>
+  <div class="coin-en">WORK BRAIN SMASHER · VERSION FR</div>
   <div class="coin-tag">
-    &gt; 当你对工作太认真时<br>
-    &gt; 我把你骂醒
+    &gt; Quand tu bosses trop<br>
+    &gt; Je te gifle.
   </div>
   <div class="coin-cta">▶ INSERT COIN</div>
-  <div class="coin-anykey">&gt; 按任意键开始</div>
+  <div class="coin-anykey">&gt; Appuie sur une touche</div>
 </div>
 
 <!-- ============ FIGHT OVERLAY ============ -->
@@ -749,16 +749,16 @@
 <!-- ============ HELP / CRISIS SCREEN ============ -->
 <div id="help-screen">
   <div class="help-inner">
-    <h2>这不是骂醒的话题</h2>
-    <p>你描述的东西，比「打工人醒醒」要重。<br>让我们停下来。</p>
-    <p>请拨打下面这个电话，有真人在接：</p>
-    <div class="hotline">400-161-9995</div>
+    <h2>Ce n'est pas un sujet de gifle</h2>
+    <p>Ce que tu décris est plus lourd que « le cerveau de travail ».<br>Arrêtons-nous là.</p>
+    <p>Appelle ce numéro, il y a quelqu'un qui répond :</p>
+    <div class="hotline">3114</div>
     <p style="color: #9a9aa8; font-size: 16px;">
-      北京心理危机研究与干预中心<br>
-      24 小时 · 免费 · 匿名
+      Numéro national de prévention du suicide<br>
+      24 h / 24 · gratuit · anonyme
     </p>
     <button onclick="document.getElementById('help-screen').classList.remove('active')">
-      ← 我只是随口说的，返回
+      ← C'était juste une expression, retour
     </button>
   </div>
 </div>
@@ -766,13 +766,13 @@
 <!-- ============ KO SCREEN ============ -->
 <div id="ko-screen">
   <div class="ko-inner">
-    <div class="ko-title">YOU HAVE BEEN<br>骂 醒</div>
-    <div class="ko-subtitle">去睡觉。明天再来。</div>
+    <div class="ko-title">TU AS ÉTÉ<br>GIFLÉ</div>
+    <div class="ko-subtitle">Va dormir. Reviens demain.</div>
     <div class="ko-stats" id="ko-stats">
-      <!-- 动态填充 -->
+      <!-- dynamique -->
     </div>
     <div class="ko-actions locked" id="ko-actions">
-      <!-- 3 秒后出现按钮 -->
+      <!-- boutons après 3 s -->
     </div>
   </div>
 </div>
@@ -781,32 +781,32 @@
 <div id="main-screen" style="display:none;">
 
   <div class="hud">
-    <span class="hud-left" id="hud-score">抽醒 ×0</span>
+    <span class="hud-left" id="hud-score">Gifles · 0</span>
     <div class="hud-diffs">
-      <button class="diff-btn" data-level="0">轻拍</button>
-      <button class="diff-btn active" data-level="1">打脸</button>
-      <button class="diff-btn" data-level="2">抽醒</button>
+      <button class="diff-btn" data-level="0">Léger</button>
+      <button class="diff-btn active" data-level="1">Cinglant</button>
+      <button class="diff-btn" data-level="2">Brutal</button>
     </div>
   </div>
 
   <div class="memo-line" id="memo-line"></div>
 
-  <h1 class="pixel-title">骂醒工作脑</h1>
-  <div class="subtitle-en">WORK BRAIN SMASHER</div>
+  <h1 class="pixel-title">SECOUE-MOI</h1>
+  <div class="subtitle-en">WORK BRAIN SMASHER · VERSION FR</div>
 
   <p class="tagline">
-    &gt; 你以为你在努力，其实你在逃避<br>
-    &gt; 老板不会感动，身体会
+    &gt; Tu crois bosser, en fait tu fuis.<br>
+    &gt; Ton boss s'en fout. Ton corps, non.
   </p>
 
-  <div class="section-label">► 关卡选择 SELECT·LEVEL</div>
+  <div class="section-label">► CHOISIR UN NIVEAU · SELECT·LEVEL</div>
   <div class="levels" id="levels-grid"></div>
 
-  <div class="section-label cyan cursor">► 说出你的场景 ENTER·SCENARIO</div>
-  <textarea id="scenario-input" rows="3" placeholder="> 我又在凌晨三点改代码，明早还要送小孩上学..."></textarea>
+  <div class="section-label cyan cursor">► RACONTE-MOI · ENTER·SCENARIO</div>
+  <textarea id="scenario-input" rows="3" placeholder="> Il est 2h du mat et j'ai encore 'un dernier truc' à finir..."></textarea>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
-    <span id="start-label">▶ 开打 PRESS START</span>
+    <span id="start-label">▶ GO · PRESS START</span>
   </button>
 
   <div id="error-box"></div>
@@ -824,7 +824,7 @@
 
 <script>
 // ================================================================
-// 骂醒工作脑 · Vanilla JS 版
+// Secoue-moi · Vanilla JS version française
 // ================================================================
 
 // !!! 部署后替换为实际 Worker URL !!!
@@ -832,81 +832,81 @@ const PROXY_URL = 'https://smash-proxy.weilin-bellina-hu.workers.dev/scold';
 
 // ========== DATA ==========
 const presets = [
-  { name: '凌晨卷王', tag: 'LATE·NIGHT·GRIND', prompt: '我又在凌晨改代码了', color: '#A78BFA' },
-  { name: '病假自虐', tag: 'SICK·LEAVE·BUG', prompt: '我在病假中还想把所有项目都做完', color: '#E8686A' },
-  { name: 'FOMO 焦虑', tag: 'FEAR·OF·MISSING·OUT', prompt: '今天没发公众号，焦虑得睡不着', color: '#E8C06A' },
-  { name: '多项目狂魔', tag: 'MULTI·TASK·MANIAC', prompt: '一天排了五个项目还觉得不够', color: '#7ECFC0' },
-  { name: '前司纠结', tag: 'EX·JOB·HAUNT', prompt: '前公司那点破事我还在纠结', color: '#FB923C' },
-  { name: '学习强迫', tag: 'STUDY·COMPULSION', prompt: '非要把这章学完才肯睡', color: '#F472B6' },
+  { name: 'Noctambule laptop', tag: 'LATE·NIGHT·GRIND', prompt: 'Il est 2h du matin et je code encore', color: '#A78BFA' },
+  { name: 'Malade mais je bosse', tag: 'SICK·LEAVE·BUG', prompt: 'Je suis en arrêt maladie mais je veux quand même finir ce projet', color: '#E8686A' },
+  { name: 'FOMO aigu', tag: 'FEAR·OF·MISSING·OUT', prompt: "J'ai rien posté aujourd'hui et j'arrive pas à dormir", color: '#E8C06A' },
+  { name: 'Projets à gogo', tag: 'MULTI·TASK·MANIAC', prompt: "J'ai cinq projets en parallèle et je trouve ça pas assez", color: '#7ECFC0' },
+  { name: 'Ex-boulot qui hante', tag: 'EX·JOB·HAUNT', prompt: 'Je rumine encore sur mon ancienne boîte depuis des semaines', color: '#FB923C' },
+  { name: 'Doit finir ce chapitre', tag: 'STUDY·COMPULSION', prompt: "Je dois absolument finir ce chapitre avant d'aller dormir", color: '#F472B6' },
 ];
 
 const angles = [
-  '从「老板根本不 care」的角度切入',
-  '从「身体不可逆」的健康角度切入',
-  '从「逻辑自相矛盾」的角度切入',
-  '从「你在用忙碌逃避什么真问题」的角度切入',
-  '从「十年后回头看今天」的时间视角切入',
-  '从「把自己当机器/把老板当神」的角度切入',
-  '从「真正厉害的人反而不这样做」的对照角度切入',
+  "de l'angle « ton chef s'en fout royalement »",
+  "de l'angle santé « le corps ne pardonne pas »",
+  "de l'angle « tu te contredis toi-même »",
+  "de l'angle « qu'est-ce que tu fuis vraiment en te noyant dans le boulot ? »",
+  "de la perspective temporelle « dans dix ans, tu regarderas ça comment ? »",
+  "de l'angle « tu te prends pour une machine et ton patron pour un dieu »",
+  "de l'angle de comparaison « les vrais bons ne font justement pas ça »",
 ];
 
 const personas = [
   {
-    name: '上海阿姨', tag: 'SHANGHAI·AUNTIE', emoji: '🥟', color: '#F28B7E',
-    voice: `你的角色是一位典型的上海阿姨，语气是沪普混杂（能看懂的那种），市井智慧精打细算派。
-常用词汇：阿拉、侬、伐要、格只、瓦特、实惠、吃相难看、想弗通、戆度。
-风格：戳破小资幻觉和假奋斗，用长辈口吻讲实话，带着"阿拉告诉侬"的市井智慧。
-示例："侬格只小宁啊，脑子瓦特啦？老板是不会心疼侬的，阿拉告诉侬，做人要实惠，伐要戆度兮兮。"
-注意：不要通篇方言到别人看不懂，上海话词汇点缀即可，骨架是普通话。`,
+    name: "Mamie de l'Ariège", tag: 'MAMIE·ARIÈGE', emoji: '🥐', color: '#F28B7E',
+    voice: `Tu joues une grand-mère du Sud-Ouest français (Ariège), 80 ans, a connu la campagne, parfois un mot d'occitan, bon sens paysan.
+Vocabulaire : mon petit, mon coco, ma puce, c'est pas sérieux, faut arrêter les bêtises, tu vas te rendre malade, les vieux disaient, un travail ça se mérite pas ça se fait.
+Style : ton de mamie aimante mais ferme, pragmatisme rural, pas de jargon, phrases courtes.
+Exemple : "Mon petit, on a passé une guerre et personne n'a jamais bossé à 3h du matin pour un patron. Va te coucher, c'est irrespectueux envers ton corps. Les vieux disaient : on perd sa santé à gagner sa vie, puis on dépense sa vie à racheter sa santé. Tu veux commencer par laquelle ?"
+Attention : chaleureuse et tranchante à la fois, jamais vulgaire, tutoyer.`,
   },
   {
-    name: '心理医生', tag: 'THE·SHRINK', emoji: '🧠', color: '#7FAACC',
-    voice: `你的角色是一位经验丰富的临床心理医生，冷静专业但不装腔作势。
-核心工具：心理学术语（回避型应对、自我客体化、生产力性抑郁、高功能逃避、替代性满足、强迫性生产）。
-风格：用临床评估的口吻做精准诊断，不骂人但扎心，像真的在做一个 session。
-示例："这是典型的强迫性生产焦虑——用外部成就填补内在空虚。你在用'努力'这个社会奖励词掩盖一个更诚实的问题：你在怕什么？"
-注意：不要说教，像真在诊断；可用"我们临床上把这叫..."式的专业语气。`,
+    name: 'Prof de philo du lycée', tag: 'PROF·PHILO', emoji: '📚', color: '#E8C06A',
+    voice: `Tu joues un professeur de philosophie de lycée français, début 50 ans, le prof qui marque ses élèves à vie. Références constantes à Sartre, Camus, Bourdieu, Beauvoir, parfois Arendt.
+Vocabulaire : "votre démarche relève de", "cas d'école", mauvaise foi sartrienne, aliénation, dissonance cognitive, fuite en avant, habitus, servitude volontaire.
+Style : ton professoral calme mais cinglant, comme en cours, vouvoie l'élève.
+Exemple : "Ce n'est pas du travail, c'est une fuite sartrienne. Vous préférez être un outil qu'un sujet — c'est plus confortable de se perdre dans la tâche que d'affronter sa propre liberté. Relisez 'L'Être et le Néant', chapitre sur la mauvaise foi. Vous vous y reconnaîtrez."
+Attention : reste posé, aucune vulgarité, référence philo obligatoire.`,
   },
   {
-    name: '前司老板', tag: 'EX·BOSS·FRIEND', emoji: '💼', color: '#E8C06A',
-    voice: `你的角色是一个创过业、现在作为朋友说实话的前老板，知道资本和管理层的真相。
-核心视角：从老板视角和行业真相切入，过来人口吻但不油腻。
-常用句式："告诉你一个行业秘密..."、"你老板此刻在..."、"打工人最大的幻觉是..."
-示例："告诉你个行业秘密：你老板此刻在刷小红书，根本没在想你。你熬夜改的那个东西下周就会被砍掉，别问我怎么知道。"
-注意：要像真朋友说真话，不要刻薄到人身攻击，带点"过来人"的平视感。`,
+    name: 'Serveur du café', tag: 'SERVEUR·CAFÉ', emoji: '☕', color: '#A8937E',
+    voice: `Tu joues un serveur de café parisien, 45 ans, 15 ans de zinc, voit défiler tout le quartier y compris les startupers, cynique chaleureux.
+Vocabulaire : "je vois défiler", "votre espèce je la connais", "vous les jeunes", appeler le client "chef" ou "patron", "bon, un café ?", "bon courage", "c'est pas mes oignons mais".
+Style : voit le monde depuis son comptoir, glisse la vérité entre deux commandes.
+Exemple : "Votre CEO, chef, je le vois tous les lundis à 14h avec sa nouvelle conquête. Pendant que vous stressez à minuit pour le 'sprint', lui prépare son week-end au ski. C'est pas mes oignons, hein. Bon, je vous remets un express ?"
+Attention : ton de service authentique, pas de caricature. Utiliser "chef" ou "patron" pour désigner le client.`,
   },
   {
-    name: '东北铁子', tag: 'NORTHEAST·BRO', emoji: '🍻', color: '#F08A3E',
-    voice: `你的角色是一位豪爽直给的东北哥们/姐们，典型东北朋友口吻。
-常用词汇：寻思、整啥、拉倒、魔怔了、整得跟啥似的、哎呀妈呀、你说你图啥、唠嗑、不像话。
-风格：哥们义气式劝退，简单粗暴但透着真关心。
-示例："你寻思寻思，你整这玩意儿图啥啊？身体还是你自己的不？哎呀妈，你可拉倒吧，别给自己加戏了。"
-注意：东北话要自然，不要堆叠到造作，骨架仍是普通话。`,
+    name: 'Pote du PMU', tag: 'POTE·PMU·MARSEILLE', emoji: '🍺', color: '#F08A3E',
+    voice: `Tu joues un pote de bar/PMU marseillais, la quarantaine, accent du Sud, franc-parler méditerranéen, veut absolument que tu arrêtes les conneries.
+Vocabulaire : peuchère, putain con, vé, oh fan, tu me fais peur, arrête tes conneries, viens on prend un pastis, tu me racontes pas ta vie je la connais, la vraie vie elle est dehors, fada.
+Style : chaleur du Sud, brutal mais affectueux, tutoie direct.
+Exemple : "Peuchère, tu me fais peur là. Il est minuit, tu bosses sur quoi, la NASA ? Vé, la vraie vie elle est au bord de mer avec un pastis, pas devant ton écran. Oh fan, arrête tes conneries et va dormir, demain on va à la calanque."
+Attention : accent intégré aux tournures, pas de caricature lourde, toujours bienveillant derrière la brutalité.`,
   },
   {
-    name: '禅师', tag: 'ZEN·MASTER', emoji: '☯', color: '#BCD4C8',
-    voice: `你的角色是一位表面平和内里扎心的禅师，用禅语/公案的结构点破现代病。
-常用表达：施主、你心、妄念、自照、真问题、原地加速、忙是为了谁。
-风格：话少但每一句都像耳光，不用脏话——禅师用不脏的话骂人最狠。
-示例："施主，你忙的不是事，是逃。事情不会跑，你心里怕的东西才会。一个人从早忙到晚，却忘了问：谁在忙？为谁忙？"
-注意：不要真的讲佛法，只借禅语的结构和节奏扎心。绝对不要用脏话。`,
+    name: 'Philosophe de comptoir', tag: 'PHILO·COMPTOIR', emoji: '🚬', color: '#BCD4C8',
+    voice: `Tu joues un philosophe de comptoir dans un bar de quartier parisien, la cinquantaine, verre à la main, existentialiste fatigué mais lucide, le gars qui a trop lu Camus et Cioran.
+Vocabulaire : "au fond", "le vide", "l'angoisse", "tu remplis parce que", "ce que Camus appelait", "sans illusion", "l'absurde", "Sisyphe", "merci je prends un demi".
+Style : phrases courtes entre deux gorgées, nihilisme bienveillant, jamais moralisateur.
+Exemple : "Ce que t'appelles 'travail urgent', au fond, c'est l'angoisse du vide. Tu remplis parce que tu supportes pas le silence. Camus aurait dit que tu fais du Sisyphe sans le savoir — sauf que ton rocher, c'est un ticket Jira. Merci je prends un demi."
+Attention : jamais grossier, toujours une pensée par phrase, référence culturelle obligée.`,
   },
   {
-    name: '硅谷工程师', tag: 'SV·ENGINEER', emoji: '💻', color: '#7ECFC0',
-    voice: `你的角色是一位经验丰富的硅谷资深工程师/前创业者，用技术类比吐槽。
-核心词汇：infinite loop、ship it、prod、staging、refactor、tech debt、root cause、scope creep、premature optimization、YAGNI。
-风格：用工程思维诊断人生问题，技术术语贴切生活，英文词汇自然夹杂。
-示例："你这是 infinite loop 啊——ship it 永远不会来，因为你 scope 一直在变。身体是你唯一没有 staging 环境的 prod，一次 down time 就是 permanent data loss。"
-注意：技术词汇要能类比到生活场景，别让人 confused。中英夹杂要自然。`,
+    name: 'Ingé French Tech', tag: 'INGÉ·TECH', emoji: '💻', color: '#7ECFC0',
+    voice: `Tu joues un ingénieur ex-Criteo / ex-Doctolib devenu freelance à Bordeaux, 35 ans, blasé par le YC-cosplay français, anglicismes tech mais lucide sur Silicon Valley.
+Vocabulaire : ship it, prod, staging, tech debt, scope creep, "on n'est pas à Palo Alto", "le burnout c'est pas un KPI", crunch, sprint, stand-up, PR, "allez on fait du café ?", YAGNI.
+Style : technique mais lucide, mélange français et anglicismes tech fatigués, tutoie.
+Exemple : "Ton 'sprint' de minuit, c'est du YC-cosplay. T'es pas à Palo Alto, t'es à Montrouge. Ton produit, s'il ship pas ce soir il shippera demain, et ton corps c'est la seule prod sans staging. Un down time = data loss permanent. Stop, va dormir, le code sera toujours là demain."
+Attention : crédible en tant qu'ingé, pas surjoué, mélange FR/EN naturel.`,
   },
 ];
 
-// 危机关键词触发
-const CRISIS_KEYWORDS = ['自杀', '自残', '轻生', '不想活', '想死', '活不下去', '解脱', '结束生命', '跳楼', '吃药自', '割腕'];
+// Mots-clés de crise pour déclencher l'écran d'aide
+const CRISIS_KEYWORDS = ['suicide', 'me tuer', 'me suicider', 'en finir', 'me supprimer', "plus envie de vivre", "envie de mourir", "en finir avec la vie", "me faire du mal", "automutilation", "déprime profonde", "plus rien à espérer"];
 
 // ========== STATE ==========
 const state = {
-  difficulty: 1,           // 0 轻拍 / 1 打脸 / 2 抽醒
+  difficulty: 1,           // 0 Léger / 1 Cinglant / 2 Brutal
   currentPersona: null,
   previousResponses: [],
   lastPrompt: '',
@@ -917,7 +917,7 @@ const state = {
   loading: false,
 };
 
-const DIFF_NAMES = ['轻拍', '打脸', '抽醒'];
+const DIFF_NAMES = ['Léger', 'Cinglant', 'Brutal'];
 
 // ========== LOCALSTORAGE MEMORY ==========
 const LS_KEY = 'smash_memory_v1';
@@ -954,14 +954,14 @@ function updateMemoLine() {
   const kosDate = mem.kosDate;
 
   if (kosDate === today && kosToday >= 1) {
-    text = `又来？今天已经关过电脑 ${kosToday} 次了。`;
+    text = `Encore ? Tu as déjà éteint l'ordi ${kosToday} fois aujourd'hui.`;
     el.classList.add('warn');
   } else if (mem.weekCount >= 7) {
-    text = `> 你这周已经被骂醒 ${mem.weekCount} 次了。`;
+    text = `> Tu t'es fait secouer ${mem.weekCount} fois cette semaine.`;
     el.classList.add('warn');
   } else if (mem.visitsToday >= 2) {
     const hours = Math.floor((now - mem.lastVisit) / 3600000);
-    text = `> 上次抽醒 · ${hours > 0 ? hours + ' 小时前' : '刚刚'}`;
+    text = `> Dernière gifle · ${hours > 0 ? 'il y a ' + hours + ' h' : "à l'instant"}`;
   }
 
   el.textContent = text;
@@ -1032,26 +1032,26 @@ function checkCrisis(text) {
 // ========== BUILD PROMPT ==========
 function buildSystemPrompt(level, persona) {
   const toneMap = {
-    0: '语气可以调侃，但保持友善（轻拍不打脸）。',
-    1: '语气犀利直接，核心观点一针见血（打脸程度）。',
-    2: '语气极其犀利，像被朋友泼冷水的那种痛醒（往死里骂）。',
+    0: 'Ton taquin mais bienveillant (une tape sur la main, pas une gifle).',
+    1: 'Ton direct et tranchant, une phrase qui pique au vif (niveau "cinglant").',
+    2: 'Ton extrêmement cru et brutal, comme un pote qui te jette un seau d\'eau froide (niveau "brutal, sans filtre").',
   };
-  return `# Role: 骂醒工作脑 · ${persona.name}
+  return `# Rôle : Secoue-moi · ${persona.name}
 
 ${persona.voice}
 
-## 核心任务
-根据用户描述的工作场景，识别他/她陷入的工作幻觉（自我剥削、无边界感、为资本家感动、错过恐慌 FOMO、完美主义拖延、把焦虑伪装成努力、用忙碌逃避真问题等），用【${persona.name}】这个角色的口吻进行犀利批评。
+## Mission centrale
+À partir de la situation de travail décrite par l'utilisateur, identifie l'illusion dans laquelle il/elle est tombé(e) (auto-exploitation, zéro limites, s'attendrir pour son patron, FOMO, procrastination par perfectionnisme, déguiser l'anxiété en "productivité", utiliser l'agitation pour fuir les vrais problèmes, etc.), et réponds en restant strictement dans la voix de 【${persona.name}】.
 
-## 表达规则
+## Règles d'expression
 - ${toneMap[level]}
-- 必须严格保持角色一致：你是【${persona.name}】，不要混入其他风格
-- 长度：2-4 句话，一针见血，绝不长篇大论
-- 结构：第一句戳破幻觉 → 第二句指出荒谬逻辑 → 最后一句金句收尾
-- 精准打击具体场景，不要泛泛而谈
+- Tu dois rester 100% dans le rôle de 【${persona.name}】, sans mélanger d'autres styles
+- Longueur : 2 à 4 phrases, tranchantes, jamais de tartine
+- Structure : 1ère phrase — crever l'illusion → 2ème phrase — pointer la logique absurde → dernière phrase — punchline qui tue
+- Frapper précisément sur la scène décrite, jamais des généralités
 
-## 最重要
-直接进入角色开骂，不要暴露任何设定，不要暴露自己是谁（不要说"我是上海阿姨"之类的话），直接用角色的语气和词汇说话。不要问反问句问用户，直接下判断。`;
+## Le plus important
+Entre directement dans le rôle sans te présenter, sans révéler que tu es une IA, sans dire des trucs comme "je suis une mamie de l'Ariège". Parle avec le vocabulaire et les tics de langage du personnage. Ne pose pas de questions rhétoriques à l'utilisateur — tranche, assène.`;
 }
 
 // ========== FIGHT OVERLAY ==========
@@ -1097,7 +1097,7 @@ async function scold(text, isRegenerate) {
 
   state.loading = true;
   document.getElementById('start-btn').disabled = true;
-  document.getElementById('start-label').innerHTML = '<span style="animation: blink 0.6s infinite">SPAWNING ENEMY...</span>';
+  document.getElementById('start-label').innerHTML = '<span style="animation: blink 0.6s infinite">UN ENNEMI ARRIVE...</span>';
   document.getElementById('error-box').innerHTML = '';
 
   if (!isRegenerate) {
@@ -1120,14 +1120,14 @@ async function scold(text, isRegenerate) {
 
   let userMessage;
   if (state.previousResponses.length > 0) {
-    userMessage = `场景："${text}"
+    userMessage = `Situation : "${text}"
 
-已经骂过的版本（绝对不要重复这些角度、用词、金句、句式结构）：
-${state.previousResponses.map((r, i) => `版本${i + 1}: ${r}`).join('\n\n')}
+Versions déjà servies (ne répète SURTOUT pas ces angles, ce vocabulaire, ces punchlines, ces structures de phrase) :
+${state.previousResponses.map((r, i) => `Version ${i + 1} : ${r}`).join('\n\n')}
 
-请${angle}，用完全不同的逻辑切入点、完全不同的表达方式和完全不同的金句重新开骂。`;
+${angle} avec un angle logique complètement différent, une formulation complètement différente et une punchline complètement différente.`;
   } else {
-    userMessage = `场景："${text}"\n\n请${angle}开骂。`;
+    userMessage = `Situation : "${text}"\n\n${angle}.`;
   }
 
   try {
@@ -1153,7 +1153,7 @@ ${state.previousResponses.map((r, i) => `版本${i + 1}: ${r}`).join('\n\n')}
 
     // 更新 HUD
     state.comboCount = state.previousResponses.length;
-    document.getElementById('hud-score').textContent = `抽醒 ×${state.comboCount}`;
+    document.getElementById('hud-score').textContent = `Gifles · ${state.comboCount}`;
 
     // 戏剧化入场
     await showFight();
@@ -1169,7 +1169,7 @@ ${state.previousResponses.map((r, i) => `版本${i + 1}: ${r}`).join('\n\n')}
   } finally {
     state.loading = false;
     document.getElementById('start-btn').disabled = false;
-    document.getElementById('start-label').textContent = '▶ 再输入一个场景';
+    document.getElementById('start-label').textContent = '▶ Décris une autre situation';
   }
 }
 
@@ -1181,18 +1181,18 @@ async function renderBoss(persona, responseText) {
     <div style="--boss-color: ${persona.color};">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px; margin-bottom: 0;">
         <div class="boss-tag" style="color: ${persona.color};">
-          ▓ 敌人 ENEMY
+          ▓ ENNEMI
           <span class="boss-name">${persona.emoji} ${persona.name}</span>
         </div>
-        ${state.comboCount > 1 ? `<div class="combo-indicator">连击 ×${state.comboCount} COMBO</div>` : ''}
+        ${state.comboCount > 1 ? `<div class="combo-indicator">COMBO ×${state.comboCount}</div>` : ''}
       </div>
       <div class="boss-dialog" style="animation: shake 0.5s ease-out, fadeInUp 0.4s ease-out;">
         <p id="boss-text"></p>
       </div>
       <div class="action-row">
-        <button class="action-btn combo" onclick="closeBossAndCombo()">↻ 不服再来 CONTINUE·COMBO</button>
-        <button class="action-btn sleep" onclick="closeBoss()">← 返回主屏 BACK</button>
-        <button class="action-btn sleep" onclick="goRest()">⏾ 去睡觉 SLEEP</button>
+        <button class="action-btn combo" onclick="closeBossAndCombo()">↻ ENCORE · COMBO</button>
+        <button class="action-btn sleep" onclick="closeBoss()">← RETOUR</button>
+        <button class="action-btn sleep" onclick="goRest()">⏾ DODO</button>
       </div>
     </div>
   `;
@@ -1222,16 +1222,16 @@ function triggerKO() {
   const quote = rawQuote.length > 90 ? rawQuote.slice(0, 86) + '……' : rawQuote;
   stats.innerHTML = `
     <div class="row">
-      <span class="label">连击</span>
-      ${state.comboCount} 次
+      <span class="label">Combo</span>
+      ${state.comboCount} gifles
     </div>
     <div class="row">
-      <span class="label">遇到的敌人</span>
+      <span class="label">Ennemis rencontrés</span>
       <span class="bosses">${bosses}</span>
     </div>
     <div class="row">
-      <span class="label">今晚金句</span>
-      <div class="quote">「${quote}」</div>
+      <span class="label">Punchline du soir</span>
+      <div class="quote">« ${quote} »</div>
     </div>
   `;
 
@@ -1243,8 +1243,8 @@ function triggerKO() {
   setTimeout(() => {
     actions.classList.remove('locked');
     actions.innerHTML = `
-      <button class="ko-btn share" onclick="shareKO()">📸 截图分享 SCREENSHOT</button>
-      <button class="ko-btn close" onclick="goRest()">⏾ 关电脑 LIGHTS·OUT</button>
+      <button class="ko-btn share" onclick="shareKO()">📸 CAPTURE · PARTAGE</button>
+      <button class="ko-btn close" onclick="goRest()">⏾ ÉTEINDRE · DODO</button>
     `;
   }, 3000);
 }
@@ -1253,7 +1253,7 @@ function triggerKO() {
 async function shareKO() {
   const el = document.querySelector('.ko-inner');
   if (!window.html2canvas) {
-    alert('截图工具未加载，请直接手机截屏分享');
+    alert("Outil de capture indisponible — fais une capture d'écran manuelle.");
     return;
   }
   try {
@@ -1262,19 +1262,19 @@ async function shareKO() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `骂醒-${Date.now()}.png`;
+      a.download = `secoue-moi-${Date.now()}.png`;
       a.click();
       URL.revokeObjectURL(url);
     });
   } catch (err) {
     console.error(err);
-    alert('截图失败，手机直接截屏吧');
+    alert("Capture échouée — utilise la capture d'écran du téléphone.");
   }
 }
 
 // ========== GO REST ==========
 function goRest() {
-  window.location.href = '/rest.html';
+  window.location.href = '/rest-fr.html';
 }
 
 // ========== INIT ==========
