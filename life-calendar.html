@@ -513,13 +513,29 @@
 
   /* Responsive */
   @media (max-width: 600px) {
-    :root { --cell: clamp(4px, calc((100vw - 60px) / 52), 8px); --cgap: 1px; }
-    main { padding: 24px 16px; gap: 22px; }
-    h1 { font-size: 24px; }
-    h1 .zh { font-size: 12px; margin-top: 8px; }
-    .big-number { font-size: 60px; }
-    .years { font-size: 9px; }
-    .years span { padding-right: 4px; }
+    :root {
+      --cell: max(3px, min(calc((100vw - 36px) / 52), calc((100dvh - 340px) / 90)));
+      --cgap: 1px;
+    }
+    html, body { height: 100dvh; overflow: hidden; }
+    main { padding: 8px 12px; gap: 6px; min-height: 100dvh; }
+    .eyebrow { font-size: 8px; margin: 0 0 4px; }
+    h1 { font-size: 18px; text-shadow: 2px 2px 0 var(--current), 4px 4px 0 rgba(255, 79, 163, 0.3); }
+    .hp-bar { gap: 3px; margin: 0; }
+    .heart-slot, .heart { width: 16px; height: 14px; }
+    .sub-stats { font-size: 7px; gap: 4px; margin: 4px 0 0; }
+    .sub-stats .sep { display: none; }
+    .sub-stats .sw { width: 6px; height: 6px; }
+    .config { font-size: 10px; margin-top: 4px; gap: 6px; }
+    .config input, .config select { font-size: 11px; padding: 2px; }
+    .big-number { font-size: 28px; }
+    .big-label { font-size: 7px; margin: 4px 0 0; }
+    .quote { margin: 6px 0 0; padding: 8px 12px; max-width: 92vw; }
+    .q-text { font-size: 14px; line-height: 1.3; }
+    .q-attr { font-size: 7px; }
+    .years { font-size: 7px; }
+    .years span { padding-right: 3px; }
+    .signature { font-size: 6px; letter-spacing: 0.12em; bottom: 6px; left: 6px; }
     .empty-q { font-size: 30px; }
     .empty-input { font-size: 17px; padding: 12px 14px; }
   }

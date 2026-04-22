@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life in Weeks — deux versions, vote pour la tienne | Weilin Hu</title>
+    <meta name="description" content="Comment j'ai construit deux variantes du calendrier Tim Urban avec Claude. Vote pour ta préférée.">
+    <meta property="og:title" content="Life in Weeks — deux versions, vote pour la tienne">
+    <meta property="og:description" content="Arcade néon vs. Night minimal — 2h de design avec Claude. Dis-moi laquelle tu préfères.">
+    <meta property="og:image" content="https://weilinhu.com/og-image.png">
+    <meta property="og:url" content="https://weilinhu.com/blog-post-03.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="avatar.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;800&family=DM+Mono:wght@300;400&family=Figtree:ital,wght@0,300;0,400;0,900&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root { --bg: #0a0a0f; --bg2: #111118; --white: #f0eee8; --dim: rgba(240,238,232,0.45); --faint: rgba(240,238,232,0.08); --coral: #E8686A; --mint: #7ECFC0; --gold: #E8C06A; --peach: #E8A06A; --mono: 'DM Mono', monospace; --display: 'Jost', sans-serif; --body: 'Figtree', sans-serif; }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--white); font-family: var(--body); min-height: 100vh; overflow-x: hidden; font-weight: 400; }
+      body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.4; }
+      nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(240,238,232,0.05); background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); }
+      .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+      .nav-logo:hover { color: var(--white); }
+      .nav-logo:hover .nav-avatar { transform: scale(1.08); }
+      .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(240,238,232,0.12); background: #0a0a0f; }
+      .nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .nav-links { display: flex; gap: 2rem; list-style: none; }
+      .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--white); }
+      .wrap { max-width: 900px; margin: 0 auto; padding: 120px 40px 120px; position: relative; z-index: 1; }
+      .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; margin-bottom: 48px; transition: color 0.2s; }
+      .back-link:hover { color: var(--white); }
+      .post-header { margin-bottom: 64px; }
+      .post-category { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--coral); text-transform: uppercase; margin-bottom: 20px; }
+      .post-title { font-family: var(--display); font-size: clamp(22px, 3.8vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
+      .post-title em { font-style: normal; color: var(--coral); }
+      .post-meta { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+      .post-meta span { display: flex; align-items: center; gap: 6px; }
+      .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
+      .time-banner { display: flex; align-items: center; gap: 24px; background: var(--faint); border: 1px solid rgba(240,238,232,0.1); border-left: 3px solid var(--gold); padding: 24px 32px; margin-bottom: 64px; }
+      .time-banner-number { font-family: var(--display); font-size: 56px; font-weight: 800; color: var(--gold); line-height: 1; letter-spacing: -0.03em; flex-shrink: 0; }
+      .time-banner-text h3 { font-family: var(--display); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+      .time-banner-text p { font-size: 13px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
+      .time-arrow { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--dim); text-align: right; line-height: 1.8; flex-shrink: 0; }
+
+      /* Vote section */
+      .vote-box { background: linear-gradient(135deg, rgba(232,104,106,0.06), rgba(126,207,192,0.06)); border: 1px solid rgba(240,238,232,0.1); padding: 40px 32px; margin-bottom: 64px; border-radius: 4px; }
+      .vote-box h3 { font-family: var(--display); font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em; text-align: center; }
+      .vote-box .vote-sub { font-size: 13px; color: var(--dim); font-family: var(--mono); margin-bottom: 32px; text-align: center; }
+      .vote-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .vote-card { background: var(--bg2); border: 1px solid var(--faint); padding: 24px; border-radius: 4px; transition: border-color 0.2s, transform 0.2s; display: flex; flex-direction: column; gap: 14px; }
+      .vote-card:hover { border-color: rgba(240,238,232,0.2); }
+      .vote-card.voted { border-color: var(--coral); }
+      .vote-preview { aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; letter-spacing: 0.25em; border-radius: 2px; position: relative; overflow: hidden; }
+      .vote-preview.arcade { background: #0A0014; color: #FFEE00; border: 1px solid #3D1A5C; }
+      .vote-preview.arcade::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 30% 40%, #FF4FA3 1px, transparent 1px), radial-gradient(circle at 70% 60%, #00E5FF 1px, transparent 1px); background-size: 8px 8px; opacity: 0.4; }
+      .vote-preview.arcade span { position: relative; text-shadow: 2px 2px 0 #FF4FA3; font-weight: 800; }
+      .vote-preview.night { background: #0B0E14; color: #E8D8AE; border: 1px solid #2A2F3B; }
+      .vote-preview.night span { opacity: 0.85; font-weight: 300; }
+      .vote-card h4 { font-family: var(--display); font-size: 17px; font-weight: 700; }
+      .vote-card p { font-size: 12px; color: var(--dim); line-height: 1.6; flex: 1; }
+      .vote-card .actions { display: flex; gap: 10px; align-items: center; }
+      .vote-link { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--dim); text-decoration: none; text-transform: uppercase; padding: 8px 12px; border: 1px solid var(--faint); border-radius: 2px; transition: color 0.2s, border-color 0.2s; }
+      .vote-link:hover { color: var(--white); border-color: rgba(240,238,232,0.3); }
+      .vote-btn { flex: 1; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 10px 14px; background: transparent; color: var(--white); border: 1px solid rgba(240,238,232,0.2); border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+      .vote-btn:hover:not(:disabled) { background: var(--coral); border-color: var(--coral); color: var(--bg); }
+      .vote-btn:disabled { cursor: default; opacity: 0.6; }
+      .vote-btn.thanks { background: var(--mint); border-color: var(--mint); color: var(--bg); }
+      .vote-count { font-family: var(--display); font-size: 26px; font-weight: 800; color: var(--gold); letter-spacing: -0.02em; line-height: 1; }
+      .vote-count-label { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; margin-left: 6px; }
+      .vote-meter { height: 4px; background: var(--faint); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+      .vote-meter-fill { height: 100%; transition: width 0.6s ease; }
+      .vote-card.arcade .vote-meter-fill { background: linear-gradient(90deg, #FF4FA3, #FFEE00); }
+      .vote-card.night .vote-meter-fill { background: linear-gradient(90deg, #E8D8AE, #FFC857); }
+      .vote-note { text-align: center; font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 20px; letter-spacing: 0.1em; }
+
+      .section-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--dim); text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 16px; }
+      .section-title::after { content: ''; flex: 1; height: 1px; background: var(--faint); }
+      .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 64px; }
+      .step { display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--faint); position: relative; }
+      .step:last-child { border-bottom: none; }
+      .step:not(:last-child) .step-num::after { content: ''; position: absolute; left: 29px; top: 68px; width: 1px; height: calc(100% - 36px); background: linear-gradient(to bottom, var(--faint), transparent); }
+      .step-num { position: relative; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 4px; }
+      .step.phase1 .step-num { background: rgba(232,104,106,0.15); color: var(--coral); border: 1px solid rgba(232,104,106,0.3); }
+      .step.phase2 .step-num { background: rgba(126,207,192,0.12); color: var(--mint); border: 1px solid rgba(126,207,192,0.25); }
+      .step.phase3 .step-num { background: rgba(232,192,106,0.12); color: var(--gold); border: 1px solid rgba(232,192,106,0.25); }
+      .step-phase { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+      .step.phase1 .step-phase { color: var(--coral); }
+      .step.phase2 .step-phase { color: var(--mint); }
+      .step.phase3 .step-phase { color: var(--gold); }
+      .step-title { font-family: var(--display); font-size: 19px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+      .step-desc { font-size: 13px; color: var(--dim); line-height: 1.75; max-width: 560px; }
+      .step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+      .tag { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 2px; letter-spacing: 0.05em; }
+      .tag-tool { background: rgba(126,207,192,0.1); color: var(--mint); border: 1px solid rgba(126,207,192,0.2); }
+      .tag-issue { background: rgba(232,104,106,0.1); color: var(--coral); border: 1px solid rgba(232,104,106,0.2); }
+      .tag-ok { background: rgba(232,192,106,0.1); color: var(--gold); border: 1px solid rgba(232,192,106,0.2); }
+      .step-time { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; padding-top: 4px; }
+      .time-pill { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--white); letter-spacing: -0.02em; }
+      .time-unit { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+      .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 64px; }
+      .tool-card { background: var(--bg2); border: 1px solid var(--faint); padding: 24px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+      .tool-card:hover { border-color: rgba(240,238,232,0.2); }
+      .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; }
+      .tool-card:nth-child(1)::before { background: var(--coral); }
+      .tool-card:nth-child(2)::before { background: var(--mint); }
+      .tool-card:nth-child(3)::before { background: var(--gold); }
+      .tool-card:nth-child(4)::before { background: var(--peach); }
+      .tool-card:nth-child(5)::before { background: var(--coral); }
+      .tool-icon { font-size: 28px; margin-bottom: 12px; }
+      .tool-name { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+      .tool-use { font-size: 12px; color: var(--dim); line-height: 1.5; }
+      .lesson-box { background: rgba(232,104,106,0.05); border: 1px solid rgba(232,104,106,0.2); border-left: 3px solid var(--coral); padding: 28px 32px; margin-bottom: 64px; }
+      .lesson-box h3 { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--coral); margin-bottom: 16px; }
+      .lesson-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+      .lesson-list li { font-size: 13px; color: var(--dim); padding-left: 20px; position: relative; line-height: 1.6; }
+      .lesson-list li::before { content: '->'; position: absolute; left: 0; color: var(--coral); font-family: var(--mono); }
+      .post-footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--faint); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); flex-wrap: wrap; gap: 12px; }
+      @media (max-width: 700px) {
+        nav { padding: 1.2rem 1.5rem; }
+        .wrap { padding: 100px 24px 80px; }
+        .step { grid-template-columns: 44px 1fr; }
+        .step-time { display: none; }
+        .time-banner { flex-wrap: wrap; }
+        .vote-cards { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">
+        <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>
+        weilin.hu
+      </a>
+      <ul class="nav-links">
+        <li><a href="projets.html">Projets</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="wrap">
+      <a href="blog.html" class="back-link">← Retour au blog</a>
+
+      <div class="post-header">
+        <p class="post-category">Projets — Design · Vote</p>
+        <h1 class="post-title">Life in Weeks<br>deux versions, <em>vote pour la tienne</em></h1>
+        <div class="post-meta">
+          <span><span class="meta-dot"></span>weilinhu.com/life-calendar</span>
+          <span><span class="meta-dot" style="background:var(--coral)"></span>2h — 8 étapes</span>
+          <span><span class="meta-dot" style="background:var(--gold)"></span>Claude · SVG · GitHub Pages</span>
+        </div>
+      </div>
+
+      <div class="time-banner">
+        <div class="time-banner-number">2h</div>
+        <div class="time-banner-text">
+          <h3>D'une idée à deux versions en ligne</h3>
+          <p>Inspiration Tim Urban → Arcade néon + Night minimal → Déploiement + vote</p>
+        </div>
+        <div class="time-arrow">Début : 22h15<br>|<br>Fin : minuit passé</div>
+      </div>
+
+      <!-- VOTE SECTION -->
+      <div class="vote-box">
+        <h3>Quelle version préfères-tu ?</h3>
+        <p class="vote-sub">Clique pour voter · le compteur est partagé en temps réel</p>
+        <div class="vote-cards">
+
+          <div class="vote-card arcade" data-version="arcade">
+            <a href="life-calendar.html" target="_blank" rel="noopener" class="vote-preview arcade" aria-label="Voir la version Arcade">
+              <span>ARCADE</span>
+            </a>
+            <h4>Arcade · néon</h4>
+            <p>Pixels, Press Start 2P, néon rose/cyan/jaune. Vibes années 90, jeu d'arcade. Cœurs HP, étoiles filantes, flèches de temps.</p>
+            <div class="actions">
+              <a href="life-calendar.html" target="_blank" rel="noopener" class="vote-link">Voir</a>
+              <button class="vote-btn" data-vote="arcade">Vote Arcade</button>
+            </div>
+            <div>
+              <span class="vote-count" id="count-arcade">—</span>
+              <span class="vote-count-label">votes</span>
+            </div>
+            <div class="vote-meter"><div class="vote-meter-fill" id="meter-arcade" style="width:0%"></div></div>
+          </div>
+
+          <div class="vote-card night" data-version="night">
+            <a href="life-calendar-night.html" target="_blank" rel="noopener" class="vote-preview night" aria-label="Voir la version Night">
+              <span>NIGHT</span>
+            </a>
+            <h4>Night · minimal</h4>
+            <p>Sobre, presque silencieux. Palette beige/ambre, typographie fine. Style Steve Jobs — rien ne distrait du message : 4 680 semaines.</p>
+            <div class="actions">
+              <a href="life-calendar-night.html" target="_blank" rel="noopener" class="vote-link">Voir</a>
+              <button class="vote-btn" data-vote="night">Vote Night</button>
+            </div>
+            <div>
+              <span class="vote-count" id="count-night">—</span>
+              <span class="vote-count-label">votes</span>
+            </div>
+            <div class="vote-meter"><div class="vote-meter-fill" id="meter-night" style="width:0%"></div></div>
+          </div>
+
+        </div>
+        <p class="vote-note">Un seul vote par appareil — mais on te croit sur parole</p>
+      </div>
+
+      <div class="section-title">Étapes complètes — 8 ÉTAPES</div>
+
+      <div class="steps">
+        <div class="step phase1">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Inspiration</div>
+            <div class="step-title">Tim Urban et ses 4 680 semaines</div>
+            <div class="step-desc">"If you live to 90, you have 4 680 weeks. That's it." L'idée : une grille de 52×90 cases, chaque case = une semaine de vie. Une image qui remet les choses en place sans dire un mot.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Wait But Why</span>
+              <span class="tag tag-ok">Concept validé</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase1">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Design</div>
+            <div class="step-title">Version Arcade — néon rétro</div>
+            <div class="step-desc">Palette pixel : #0A0014 fond, #FF4FA3 rose, #FFEE00 jaune, #00E5FF cyan. Press Start 2P et VT323 pour le texte. Cœurs HP, étoile filante, sweep d'animation en 3 actes comme une intro de jeu.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Claude</span>
+              <span class="tag tag-tool">CSS pixelated</span>
+              <span class="tag tag-tool">Google Fonts</span>
+              <span class="tag tag-ok">Arcade prête</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">25</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase1">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Design</div>
+            <div class="step-title">Version Night — minimal Jobs</div>
+            <div class="step-desc">Opposé total : #0B0E14 fond, #E8D8AE beige, typographie Figtree light. Pas d'effet, pas d'icône, juste la grille et une phrase. Le style "less but better" en hommage à Jobs.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Claude</span>
+              <span class="tag tag-tool">Figtree</span>
+              <span class="tag tag-ok">Night prête</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">20</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Itération graphique</div>
+            <div class="step-title">L'odyssée du chat pixel → T-rex → supprimé</div>
+            <div class="step-desc">Un chat pixel en bas à droite. Mais à l'échelle 18×12 pixels, le chat ressemblait à un cochon. Quatre itérations plus tard : abandon du chat, passage au T-rex. Puis suppression du T-rex aussi — trop distrayant. Leçon : parfois enlever, c'est plus dur que d'ajouter.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">SVG rect</span>
+              <span class="tag tag-issue">Chat → cochon</span>
+              <span class="tag tag-issue">T-rex → distrayant</span>
+              <span class="tag tag-ok">Icône supprimée</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">30</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Layout</div>
+            <div class="step-title">Tout faire tenir sur un écran</div>
+            <div class="step-desc">Objectif : zéro scrollbar. La grille de 90 lignes + header + stats + config ne rentraient pas. Solution : <code>clamp(4px, calc((100vh - 380px) / 90), 10px)</code> pour que les cases s'adaptent à la hauteur disponible. Resserrage des marges partout.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">CSS clamp()</span>
+              <span class="tag tag-tool">calc()</span>
+              <span class="tag tag-ok">Fit 100vh</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">15</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Nettoyage</div>
+            <div class="step-title">Suppression du module milestones</div>
+            <div class="step-desc">La version Night avait un module de jalons (ajouter mariage, naissance, etc.). Joli en théorie — inutile en pratique pour le partage. Suppression du formulaire + CSS + JS. Moins = mieux.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Delete key</span>
+              <span class="tag tag-ok">-120 lignes</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — Déploiement</div>
+            <div class="step-title">Push vers GitHub Pages</div>
+            <div class="step-desc">Ajout d'une signature "MADE BY WEILIN · WEILINHU.COM" en bas à gauche, lien retour au site. Ajout d'une nouvelle clé SSH (cette machine ≠ machine du premier push), git add + commit + push. 2 fichiers, 1 649 insertions.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">SSH ed25519</span>
+              <span class="tag tag-tool">Git</span>
+              <span class="tag tag-tool">GitHub Pages</span>
+              <span class="tag tag-ok">En ligne sous 2 min</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">8</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — Validation</div>
+            <div class="step-title">Vote embarqué (cet article)</div>
+            <div class="step-desc">Deux versions vivent en ligne : impossible de trancher seule. Ajout d'un widget de vote live via CounterAPI — compteur partagé, pas de backend à maintenir. Le vote ci-dessus est le résultat.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">CounterAPI</span>
+              <span class="tag tag-tool">localStorage</span>
+              <span class="tag tag-ok">Vote live</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">20</div><div class="time-unit">min</div></div>
+        </div>
+      </div>
+
+      <div class="section-title">Outils utilisés — OUTILS</div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">🤖</div>
+          <div class="tool-name">Claude</div>
+          <div class="tool-use">Design, code, itérations graphiques, copie de sauvegarde</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🎨</div>
+          <div class="tool-name">SVG rect</div>
+          <div class="tool-use">Icônes pixel (chat → T-rex → rien)</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📐</div>
+          <div class="tool-name">CSS clamp()</div>
+          <div class="tool-use">Adapter la taille des cases à la hauteur écran</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔢</div>
+          <div class="tool-name">CounterAPI</div>
+          <div class="tool-use">Compteur de votes live, sans backend</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🚀</div>
+          <div class="tool-name">GitHub Pages</div>
+          <div class="tool-use">Hébergement statique — déploiement en 2 min</div>
+        </div>
+      </div>
+
+      <div class="lesson-box">
+        <h3>Ce qu'il faut retenir</h3>
+        <ul class="lesson-list">
+          <li>À 18×12 pixels, un chat ressemble à un cochon — la granularité tue le style</li>
+          <li>Animer n'ajoute pas toujours — parfois un détail statique dit plus</li>
+          <li>Itérer vite avec Claude est facile. Savoir quoi garder est l'art</li>
+          <li>Supprimer une feature prend autant de temps qu'en ajouter une — et c'est souvent le bon geste</li>
+          <li>Un vote embarqué vaut mieux qu'une question dans un DM — les gens cliquent, les DM s'oublient</li>
+          <li>CounterAPI = un compteur partagé sans maintenir de backend. Pour MVP : suffit</li>
+        </ul>
+      </div>
+
+      <div class="post-footer">
+        <span>WEILIN — weilinhu.com</span>
+        <span>2h · 8 étapes · 2 versions · 1 vote</span>
+      </div>
+    </div>
+
+    <script>
+      // Vote widget — uses CounterAPI for shared counts
+      (function () {
+        const WORKSPACE = 'weilinhu';
+        const KEYS = { arcade: 'life-arcade', night: 'life-night' };
+        const VOTE_KEY = 'life_vote_v1';
+
+        const state = { arcade: 0, night: 0, voted: null };
+
+        function getCount(key) {
+          return fetch(`https://api.counterapi.dev/v1/${WORKSPACE}/${key}`)
+            .then(r => r.ok ? r.json() : { count: 0 })
+            .then(d => +d.count || 0)
+            .catch(() => 0);
+        }
+        function incrementCount(key) {
+          return fetch(`https://api.counterapi.dev/v1/${WORKSPACE}/${key}/up`)
+            .then(r => r.ok ? r.json() : { count: 0 })
+            .then(d => +d.count || 0)
+            .catch(() => 0);
+        }
+        function render() {
+          document.getElementById('count-arcade').textContent = state.arcade.toLocaleString('fr-FR');
+          document.getElementById('count-night').textContent = state.night.toLocaleString('fr-FR');
+          const total = state.arcade + state.night;
+          const pA = total ? (state.arcade / total * 100) : 50;
+          const pN = total ? (state.night / total * 100) : 50;
+          document.getElementById('meter-arcade').style.width = pA + '%';
+          document.getElementById('meter-night').style.width = pN + '%';
+
+          document.querySelectorAll('.vote-card').forEach(card => {
+            const v = card.dataset.version;
+            const btn = card.querySelector('.vote-btn');
+            if (state.voted) {
+              btn.disabled = true;
+              if (state.voted === v) {
+                card.classList.add('voted');
+                btn.classList.add('thanks');
+                btn.textContent = '✓ Merci !';
+              } else {
+                btn.textContent = 'Vote fermé';
+              }
+            }
+          });
+        }
+        async function init() {
+          state.voted = localStorage.getItem(VOTE_KEY);
+          render();
+          const [a, n] = await Promise.all([getCount(KEYS.arcade), getCount(KEYS.night)]);
+          state.arcade = a; state.night = n;
+          render();
+        }
+        async function vote(v) {
+          if (state.voted) return;
+          state.voted = v;
+          localStorage.setItem(VOTE_KEY, v);
+          render();
+          const newCount = await incrementCount(KEYS[v]);
+          if (newCount) state[v] = newCount;
+          render();
+        }
+        document.querySelectorAll('.vote-btn').forEach(btn => {
+          btn.addEventListener('click', () => vote(btn.dataset.vote));
+        });
+        init();
+      })();
+    </script>
+  </body>
+</html>
