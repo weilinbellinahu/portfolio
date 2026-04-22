@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Brain Smasher — quand tu bosses trop, l'IA t'engueule | Weilin Hu</title>
+    <meta name="description" content="Un arcade web qui appelle 6 personnages pour te remettre à ta place quand tu bosses à 2h du matin. Fait avec Claude, Cloudflare Workers, PWA — en 3h.">
+    <meta property="og:title" content="Work Brain Smasher — quand tu bosses trop, l'IA t'engueule">
+    <meta property="og:description" content="6 personnages, 3 niveaux de sévérité, un KO forcé après 3 combos. PWA + Cloudflare Workers + Claude.">
+    <meta property="og:image" content="https://weilinhu.com/og-image.png">
+    <meta property="og:url" content="https://weilinhu.com/blog-post-04.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="avatar.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;800&family=DM+Mono:wght@300;400&family=Figtree:ital,wght@0,300;0,400;0,900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root { --bg: #0a0a0f; --bg2: #111118; --white: #f0eee8; --dim: rgba(240,238,232,0.45); --faint: rgba(240,238,232,0.08); --coral: #E8686A; --mint: #7ECFC0; --gold: #E8C06A; --peach: #E8A06A; --purple: #A78BFA; --mono: 'DM Mono', monospace; --display: 'Jost', sans-serif; --body: 'Figtree', sans-serif; --pixel: 'Press Start 2P', monospace; }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--white); font-family: var(--body); min-height: 100vh; overflow-x: hidden; font-weight: 400; }
+      body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.4; }
+      nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(240,238,232,0.05); background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); }
+      .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+      .nav-logo:hover { color: var(--white); }
+      .nav-logo:hover .nav-avatar { transform: scale(1.08); }
+      .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(240,238,232,0.12); background: #0a0a0f; }
+      .nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .nav-links { display: flex; gap: 2rem; list-style: none; }
+      .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--white); }
+      .wrap { max-width: 900px; margin: 0 auto; padding: 120px 40px 120px; position: relative; z-index: 1; }
+      .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; margin-bottom: 48px; transition: color 0.2s; }
+      .back-link:hover { color: var(--white); }
+      .post-header { margin-bottom: 64px; }
+      .post-category { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--coral); text-transform: uppercase; margin-bottom: 20px; }
+      .post-title { font-family: var(--display); font-size: clamp(22px, 3.8vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
+      .post-title em { font-style: normal; color: var(--coral); }
+      .post-meta { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+      .post-meta span { display: flex; align-items: center; gap: 6px; }
+      .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
+
+      .time-banner { display: flex; align-items: center; gap: 24px; background: var(--faint); border: 1px solid rgba(240,238,232,0.1); border-left: 3px solid var(--gold); padding: 24px 32px; margin-bottom: 48px; }
+      .time-banner-number { font-family: var(--display); font-size: 56px; font-weight: 800; color: var(--gold); line-height: 1; letter-spacing: -0.03em; flex-shrink: 0; }
+      .time-banner-text h3 { font-family: var(--display); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+      .time-banner-text p { font-size: 13px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
+      .time-arrow { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--dim); text-align: right; line-height: 1.8; flex-shrink: 0; }
+
+      /* Demo hero box — adapté du vote-box */
+      .demo-box { background: linear-gradient(135deg, rgba(232,104,106,0.08), rgba(167,139,250,0.06)); border: 1px solid rgba(240,238,232,0.1); padding: 40px 32px; margin-bottom: 64px; border-radius: 4px; text-align: center; }
+      .demo-preview { font-family: var(--pixel); font-size: clamp(22px, 5vw, 40px); color: var(--coral); letter-spacing: 0.08em; margin-bottom: 8px; text-shadow: 0 0 20px rgba(232,104,106,0.6), 0 0 40px rgba(232,104,106,0.3); line-height: 1.2; }
+      .demo-preview-zh { font-family: var(--display); font-size: clamp(32px, 7vw, 56px); font-weight: 800; color: var(--coral); letter-spacing: 0.12em; margin-bottom: 8px; text-shadow: 0 0 20px rgba(232,104,106,0.6), 0 0 40px rgba(232,104,106,0.3); }
+      .demo-subtitle { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; color: var(--dim); margin-bottom: 24px; text-transform: uppercase; }
+      .demo-quote { font-family: var(--body); font-size: 15px; color: var(--dim); font-style: italic; max-width: 540px; margin: 0 auto 28px; line-height: 1.7; }
+      .demo-cta { display: inline-block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; padding: 14px 28px; background: var(--coral); color: var(--bg); border: none; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; border-radius: 2px; font-weight: 500; box-shadow: 4px 4px 0 rgba(232,104,106,0.35); }
+      .demo-cta:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 rgba(232,104,106,0.5); }
+      .demo-bosses { display: flex; justify-content: center; gap: 18px; margin-top: 24px; flex-wrap: wrap; }
+      .demo-boss { font-family: var(--mono); font-size: 11px; color: var(--dim); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+      .demo-boss .emoji { font-size: 24px; }
+
+      .section-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--dim); text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 16px; }
+      .section-title::after { content: ''; flex: 1; height: 1px; background: var(--faint); }
+      .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 64px; }
+      .step { display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--faint); position: relative; }
+      .step:last-child { border-bottom: none; }
+      .step:not(:last-child) .step-num::after { content: ''; position: absolute; left: 29px; top: 68px; width: 1px; height: calc(100% - 36px); background: linear-gradient(to bottom, var(--faint), transparent); }
+      .step-num { position: relative; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 4px; }
+      .step.phase1 .step-num { background: rgba(232,104,106,0.15); color: var(--coral); border: 1px solid rgba(232,104,106,0.3); }
+      .step.phase2 .step-num { background: rgba(126,207,192,0.12); color: var(--mint); border: 1px solid rgba(126,207,192,0.25); }
+      .step.phase3 .step-num { background: rgba(232,192,106,0.12); color: var(--gold); border: 1px solid rgba(232,192,106,0.25); }
+      .step-phase { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+      .step.phase1 .step-phase { color: var(--coral); }
+      .step.phase2 .step-phase { color: var(--mint); }
+      .step.phase3 .step-phase { color: var(--gold); }
+      .step-title { font-family: var(--display); font-size: 19px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+      .step-desc { font-size: 13px; color: var(--dim); line-height: 1.75; max-width: 560px; }
+      .step-desc code { font-family: var(--mono); font-size: 12px; background: rgba(167,139,250,0.1); color: var(--purple); padding: 1px 6px; border-radius: 2px; }
+      .step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+      .tag { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 2px; letter-spacing: 0.05em; }
+      .tag-tool { background: rgba(126,207,192,0.1); color: var(--mint); border: 1px solid rgba(126,207,192,0.2); }
+      .tag-issue { background: rgba(232,104,106,0.1); color: var(--coral); border: 1px solid rgba(232,104,106,0.2); }
+      .tag-ok { background: rgba(232,192,106,0.1); color: var(--gold); border: 1px solid rgba(232,192,106,0.2); }
+      .step-time { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; padding-top: 4px; }
+      .time-pill { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--white); letter-spacing: -0.02em; }
+      .time-unit { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+      .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 64px; }
+      .tool-card { background: var(--bg2); border: 1px solid var(--faint); padding: 24px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+      .tool-card:hover { border-color: rgba(240,238,232,0.2); }
+      .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; }
+      .tool-card:nth-child(1)::before { background: var(--coral); }
+      .tool-card:nth-child(2)::before { background: var(--mint); }
+      .tool-card:nth-child(3)::before { background: var(--gold); }
+      .tool-card:nth-child(4)::before { background: var(--peach); }
+      .tool-card:nth-child(5)::before { background: var(--purple); }
+      .tool-card:nth-child(6)::before { background: var(--coral); }
+      .tool-card:nth-child(7)::before { background: var(--mint); }
+      .tool-icon { font-size: 28px; margin-bottom: 12px; }
+      .tool-name { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+      .tool-use { font-size: 12px; color: var(--dim); line-height: 1.5; }
+
+      /* BOSS roster preview — inspiré de la demo arcade */
+      .bosses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 64px; }
+      .boss-card { background: var(--bg2); border: 2px solid; padding: 18px 16px; text-align: center; }
+      .boss-card .boss-emoji { font-size: 32px; margin-bottom: 8px; }
+      .boss-card .boss-name { font-family: var(--display); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+      .boss-card .boss-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; }
+      .boss-card .boss-line { font-family: var(--body); font-size: 11px; color: rgba(240,238,232,0.7); line-height: 1.5; font-style: italic; }
+
+      .lesson-box { background: rgba(232,104,106,0.05); border: 1px solid rgba(232,104,106,0.2); border-left: 3px solid var(--coral); padding: 28px 32px; margin-bottom: 64px; }
+      .lesson-box h3 { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--coral); margin-bottom: 16px; }
+      .lesson-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+      .lesson-list li { font-size: 13px; color: var(--dim); padding-left: 20px; position: relative; line-height: 1.6; }
+      .lesson-list li::before { content: '->'; position: absolute; left: 0; color: var(--coral); font-family: var(--mono); }
+      .lesson-list li strong { color: var(--white); font-weight: 600; }
+
+      .post-footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--faint); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); flex-wrap: wrap; gap: 12px; }
+
+      @media (max-width: 700px) {
+        nav { padding: 1.2rem 1.5rem; }
+        .wrap { padding: 100px 24px 80px; }
+        .step { grid-template-columns: 44px 1fr; }
+        .step-time { display: none; }
+        .time-banner { flex-wrap: wrap; }
+        .demo-bosses { gap: 10px; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">
+        <span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>
+        weilin.hu
+      </a>
+      <ul class="nav-links">
+        <li><a href="projets.html">Projets</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="wrap">
+      <a href="blog.html" class="back-link">← Retour au blog</a>
+
+      <div class="post-header">
+        <p class="post-category">Projets — IA · Arcade · PWA</p>
+        <h1 class="post-title">Work Brain Smasher<br>quand tu bosses trop, <em>l'IA t'engueule</em></h1>
+        <div class="post-meta">
+          <span><span class="meta-dot"></span>weilinhu.com/smash.html</span>
+          <span><span class="meta-dot" style="background:var(--coral)"></span>~3h — dont 2h de micro-design</span>
+          <span><span class="meta-dot" style="background:var(--gold)"></span>Claude · Cloudflare Workers · PWA</span>
+        </div>
+      </div>
+
+      <!-- DEMO HERO -->
+      <div class="demo-box">
+        <div class="demo-preview-zh">骂醒工作脑</div>
+        <div class="demo-subtitle">Work Brain Smasher</div>
+        <p class="demo-quote">&gt; Quand tu crois que tu travailles, mais en fait tu fuis.<br>&gt; Ton boss ne sera pas touché. Ton corps, oui.</p>
+        <a href="smash.html" target="_blank" rel="noopener" class="demo-cta">▶ Aller se faire engueuler</a>
+        <div class="demo-bosses">
+          <div class="demo-boss"><span class="emoji">🥟</span>Tata de Shanghai</div>
+          <div class="demo-boss"><span class="emoji">🧠</span>Psy</div>
+          <div class="demo-boss"><span class="emoji">💼</span>Ex-boss</div>
+          <div class="demo-boss"><span class="emoji">🍻</span>Pote du Nord-Est</div>
+          <div class="demo-boss"><span class="emoji">☯</span>Maître zen</div>
+          <div class="demo-boss"><span class="emoji">💻</span>Ingénieur SV</div>
+        </div>
+      </div>
+
+      <!-- TIME SUMMARY -->
+      <div class="time-banner">
+        <div class="time-banner-number">~3h</div>
+        <div class="time-banner-text">
+          <h3>30 min de prototype · 2h30 de micro-design · 15 min de déploiement</h3>
+          <p>Le MVP tombe vite. Ce qui prend du temps : choisir les 6 voix, régler le rose qui sature, décider comment l'outil doit se <em>terminer</em>.</p>
+        </div>
+        <div class="time-arrow">Chine → US → FR<br>|<br>Claude + CF + PWA</div>
+      </div>
+
+      <div class="section-title">L'idée — POURQUOI</div>
+
+      <div class="lesson-box" style="margin-bottom: 48px;">
+        <h3>Le problème que ça règle</h3>
+        <ul class="lesson-list">
+          <li>Il est 2h du matin. Tu bosses sur un side project dont tu n'as pas besoin.</li>
+          <li>Tu es en arrêt maladie mais tu veux "juste finir un truc".</li>
+          <li>Tu n'as pas publié ton newsletter aujourd'hui — tu n'arrives pas à dormir.</li>
+          <li><strong>Tu confonds fuir avec bosser.</strong> Personne autour de toi n'ose te le dire.</li>
+        </ul>
+      </div>
+
+      <div class="section-title">Étapes — 8 ÉTAPES</div>
+
+      <div class="steps">
+
+        <div class="step phase1">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Inspiration</div>
+            <div class="step-title">骂醒恋爱脑 : slap the love brain (CN)</div>
+            <div class="step-desc">Il existe en Chine un AI prompt qui engueule les cerveaux amoureux. Un personnage froid, sans hormones, qui te dit en 3 phrases ce que personne n'ose te dire. L'idée : transposer au <strong>"cerveau de travail"</strong> — l'auto-exploitation, le FOMO, la culpabilité du jour off.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">WebSearch</span>
+              <span class="tag tag-ok">Concept validé</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase1">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Prototype</div>
+            <div class="step-title">4 itérations dans Claude Artifact</div>
+            <div class="step-desc">v1 minimal sombre → v2 fix : chaque réponse identique (oubli de <code>temperature:1</code> + aucun contexte anti-répétition) → v3 vibes arcade (Press Start 2P, scanlines CRT) → v4 ajout de 6 personnages aléatoires pour varier les voix.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Claude Artifact</span>
+              <span class="tag tag-tool">React</span>
+              <span class="tag tag-issue">Réponses répétées</span>
+              <span class="tag tag-ok">Proto jouable</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">30</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Design</div>
+            <div class="step-title">L'outil doit savoir se terminer</div>
+            <div class="step-desc">Gros virage : un outil "qui t'engueule à l'infini" devient <strong>lui-même une nouvelle addiction</strong>. Ajout d'une mécanique KO : après 3 combos, écran "YOU HAVE BEEN 骂醒", boutons cachés 3 secondes, redirection vers /rest.html (compte à rebours 1h). Le circuit breaker, c'est ce qui fait passer de gadget à outil.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">KO mechanic</span>
+              <span class="tag tag-tool">localStorage</span>
+              <span class="tag tag-ok">Fin forcée</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">20</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Port vanilla</div>
+            <div class="step-title">De React à HTML pur</div>
+            <div class="step-desc">weilinhu.com = stack statique (HTML + vanilla JS), pas de React. Port complet : <code>useState</code> → fermetures, JSX → template strings. 6 personas conservés avec leur couleur thème. Bonus : bug du <code>×</code> unicode dans Press Start 2P (la font ne contient pas le caractère) → remplacé par du chinois + arabe.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Vanilla JS</span>
+              <span class="tag tag-tool">Press Start 2P</span>
+              <span class="tag tag-tool">VT323</span>
+              <span class="tag tag-issue">Font fallback bug</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">40</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Sécurité</div>
+            <div class="step-title">Cloudflare Worker comme proxy IA</div>
+            <div class="step-desc">Une clé Anthropic exposée en frontend = pillée en quelques heures. 40 lignes de Worker : <code>CORS whitelist</code> en regex (<code>localhost</code> tous ports + <code>weilinhu.com</code>), modèle <code>claude-sonnet-4-6</code> hardcodé (pas paramétrable depuis le front), <code>max_tokens</code> plafonné à 500. La clé vit uniquement dans <code>wrangler secret</code>.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Cloudflare Workers</span>
+              <span class="tag tag-tool">wrangler secret</span>
+              <span class="tag tag-tool">CORS regex</span>
+              <span class="tag tag-ok">Clé protégée</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">25</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — PWA</div>
+            <div class="step-title">Ajouter à l'écran d'accueil → devient une APP</div>
+            <div class="step-desc"><code>manifest.json</code> + icône SVG pixel (poing corail dessiné à la main en rect SVG 8×8) + metas <code>apple-mobile-web-app-capable</code>. Safari iPhone propose "Ajouter à l'écran d'accueil" → icône indépendante, plein écran, pas de barre d'adresse. Zéro frais App Store, zéro review.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">PWA</span>
+              <span class="tag tag-tool">manifest.json</span>
+              <span class="tag tag-tool">SVG pixel art</span>
+              <span class="tag tag-ok">APP sans App Store</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">15</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — Déploiement</div>
+            <div class="step-title">wrangler deploy + debug en direct</div>
+            <div class="step-desc">Première fois sur Workers = il faut enregistrer un sous-domaine <code>xxx.workers.dev</code> via le dashboard. Première erreur : CORS rejette le port <code>9999</code> (whitelist trop stricte) → regex. Deuxième piège : le browser cache affiche <code>SYSTEM ERROR</code> alors que Worker tourne. Debug à coup de <code>?v=N</code> et fenêtre privée. <strong>Playwright</strong> a sauvé la vérification : lancer un browser propre et confirmer que le chaînage marche.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">wrangler deploy</span>
+              <span class="tag tag-tool">Playwright</span>
+              <span class="tag tag-issue">CORS 403</span>
+              <span class="tag tag-issue">Cache browser</span>
+              <span class="tag tag-ok">En ligne</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">20</div><div class="time-unit">min</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">8</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — Micro-itérations</div>
+            <div class="step-title">~20 allers-retours sur les couleurs</div>
+            <div class="step-desc">Le MVP n'était pas joli. Corrections successives : titre CN/EN inversé (<strong>chinois en géant centré + glow, anglais en petit dessous</strong>), bouton principal passé de "plein corail" à "contour corail" (trop de rose sinon), Difficulty déplié en 3 boutons tricolores (plié = personne ne clique), 6 niveaux en 6 couleurs (violet / corail / or / menthe / orange / rose) pour que chaque carte soit identifiable d'un coup d'œil. Inspiration : la palette multi-couleurs du terminal Claude Code.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">CSS variables</span>
+              <span class="tag tag-tool">Palette CLI</span>
+              <span class="tag tag-ok">Fit 100vh</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">60</div><div class="time-unit">min</div></div>
+        </div>
+
+      </div>
+
+      <div class="section-title">Les 6 personnages — ENEMY ROSTER</div>
+      <div class="bosses-grid">
+        <div class="boss-card" style="border-color: #F28B7E;">
+          <div class="boss-emoji">🥟</div>
+          <div class="boss-name">Tata de Shanghai</div>
+          <div class="boss-tag">Shanghai·Auntie</div>
+          <div class="boss-line">Sagesse de marché, sens pratique, ton de grand-mère qui te remet à ta place.</div>
+        </div>
+        <div class="boss-card" style="border-color: #7FAACC;">
+          <div class="boss-emoji">🧠</div>
+          <div class="boss-name">Psy clinicien</div>
+          <div class="boss-tag">The·Shrink</div>
+          <div class="boss-line">Jargon clinique précis. "Anxiété productive compensatoire" — et tu te reconnais.</div>
+        </div>
+        <div class="boss-card" style="border-color: #E8C06A;">
+          <div class="boss-emoji">💼</div>
+          <div class="boss-name">Ex-boss devenu ami</div>
+          <div class="boss-tag">Ex·Boss·Friend</div>
+          <div class="boss-line">"Secret du milieu : ton boss est en train de scroller Insta en ce moment."</div>
+        </div>
+        <div class="boss-card" style="border-color: #F08A3E;">
+          <div class="boss-emoji">🍻</div>
+          <div class="boss-name">Pote du Nord-Est</div>
+          <div class="boss-tag">Northeast·Bro</div>
+          <div class="boss-line">Ton direct de copain qui te secoue. Simple, cash, bienveillant.</div>
+        </div>
+        <div class="boss-card" style="border-color: #BCD4C8;">
+          <div class="boss-emoji">☯</div>
+          <div class="boss-name">Maître zen</div>
+          <div class="boss-tag">Zen·Master</div>
+          <div class="boss-line">Jamais vulgaire. La phrase courte qui tranche. Le koan qui fait gifle.</div>
+        </div>
+        <div class="boss-card" style="border-color: #7ECFC0;">
+          <div class="boss-emoji">💻</div>
+          <div class="boss-name">Ingénieur Silicon Valley</div>
+          <div class="boss-tag">SV·Engineer</div>
+          <div class="boss-line">"Ton corps est le seul prod sans environnement de staging. Down time = data loss."</div>
+        </div>
+      </div>
+
+      <div class="section-title">Outils utilisés — STACK</div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">🤖</div>
+          <div class="tool-name">Claude (Sonnet 4.6)</div>
+          <div class="tool-use">Le cerveau IA qui joue les 6 rôles + écrit le code vanilla HTML/JS</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">☁️</div>
+          <div class="tool-name">Cloudflare Workers</div>
+          <div class="tool-use">Proxy entre le browser et l'API Anthropic. Cache la clé, filtre l'origine</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🎭</div>
+          <div class="tool-name">Playwright</div>
+          <div class="tool-use">Debug automatique : lancer un browser propre pour vérifier la chaîne</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📸</div>
+          <div class="tool-name">html2canvas</div>
+          <div class="tool-use">Génère une image PNG de l'écran KO pour partage réseaux sociaux</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📱</div>
+          <div class="tool-name">PWA + SVG icon</div>
+          <div class="tool-use">Manifest + icône pixel → "Ajouter à l'écran d'accueil" = pseudo-APP</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🎮</div>
+          <div class="tool-name">Press Start 2P + VT323</div>
+          <div class="tool-use">Fonts Google — pixel arcade UI + terminal VT rétro</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🚀</div>
+          <div class="tool-name">GitHub Pages</div>
+          <div class="tool-use">Push → en ligne en 2 min. Zéro frais, zéro serveur</div>
+        </div>
+      </div>
+
+      <div class="lesson-box">
+        <h3>Ce qu'il faut retenir</h3>
+        <ul class="lesson-list">
+          <li><strong>Un outil qui ne se termine pas devient une addiction</strong>. Le KO forcé après 3 combos = ce qui sauve l'outil de lui-même.</li>
+          <li>Une clé API en frontend se fait piller en heures. Un Worker Cloudflare avec whitelist CORS = 40 lignes et c'est réglé.</li>
+          <li>Le cache browser est l'ennemi pendant le debug. Toujours tester avec <code>?v=N</code> ou fenêtre privée avant de paniquer.</li>
+          <li>80% du temps post-MVP = micro-design. Une marge de trop, un corail trop saturé, un bouton plié que personne ne clique.</li>
+          <li><strong>La localisation culturelle n'est pas une traduction</strong>. Version FR : la Tata de Shanghai devient Tata du Sud-Ouest, le Maître zen devient Prof de philo du lycée. On ne traduit pas — on substitue l'archétype.</li>
+          <li>6 voix > 1 voix. La surprise (quel perso va tomber ?) active l'écoute.</li>
+          <li>PWA > APP native. Pas d'App Store review, pas 99€/an Apple, même feeling utilisateur.</li>
+        </ul>
+      </div>
+
+      <div class="post-footer">
+        <span>WEILIN — weilinhu.com/smash.html</span>
+        <span>~3h · 8 étapes · 6 personnages · 3 niveaux · 1 KO</span>
+      </div>
+    </div>
+
+    <script>
+      // Page transitions
+      document.querySelectorAll('a[href]').forEach(a => {
+        if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
+          a.addEventListener('click', e => { e.preventDefault(); document.body.classList.add("leaving"); setTimeout(() => window.location.href = a.href, 350); });
+        }
+      });
+    </script>
+  </body>
+</html>

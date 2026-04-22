@@ -1,0 +1,20 @@
+{
+  "name": "骂醒工作脑 · Work Brain Smasher",
+  "short_name": "骂醒",
+  "description": "当你对工作太认真时，AI 会把你骂醒的街机网页",
+  "start_url": "/smash.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0f",
+  "theme_color": "#E8686A",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/smash-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

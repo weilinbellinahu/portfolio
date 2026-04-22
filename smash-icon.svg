@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- 骂醒工作脑图标：像素风拳头，coral on dark -->
+  <rect width="512" height="512" fill="#0a0a0f"/>
+
+  <!-- CRT 扫描线纹理 -->
+  <defs>
+    <pattern id="scan" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="rgba(0,0,0,0.15)"/>
+    </pattern>
+  </defs>
+
+  <!-- 像素拳头（简化 8bit 风），每个"像素"是 32x32 的方块 -->
+  <g fill="#E8686A">
+    <!-- 第 3 行（y=96）：手指关节 -->
+    <rect x="160" y="96" width="32" height="32"/>
+    <rect x="224" y="96" width="32" height="32"/>
+    <rect x="288" y="96" width="32" height="32"/>
+
+    <!-- 第 4 行（y=128）：手指上沿 -->
+    <rect x="128" y="128" width="32" height="32"/>
+    <rect x="160" y="128" width="32" height="32"/>
+    <rect x="192" y="128" width="32" height="32"/>
+    <rect x="224" y="128" width="32" height="32"/>
+    <rect x="256" y="128" width="32" height="32"/>
+    <rect x="288" y="128" width="32" height="32"/>
+    <rect x="320" y="128" width="32" height="32"/>
+
+    <!-- 第 5 行（y=160）：拳头主体 -->
+    <rect x="128" y="160" width="32" height="32"/>
+    <rect x="160" y="160" width="32" height="32"/>
+    <rect x="192" y="160" width="32" height="32"/>
+    <rect x="224" y="160" width="32" height="32"/>
+    <rect x="256" y="160" width="32" height="32"/>
+    <rect x="288" y="160" width="32" height="32"/>
+    <rect x="320" y="160" width="32" height="32"/>
+    <rect x="352" y="160" width="32" height="32"/>
+
+    <!-- 第 6 行（y=192）：拳头主体 -->
+    <rect x="128" y="192" width="32" height="32"/>
+    <rect x="160" y="192" width="32" height="32"/>
+    <rect x="192" y="192" width="32" height="32"/>
+    <rect x="224" y="192" width="32" height="32"/>
+    <rect x="256" y="192" width="32" height="32"/>
+    <rect x="288" y="192" width="32" height="32"/>
+    <rect x="320" y="192" width="32" height="32"/>
+    <rect x="352" y="192" width="32" height="32"/>
+
+    <!-- 第 7 行（y=224）：大拇指突出 -->
+    <rect x="96" y="224" width="32" height="32"/>
+    <rect x="128" y="224" width="32" height="32"/>
+    <rect x="160" y="224" width="32" height="32"/>
+    <rect x="192" y="224" width="32" height="32"/>
+    <rect x="224" y="224" width="32" height="32"/>
+    <rect x="256" y="224" width="32" height="32"/>
+    <rect x="288" y="224" width="32" height="32"/>
+    <rect x="320" y="224" width="32" height="32"/>
+    <rect x="352" y="224" width="32" height="32"/>
+
+    <!-- 第 8 行（y=256）：大拇指 -->
+    <rect x="96" y="256" width="32" height="32"/>
+    <rect x="128" y="256" width="32" height="32"/>
+    <rect x="160" y="256" width="32" height="32"/>
+    <rect x="192" y="256" width="32" height="32"/>
+    <rect x="224" y="256" width="32" height="32"/>
+    <rect x="256" y="256" width="32" height="32"/>
+    <rect x="288" y="256" width="32" height="32"/>
+    <rect x="320" y="256" width="32" height="32"/>
+    <rect x="352" y="256" width="32" height="32"/>
+
+    <!-- 第 9 行（y=288）：腕 -->
+    <rect x="128" y="288" width="32" height="32"/>
+    <rect x="160" y="288" width="32" height="32"/>
+    <rect x="192" y="288" width="32" height="32"/>
+    <rect x="224" y="288" width="32" height="32"/>
+    <rect x="256" y="288" width="32" height="32"/>
+    <rect x="288" y="288" width="32" height="32"/>
+    <rect x="320" y="288" width="32" height="32"/>
+
+    <!-- 第 10 行（y=320）：腕 -->
+    <rect x="160" y="320" width="32" height="32"/>
+    <rect x="192" y="320" width="32" height="32"/>
+    <rect x="224" y="320" width="32" height="32"/>
+    <rect x="256" y="320" width="32" height="32"/>
+    <rect x="288" y="320" width="32" height="32"/>
+  </g>
+
+  <!-- 冲击速度线（mint） -->
+  <g fill="#7ECFC0" opacity="0.85">
+    <rect x="32" y="176" width="48" height="16"/>
+    <rect x="32" y="224" width="32" height="16"/>
+    <rect x="32" y="272" width="48" height="16"/>
+  </g>
+
+  <!-- 标题条 -->
+  <g font-family="monospace" font-size="20" fill="#E8C06A" font-weight="bold">
+    <text x="256" y="428" text-anchor="middle" letter-spacing="4">SMASH</text>
+  </g>
+
+  <!-- 扫描线覆盖 -->
+  <rect width="512" height="512" fill="url(#scan)"/>
+</svg>

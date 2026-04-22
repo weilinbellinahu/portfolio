@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>休息中 · REST</title>
+<meta name="theme-color" content="#0a0a0f">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #0a0a0f;
+    color: #f5f5f8;
+    font-family: 'VT323', monospace;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    text-align: center;
+    overflow: hidden;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(8px, -6px); }
+  }
+  @keyframes blinkSlow {
+    0%, 70% { opacity: 1; }
+    80%, 100% { opacity: 0.3; }
+  }
+  @keyframes crtFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.98; }
+  }
+  .scanlines {
+    position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
+    z-index: 100;
+    animation: crtFlicker 3s infinite;
+  }
+  .cloud {
+    font-size: clamp(80px, 20vw, 140px);
+    animation: drift 6s ease-in-out infinite;
+    margin-bottom: 40px;
+  }
+  h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3.2vw, 22px);
+    color: #7ECFC0;
+    letter-spacing: 0.18em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    text-shadow: 0 0 12px rgba(126,207,192,0.4);
+  }
+  p.sub {
+    font-size: clamp(17px, 3vw, 20px);
+    color: #9a9aa8;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    max-width: 480px;
+  }
+  .timer {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(30px, 9vw, 56px);
+    color: #E8C06A;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    text-shadow: 0 0 16px rgba(232,192,106,0.4);
+  }
+  .timer-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.8vw, 10px);
+    color: #666;
+    letter-spacing: 0.2em;
+    margin-bottom: 48px;
+  }
+  .back {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: #444;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 1px solid #2a2a35;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .back:hover { color: #9a9aa8; border-color: #9a9aa8; }
+  .back.visible { color: #7ECFC0; border-color: #7ECFC0; }
+  .back.visible:hover { color: #fff; border-color: #fff; }
+
+  .footer {
+    position: fixed; bottom: 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #222;
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<div class="cloud">☁︎</div>
+
+<h1>休息中<br>RESTING</h1>
+
+<p class="sub">
+  去喝杯水，躺一下。<br>
+  不要再盯屏幕了。
+</p>
+
+<div class="timer" id="timer">60:00</div>
+<div class="timer-label">倒计时 · COUNTDOWN</div>
+
+<a class="back" id="back-btn" href="/smash.html">
+  <span id="back-text">⏳ 1 小时后才放你走</span>
+</a>
+
+<div class="footer">© 2026 WEILINHU ARCADE · REST·ROOM</div>
+
+<script>
+  const DURATION = 60 * 60; // 1 hour
+  const startKey = 'smash_rest_start';
+  let start = parseInt(localStorage.getItem(startKey) || '0');
+  const now = Date.now();
+
+  // 如果超过 1 小时或首次进来，重置倒计时
+  if (!start || now - start > DURATION * 1000) {
+    start = now;
+    localStorage.setItem(startKey, start);
+  }
+
+  const timerEl = document.getElementById('timer');
+  const backBtn = document.getElementById('back-btn');
+  const backText = document.getElementById('back-text');
+
+  function tick() {
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    const remain = Math.max(0, DURATION - elapsed);
+    const mm = String(Math.floor(remain / 60)).padStart(2, '0');
+    const ss = String(remain % 60).padStart(2, '0');
+    timerEl.textContent = `${mm}:${ss}`;
+
+    if (remain <= 0) {
+      backBtn.classList.add('visible');
+      backText.textContent = '✓ 可以回去了';
+      timerEl.style.color = '#7ECFC0';
+      clearInterval(t);
+    }
+  }
+  tick();
+  const t = setInterval(tick, 1000);
+
+  // 点击"返回"时如果时间没到，阻止跳转
+  backBtn.addEventListener('click', (e) => {
+    if (!backBtn.classList.contains('visible')) {
+      e.preventDefault();
+      alert('还没到时间。去休息。');
+    } else {
+      localStorage.removeItem(startKey);
+    }
+  });
+</script>
+
+</body>
+</html>

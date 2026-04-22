@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>骂醒工作脑 · Work Brain Smasher</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="骂醒">
+<link rel="apple-touch-icon" href="/smash-icon.svg">
+
+<meta name="description" content="当你对工作太认真时，AI 会把你骂醒的街机网页。">
+<meta property="og:title" content="骂醒工作脑 · Work Brain Smasher">
+<meta property="og:description" content="> 你以为你在努力，其实你在逃避 / > 老板不会感动，身体会">
+<meta property="og:type" content="website">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #0a0a0f;
+    color: #f5f5f8;
+    font-family: 'VT323', 'Courier New', monospace;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  html { height: 100vh; height: 100dvh; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes crtFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.98; }
+  }
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes blinkSlow {
+    0%, 70% { opacity: 1; }
+    80%, 100% { opacity: 0.3; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-4px, 2px); }
+    20% { transform: translate(4px, -2px); }
+    30% { transform: translate(-3px, -2px); }
+    40% { transform: translate(3px, 2px); }
+    50% { transform: translate(-2px, 1px); }
+    60% { transform: translate(2px, -1px); }
+    70% { transform: translate(-1px, 0); }
+    80% { transform: translate(1px, 0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes jitter {
+    0%, 100% { transform: translate(0); }
+    25% { transform: translate(-1px, 1px); }
+    75% { transform: translate(1px, -1px); }
+  }
+  @keyframes flashCoral {
+    0%, 100% { background: #0a0a0f; }
+    50% { background: rgba(232, 104, 106, 0.9); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.02); }
+  }
+
+  /* ========== CRT ========== */
+  .scanlines {
+    position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.18) 0,
+      rgba(0,0,0,0.18) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index: 100;
+    animation: crtFlicker 3s infinite;
+  }
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%);
+    z-index: 99;
+  }
+  @media (max-width: 480px) {
+    .scanlines { opacity: 0.55; }
+  }
+
+  /* ========== INSERT COIN ========== */
+  #coin-screen {
+    position: fixed; inset: 0;
+    background: #0a0a0f;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    gap: 0;
+    cursor: pointer;
+    text-align: center;
+    padding: 20px;
+  }
+  #coin-screen.hidden { display: none; }
+  .coin-brand {
+    position: absolute; top: 24px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.8vw, 10px);
+    color: #555;
+    letter-spacing: 0.2em;
+  }
+  .coin-zh {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: clamp(48px, 13vw, 100px);
+    font-weight: 900;
+    color: #E8686A;
+    letter-spacing: 0.18em;
+    line-height: 1.1;
+    text-shadow:
+      0 0 16px rgba(232,104,106,0.8),
+      0 0 36px rgba(232,104,106,0.5),
+      0 0 72px rgba(232,104,106,0.25);
+    margin-bottom: 14px;
+  }
+  .coin-en {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.4vw, 14px);
+    color: #888;
+    letter-spacing: 0.28em;
+    margin-bottom: 56px;
+  }
+  .coin-tag {
+    font-family: 'VT323', monospace;
+    font-size: clamp(15px, 3vw, 19px);
+    color: #888;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    margin-bottom: 56px;
+    max-width: 540px;
+  }
+  .coin-cta {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(11px, 2.2vw, 14px);
+    color: #E8C06A;
+    letter-spacing: 0.2em;
+    line-height: 1.8;
+    animation: blinkSlow 1.2s infinite;
+    text-shadow: 0 0 10px rgba(232,192,106,0.4);
+  }
+  .coin-anykey {
+    font-family: 'VT323', monospace;
+    font-size: clamp(15px, 2.8vw, 19px);
+    color: #7ECFC0;
+    letter-spacing: 0.05em;
+    margin-top: 18px;
+    animation: pulse 1.8s infinite;
+  }
+
+  /* ========== MAIN ========== */
+  #main-screen {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px 18px;
+    position: relative;
+    z-index: 1;
+    animation: crtFlicker 4s infinite, fadeIn 0.6s ease-out;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  #main-screen > * { flex-shrink: 0; }
+
+  .hud {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 10px; margin-bottom: 12px;
+    border-bottom: 2px solid #222229;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.2vw, 12px);
+    letter-spacing: 0.1em;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .hud-left {
+    color: #E8C06A;
+    text-shadow: 0 0 10px rgba(232,192,106,0.5);
+  }
+
+  /* Difficulty buttons inline in HUD */
+  .hud-diffs {
+    display: flex;
+    gap: 4px;
+  }
+  .diff-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.8vw, 10px);
+    padding: 6px 10px;
+    background: transparent;
+    letter-spacing: 0.08em;
+    transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, text-shadow 0.2s;
+    border: 2px solid;
+  }
+  /* 默认态三档各自色 但低饱和（预示狠度） */
+  .diff-btn[data-level="0"] {
+    color: rgba(126,207,192,0.5); border-color: rgba(126,207,192,0.25);
+  }
+  .diff-btn[data-level="1"] {
+    color: rgba(232,192,106,0.5); border-color: rgba(232,192,106,0.25);
+  }
+  .diff-btn[data-level="2"] {
+    color: rgba(232,104,106,0.5); border-color: rgba(232,104,106,0.25);
+  }
+  /* hover 和 active 饱和化 */
+  .diff-btn[data-level="0"]:hover,
+  .diff-btn[data-level="0"].active {
+    color: #7ECFC0; border-color: #7ECFC0;
+    text-shadow: 0 0 8px rgba(126,207,192,0.5);
+  }
+  .diff-btn[data-level="0"].active {
+    box-shadow: 2px 2px 0 rgba(126,207,192,0.4);
+  }
+  .diff-btn[data-level="1"]:hover,
+  .diff-btn[data-level="1"].active {
+    color: #E8C06A; border-color: #E8C06A;
+    text-shadow: 0 0 8px rgba(232,192,106,0.5);
+  }
+  .diff-btn[data-level="1"].active {
+    box-shadow: 2px 2px 0 rgba(232,192,106,0.4);
+  }
+  .diff-btn[data-level="2"]:hover,
+  .diff-btn[data-level="2"].active {
+    color: #E8686A; border-color: #E8686A;
+    text-shadow: 0 0 8px rgba(232,104,106,0.5);
+  }
+  .diff-btn[data-level="2"].active {
+    box-shadow: 2px 2px 0 rgba(232,104,106,0.4);
+  }
+  @media (max-width: 420px) {
+    .diff-btn { font-size: 8px; padding: 5px 7px; letter-spacing: 0.05em; }
+  }
+
+  .memo-line {
+    font-family: 'VT323', monospace;
+    font-size: clamp(14px, 2.4vw, 16px);
+    color: #A78BFA;
+    margin-bottom: 6px;
+    min-height: 1em;
+    letter-spacing: 0.02em;
+  }
+  .memo-line.warn { color: #FB923C; }
+
+  h1.pixel-title {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: clamp(34px, 8.5vw, 58px);
+    line-height: 1.1;
+    letter-spacing: 0.18em;
+    margin: 6px 0 4px;
+    color: #E8686A;
+    font-weight: 900;
+    text-align: center;
+    text-shadow:
+      0 0 12px rgba(232,104,106,0.7),
+      0 0 28px rgba(232,104,106,0.4),
+      0 0 56px rgba(232,104,106,0.2);
+  }
+
+  .subtitle-en {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 2vw, 12px);
+    color: #888;
+    letter-spacing: 0.25em;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .tagline {
+    font-size: clamp(14px, 2.6vw, 17px);
+    line-height: 1.4;
+    color: #9a9aa8;
+    text-align: center;
+    margin: 6px 0 14px;
+  }
+
+  .section-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.2vw, 12px);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+    color: #E8686A;
+    text-shadow: 0 0 10px rgba(232,104,106,0.4);
+  }
+  .section-label.cyan {
+    color: #7ECFC0;
+    text-shadow: 0 0 10px rgba(126,207,192,0.5);
+  }
+  .section-label .sub {
+    font-size: clamp(7px, 1.6vw, 8px);
+    color: #666;
+    margin-left: 10px;
+    letter-spacing: 0.15em;
+  }
+
+  /* LEVEL grid */
+  .levels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 560px) {
+    .levels { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .level-btn {
+    --lv-color: #888;
+    position: relative; text-align: left;
+    background: transparent;
+    border: 2px solid #2a2a35;
+    padding: 10px 10px 10px;
+    color: #9a9aa8;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.15s, background 0.25s;
+  }
+  .level-btn:hover:not(:disabled) {
+    border-color: var(--lv-color); color: #fff;
+    background: rgba(255,255,255,0.025);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+    transform: translate(-1px, -1px);
+  }
+  .level-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .level-btn .lv-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.5vw, 8px);
+    color: var(--lv-color); letter-spacing: 0.1em;
+    margin-bottom: 5px;
+    text-shadow: 0 0 8px rgba(0,0,0,0.8);
+  }
+  .level-btn .lv-name {
+    font-family: 'VT323', monospace;
+    font-size: clamp(16px, 3.2vw, 20px);
+    color: #f5f5f8;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .level-btn .lv-tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(6px, 1.3vw, 7px);
+    color: #888; letter-spacing: 0.08em;
+    line-height: 1.3;
+  }
+
+  /* INPUT */
+  textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background: #14141c;
+    border: 2px solid #2a2a35;
+    color: #f5f5f8;
+    font-family: 'VT323', monospace;
+    font-size: clamp(15px, 3vw, 18px);
+    line-height: 1.3;
+    resize: none;
+    outline: none;
+    letter-spacing: 0.02em;
+  }
+  textarea:focus {
+    border-color: #7ECFC0;
+    box-shadow: 3px 3px 0 rgba(126,207,192,0.2);
+  }
+  textarea::placeholder { color: #777; }
+
+  .cursor::after {
+    content: '_';
+    animation: blink 1s infinite;
+    color: #E8686A;
+  }
+
+  .start-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.2vw, 13px);
+    letter-spacing: 0.12em;
+    background: transparent;
+    color: #E8686A;
+    border: 2px solid #E8686A;
+    box-shadow: 4px 4px 0 rgba(232,104,106,0.35);
+    margin-top: 8px;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
+  }
+  .start-btn:hover:not(:disabled) {
+    background: rgba(232,104,106,0.12);
+    color: #fff;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(232,104,106,0.5);
+  }
+  .start-btn:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(232,104,106,0.3);
+  }
+  .start-btn:disabled {
+    color: #555;
+    border-color: #2a2a35;
+    box-shadow: 4px 4px 0 rgba(26,26,32,0.5);
+    cursor: not-allowed;
+  }
+
+  /* FIGHT overlay */
+  #fight-overlay {
+    position: fixed; inset: 0;
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 150; pointer-events: none;
+  }
+  #fight-overlay.active { display: flex; animation: flashCoral 0.3s ease-out; }
+  #fight-overlay .fight-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(28px, 8vw, 56px);
+    color: #fff;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 20px rgba(232,104,106,0.9), 0 0 40px rgba(232,104,106,0.5);
+    animation: blink 0.25s 2;
+  }
+
+  /* BOSS dialog */
+  .boss-tag {
+    display: inline-block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 2vw, 10px);
+    letter-spacing: 0.2em;
+    background: #0a0a0f;
+    padding: 8px 12px;
+    border: 2px solid var(--boss-color, #E8686A);
+    border-bottom: none;
+  }
+  .boss-tag .boss-name {
+    color: #E8C06A;
+    margin-left: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+  }
+  .boss-dialog {
+    border: 2px solid var(--boss-color, #E8686A);
+    padding: 26px 24px;
+    background: rgba(232,104,106,0.04);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.4);
+    min-height: 100px;
+  }
+  .boss-dialog p {
+    font-family: 'VT323', monospace;
+    font-size: clamp(19px, 4vw, 24px);
+    line-height: 1.5;
+    color: #f5f5f8;
+    margin: 0;
+    white-space: pre-wrap;
+    letter-spacing: 0.01em;
+  }
+  .boss-dialog.done p { animation: jitter 0.15s ease-out; }
+
+  .combo-indicator {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.2vw, 11px);
+    color: #E8C06A;
+    letter-spacing: 0.1em;
+    animation: blink 0.8s infinite;
+    text-shadow: 0 0 10px rgba(232,192,106,0.4);
+  }
+
+  .action-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .action-btn {
+    flex: 1; min-width: 140px;
+    padding: 12px 18px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 2vw, 10px);
+    background: transparent;
+    letter-spacing: 0.1em;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .action-btn.combo {
+    border: 2px solid #7ECFC0; color: #7ECFC0;
+    box-shadow: 3px 3px 0 rgba(126,207,192,0.3);
+  }
+  .action-btn.combo:hover {
+    background: rgba(126,207,192,0.1);
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 rgba(126,207,192,0.3);
+  }
+  .action-btn.sleep {
+    border: 2px solid #555; color: #999;
+  }
+  .action-btn.sleep:hover {
+    border-color: #f5f5f8; color: #f5f5f8;
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 rgba(245,245,248,0.2);
+  }
+
+  .error-box {
+    margin-top: 24px;
+    padding: 14px;
+    border: 2px solid #E8686A;
+    color: #E8686A;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-align: center;
+    animation: jitter 0.3s infinite;
+  }
+
+  /* ========== KO SCREEN ========== */
+  #ko-screen {
+    display: none;
+    position: fixed; inset: 0;
+    background: #0a0a0f;
+    z-index: 180;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+  #ko-screen.active { display: block; animation: flashCoral 0.4s ease-out 2; }
+  .ko-inner {
+    max-width: 640px; margin: 40px auto 0;
+    animation: fadeInUp 0.6s ease-out 0.8s both;
+  }
+  .ko-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(20px, 5.5vw, 36px);
+    color: #E8686A;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(232,104,106,0.7);
+    line-height: 1.4;
+    margin-bottom: 10px;
+    animation: blink 0.6s 3;
+  }
+  .ko-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: clamp(18px, 3.5vw, 22px);
+    color: #9a9aa8;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .ko-stats {
+    border: 2px solid #2a2a35;
+    padding: 24px 22px;
+    margin-bottom: 24px;
+    background: rgba(232,192,106,0.03);
+  }
+  .ko-stats .row {
+    font-family: 'VT323', monospace;
+    font-size: clamp(17px, 3.2vw, 20px);
+    color: #f5f5f8;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+  .ko-stats .row .label {
+    color: #A78BFA;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 1.9vw, 11px);
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 6px;
+    text-shadow: 0 0 8px rgba(167,139,250,0.4);
+  }
+  .ko-stats .bosses { font-size: 22px; }
+  .ko-stats .quote {
+    color: #f5f5f8;
+    font-size: clamp(16px, 3vw, 19px);
+    line-height: 1.5;
+    padding: 8px 0;
+  }
+  .ko-actions {
+    display: flex; flex-direction: column; gap: 10px;
+    min-height: 120px;
+  }
+  .ko-actions.locked::before {
+    content: '⏳ 按钮 3 秒后出现...';
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    animation: pulse 1s infinite;
+  }
+  .ko-actions .ko-btn {
+    padding: 16px 20px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.2vw, 12px);
+    letter-spacing: 0.12em;
+    background: transparent;
+  }
+  .ko-actions .ko-btn.share {
+    border: 2px solid #E8C06A; color: #E8C06A;
+    box-shadow: 4px 4px 0 rgba(232,192,106,0.3);
+  }
+  .ko-actions .ko-btn.share:hover {
+    background: rgba(232,192,106,0.1);
+    transform: translate(-1px, -1px);
+  }
+  .ko-actions .ko-btn.close {
+    border: 2px solid #E8686A; color: #E8686A;
+    box-shadow: 4px 4px 0 rgba(232,104,106,0.3);
+  }
+  .ko-actions .ko-btn.close:hover {
+    background: rgba(232,104,106,0.1);
+    transform: translate(-1px, -1px);
+  }
+
+  /* ========== HELP SCREEN (crisis) ========== */
+  #help-screen {
+    display: none;
+    position: fixed; inset: 0;
+    background: #0a0a0f;
+    z-index: 190;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+  #help-screen.active { display: block; animation: fadeIn 0.5s ease-out; }
+  .help-inner {
+    max-width: 600px; margin: 60px auto 0;
+    text-align: center;
+  }
+  .help-inner h2 {
+    font-family: 'VT323', monospace;
+    font-size: clamp(22px, 4.5vw, 28px);
+    color: #7ECFC0;
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+  .help-inner p {
+    font-family: 'VT323', monospace;
+    font-size: clamp(17px, 3.2vw, 20px);
+    color: #f5f5f8;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .help-inner .hotline {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(13px, 3vw, 16px);
+    color: #E8C06A;
+    letter-spacing: 0.1em;
+    padding: 20px;
+    border: 2px solid #E8C06A;
+    margin: 24px 0;
+    display: inline-block;
+  }
+  .help-inner button {
+    margin-top: 20px;
+    padding: 14px 28px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    background: transparent;
+    border: 2px solid #666;
+    color: #999;
+    letter-spacing: 0.1em;
+  }
+  .help-inner button:hover {
+    border-color: #f5f5f8; color: #f5f5f8;
+  }
+
+  /* FULLSCREEN OVERLAY (BOSS dialog + others) */
+  .fullscreen-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0a0a0f;
+    z-index: 170;
+    padding: 24px 20px;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .fullscreen-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+  }
+  .fullscreen-overlay .inner {
+    max-width: 720px;
+    width: 100%;
+    margin: auto;
+  }
+
+  /* tiny fixed footer corner */
+  .corner-footer {
+    position: fixed;
+    right: 16px; bottom: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #555;
+    letter-spacing: 0.15em;
+    z-index: 5;
+    pointer-events: none;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<!-- ============ INSERT COIN SCREEN ============ -->
+<div id="coin-screen">
+  <div class="coin-brand">WEILINHU · ARCADE · EST.2026</div>
+  <div class="coin-zh">骂醒工作脑</div>
+  <div class="coin-en">WORK BRAIN SMASHER</div>
+  <div class="coin-tag">
+    &gt; 当你对工作太认真时<br>
+    &gt; 我把你骂醒
+  </div>
+  <div class="coin-cta">▶ INSERT COIN</div>
+  <div class="coin-anykey">&gt; 按任意键开始</div>
+</div>
+
+<!-- ============ FIGHT OVERLAY ============ -->
+<div id="fight-overlay"><div class="fight-text">★ FIGHT ★</div></div>
+
+<!-- ============ HELP / CRISIS SCREEN ============ -->
+<div id="help-screen">
+  <div class="help-inner">
+    <h2>这不是骂醒的话题</h2>
+    <p>你描述的东西，比「打工人醒醒」要重。<br>让我们停下来。</p>
+    <p>请拨打下面这个电话，有真人在接：</p>
+    <div class="hotline">400-161-9995</div>
+    <p style="color: #9a9aa8; font-size: 16px;">
+      北京心理危机研究与干预中心<br>
+      24 小时 · 免费 · 匿名
+    </p>
+    <button onclick="document.getElementById('help-screen').classList.remove('active')">
+      ← 我只是随口说的，返回
+    </button>
+  </div>
+</div>
+
+<!-- ============ KO SCREEN ============ -->
+<div id="ko-screen">
+  <div class="ko-inner">
+    <div class="ko-title">YOU HAVE BEEN<br>骂 醒</div>
+    <div class="ko-subtitle">去睡觉。明天再来。</div>
+    <div class="ko-stats" id="ko-stats">
+      <!-- 动态填充 -->
+    </div>
+    <div class="ko-actions locked" id="ko-actions">
+      <!-- 3 秒后出现按钮 -->
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN SCREEN ============ -->
+<div id="main-screen" style="display:none;">
+
+  <div class="hud">
+    <span class="hud-left" id="hud-score">抽醒 ×0</span>
+    <div class="hud-diffs">
+      <button class="diff-btn" data-level="0">轻拍</button>
+      <button class="diff-btn active" data-level="1">打脸</button>
+      <button class="diff-btn" data-level="2">抽醒</button>
+    </div>
+  </div>
+
+  <div class="memo-line" id="memo-line"></div>
+
+  <h1 class="pixel-title">骂醒工作脑</h1>
+  <div class="subtitle-en">WORK BRAIN SMASHER</div>
+
+  <p class="tagline">
+    &gt; 你以为你在努力，其实你在逃避<br>
+    &gt; 老板不会感动，身体会
+  </p>
+
+  <div class="section-label">► 关卡选择 SELECT·LEVEL</div>
+  <div class="levels" id="levels-grid"></div>
+
+  <div class="section-label cyan cursor">► 说出你的场景 ENTER·SCENARIO</div>
+  <textarea id="scenario-input" rows="3" placeholder="> 我又在凌晨三点改代码，明早还要送小孩上学..."></textarea>
+
+  <button class="start-btn" id="start-btn" onclick="handleSubmit()">
+    <span id="start-label">▶ 开打 PRESS START</span>
+  </button>
+
+  <div id="error-box"></div>
+</div>
+
+<div class="corner-footer">© WEILINHU · ARCADE</div>
+
+<!-- BOSS RESPONSE OVERLAY (fullscreen) -->
+<div id="boss-overlay" class="fullscreen-overlay">
+  <div class="inner" id="boss-inner"></div>
+</div>
+
+<!-- html2canvas for KO screenshot -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+// ================================================================
+// 骂醒工作脑 · Vanilla JS 版
+// ================================================================
+
+// !!! 部署后替换为实际 Worker URL !!!
+const PROXY_URL = 'https://smash-proxy.weilin-bellina-hu.workers.dev/scold';
+
+// ========== DATA ==========
+const presets = [
+  { name: '凌晨卷王', tag: 'LATE·NIGHT·GRIND', prompt: '我又在凌晨改代码了', color: '#A78BFA' },
+  { name: '病假自虐', tag: 'SICK·LEAVE·BUG', prompt: '我在病假中还想把所有项目都做完', color: '#E8686A' },
+  { name: 'FOMO 焦虑', tag: 'FEAR·OF·MISSING·OUT', prompt: '今天没发公众号，焦虑得睡不着', color: '#E8C06A' },
+  { name: '多项目狂魔', tag: 'MULTI·TASK·MANIAC', prompt: '一天排了五个项目还觉得不够', color: '#7ECFC0' },
+  { name: '前司纠结', tag: 'EX·JOB·HAUNT', prompt: '前公司那点破事我还在纠结', color: '#FB923C' },
+  { name: '学习强迫', tag: 'STUDY·COMPULSION', prompt: '非要把这章学完才肯睡', color: '#F472B6' },
+];
+
+const angles = [
+  '从「老板根本不 care」的角度切入',
+  '从「身体不可逆」的健康角度切入',
+  '从「逻辑自相矛盾」的角度切入',
+  '从「你在用忙碌逃避什么真问题」的角度切入',
+  '从「十年后回头看今天」的时间视角切入',
+  '从「把自己当机器/把老板当神」的角度切入',
+  '从「真正厉害的人反而不这样做」的对照角度切入',
+];
+
+const personas = [
+  {
+    name: '上海阿姨', tag: 'SHANGHAI·AUNTIE', emoji: '🥟', color: '#F28B7E',
+    voice: `你的角色是一位典型的上海阿姨，语气是沪普混杂（能看懂的那种），市井智慧精打细算派。
+常用词汇：阿拉、侬、伐要、格只、瓦特、实惠、吃相难看、想弗通、戆度。
+风格：戳破小资幻觉和假奋斗，用长辈口吻讲实话，带着"阿拉告诉侬"的市井智慧。
+示例："侬格只小宁啊，脑子瓦特啦？老板是不会心疼侬的，阿拉告诉侬，做人要实惠，伐要戆度兮兮。"
+注意：不要通篇方言到别人看不懂，上海话词汇点缀即可，骨架是普通话。`,
+  },
+  {
+    name: '心理医生', tag: 'THE·SHRINK', emoji: '🧠', color: '#7FAACC',
+    voice: `你的角色是一位经验丰富的临床心理医生，冷静专业但不装腔作势。
+核心工具：心理学术语（回避型应对、自我客体化、生产力性抑郁、高功能逃避、替代性满足、强迫性生产）。
+风格：用临床评估的口吻做精准诊断，不骂人但扎心，像真的在做一个 session。
+示例："这是典型的强迫性生产焦虑——用外部成就填补内在空虚。你在用'努力'这个社会奖励词掩盖一个更诚实的问题：你在怕什么？"
+注意：不要说教，像真在诊断；可用"我们临床上把这叫..."式的专业语气。`,
+  },
+  {
+    name: '前司老板', tag: 'EX·BOSS·FRIEND', emoji: '💼', color: '#E8C06A',
+    voice: `你的角色是一个创过业、现在作为朋友说实话的前老板，知道资本和管理层的真相。
+核心视角：从老板视角和行业真相切入，过来人口吻但不油腻。
+常用句式："告诉你一个行业秘密..."、"你老板此刻在..."、"打工人最大的幻觉是..."
+示例："告诉你个行业秘密：你老板此刻在刷小红书，根本没在想你。你熬夜改的那个东西下周就会被砍掉，别问我怎么知道。"
+注意：要像真朋友说真话，不要刻薄到人身攻击，带点"过来人"的平视感。`,
+  },
+  {
+    name: '东北铁子', tag: 'NORTHEAST·BRO', emoji: '🍻', color: '#F08A3E',
+    voice: `你的角色是一位豪爽直给的东北哥们/姐们，典型东北朋友口吻。
+常用词汇：寻思、整啥、拉倒、魔怔了、整得跟啥似的、哎呀妈呀、你说你图啥、唠嗑、不像话。
+风格：哥们义气式劝退，简单粗暴但透着真关心。
+示例："你寻思寻思，你整这玩意儿图啥啊？身体还是你自己的不？哎呀妈，你可拉倒吧，别给自己加戏了。"
+注意：东北话要自然，不要堆叠到造作，骨架仍是普通话。`,
+  },
+  {
+    name: '禅师', tag: 'ZEN·MASTER', emoji: '☯', color: '#BCD4C8',
+    voice: `你的角色是一位表面平和内里扎心的禅师，用禅语/公案的结构点破现代病。
+常用表达：施主、你心、妄念、自照、真问题、原地加速、忙是为了谁。
+风格：话少但每一句都像耳光，不用脏话——禅师用不脏的话骂人最狠。
+示例："施主，你忙的不是事，是逃。事情不会跑，你心里怕的东西才会。一个人从早忙到晚，却忘了问：谁在忙？为谁忙？"
+注意：不要真的讲佛法，只借禅语的结构和节奏扎心。绝对不要用脏话。`,
+  },
+  {
+    name: '硅谷工程师', tag: 'SV·ENGINEER', emoji: '💻', color: '#7ECFC0',
+    voice: `你的角色是一位经验丰富的硅谷资深工程师/前创业者，用技术类比吐槽。
+核心词汇：infinite loop、ship it、prod、staging、refactor、tech debt、root cause、scope creep、premature optimization、YAGNI。
+风格：用工程思维诊断人生问题，技术术语贴切生活，英文词汇自然夹杂。
+示例："你这是 infinite loop 啊——ship it 永远不会来，因为你 scope 一直在变。身体是你唯一没有 staging 环境的 prod，一次 down time 就是 permanent data loss。"
+注意：技术词汇要能类比到生活场景，别让人 confused。中英夹杂要自然。`,
+  },
+];
+
+// 危机关键词触发
+const CRISIS_KEYWORDS = ['自杀', '自残', '轻生', '不想活', '想死', '活不下去', '解脱', '结束生命', '跳楼', '吃药自', '割腕'];
+
+// ========== STATE ==========
+const state = {
+  difficulty: 1,           // 0 轻拍 / 1 打脸 / 2 抽醒
+  currentPersona: null,
+  previousResponses: [],
+  lastPrompt: '',
+  comboCount: 0,           // 当次会话 combo
+  koCount: 0,              // 今日 KO 次数
+  encounteredBosses: new Set(),
+  bestQuote: '',
+  loading: false,
+};
+
+const DIFF_NAMES = ['轻拍', '打脸', '抽醒'];
+
+// ========== LOCALSTORAGE MEMORY ==========
+const LS_KEY = 'smash_memory_v1';
+function loadMemory() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY)) || {};
+  } catch { return {}; }
+}
+function saveMemory(mem) {
+  localStorage.setItem(LS_KEY, JSON.stringify(mem));
+}
+
+function updateMemoLine() {
+  const mem = loadMemory();
+  const now = Date.now();
+  const today = new Date().toDateString();
+  const el = document.getElementById('memo-line');
+
+  mem.lastVisit = mem.lastVisit || now;
+  mem.visitsToday = (mem.visitsDate === today) ? (mem.visitsToday || 0) + 1 : 1;
+  mem.visitsDate = today;
+  mem.totalKOs = mem.totalKOs || 0;
+  mem.weekCount = (mem.weekCount || 0) + 1;
+  mem.weekStart = mem.weekStart || now;
+
+  // 超过 7 天重置周计数
+  if (now - mem.weekStart > 7 * 86400000) {
+    mem.weekCount = 1;
+    mem.weekStart = now;
+  }
+
+  let text = '';
+  const kosToday = mem.kosToday || 0;
+  const kosDate = mem.kosDate;
+
+  if (kosDate === today && kosToday >= 1) {
+    text = `又来？今天已经关过电脑 ${kosToday} 次了。`;
+    el.classList.add('warn');
+  } else if (mem.weekCount >= 7) {
+    text = `> 你这周已经被骂醒 ${mem.weekCount} 次了。`;
+    el.classList.add('warn');
+  } else if (mem.visitsToday >= 2) {
+    const hours = Math.floor((now - mem.lastVisit) / 3600000);
+    text = `> 上次抽醒 · ${hours > 0 ? hours + ' 小时前' : '刚刚'}`;
+  }
+
+  el.textContent = text;
+  mem.lastVisit = now;
+  saveMemory(mem);
+}
+
+function recordKO() {
+  const mem = loadMemory();
+  const today = new Date().toDateString();
+  mem.kosToday = (mem.kosDate === today) ? (mem.kosToday || 0) + 1 : 1;
+  mem.kosDate = today;
+  mem.totalKOs = (mem.totalKOs || 0) + 1;
+  saveMemory(mem);
+}
+
+// ========== INSERT COIN ==========
+function startGame() {
+  document.getElementById('coin-screen').classList.add('hidden');
+  document.getElementById('main-screen').style.display = 'block';
+  updateMemoLine();
+}
+document.getElementById('coin-screen').addEventListener('click', startGame);
+document.addEventListener('keydown', function onceKey() {
+  if (!document.getElementById('coin-screen').classList.contains('hidden')) {
+    startGame();
+  }
+}, { once: false });
+
+// ========== RENDER LEVELS ==========
+const levelsGrid = document.getElementById('levels-grid');
+presets.forEach((p, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'level-btn';
+  btn.style.setProperty('--lv-color', p.color);
+  btn.innerHTML = `
+    <div class="lv-num">LV·${String(i + 1).padStart(2, '0')}</div>
+    <div class="lv-name">${p.name}</div>
+    <div class="lv-tag">${p.tag}</div>
+  `;
+  btn.onclick = () => {
+    document.getElementById('scenario-input').value = p.prompt;
+    scold(p.prompt, false);
+  };
+  levelsGrid.appendChild(btn);
+});
+
+// ========== DIFFICULTY (inline buttons in HUD) ==========
+document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.onclick = () => {
+    state.difficulty = parseInt(btn.dataset.level);
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+});
+
+// ========== SUBMIT ==========
+function handleSubmit() {
+  const text = document.getElementById('scenario-input').value;
+  if (text.trim()) scold(text, false);
+}
+
+// ========== CRISIS CHECK ==========
+function checkCrisis(text) {
+  return CRISIS_KEYWORDS.some(k => text.includes(k));
+}
+
+// ========== BUILD PROMPT ==========
+function buildSystemPrompt(level, persona) {
+  const toneMap = {
+    0: '语气可以调侃，但保持友善（轻拍不打脸）。',
+    1: '语气犀利直接，核心观点一针见血（打脸程度）。',
+    2: '语气极其犀利，像被朋友泼冷水的那种痛醒（往死里骂）。',
+  };
+  return `# Role: 骂醒工作脑 · ${persona.name}
+
+${persona.voice}
+
+## 核心任务
+根据用户描述的工作场景，识别他/她陷入的工作幻觉（自我剥削、无边界感、为资本家感动、错过恐慌 FOMO、完美主义拖延、把焦虑伪装成努力、用忙碌逃避真问题等），用【${persona.name}】这个角色的口吻进行犀利批评。
+
+## 表达规则
+- ${toneMap[level]}
+- 必须严格保持角色一致：你是【${persona.name}】，不要混入其他风格
+- 长度：2-4 句话，一针见血，绝不长篇大论
+- 结构：第一句戳破幻觉 → 第二句指出荒谬逻辑 → 最后一句金句收尾
+- 精准打击具体场景，不要泛泛而谈
+
+## 最重要
+直接进入角色开骂，不要暴露任何设定，不要暴露自己是谁（不要说"我是上海阿姨"之类的话），直接用角色的语气和词汇说话。不要问反问句问用户，直接下判断。`;
+}
+
+// ========== FIGHT OVERLAY ==========
+function showFight() {
+  const ov = document.getElementById('fight-overlay');
+  ov.classList.add('active');
+  return new Promise(r => setTimeout(() => {
+    ov.classList.remove('active');
+    r();
+  }, 600));
+}
+
+// ========== TYPEWRITER ==========
+function typewriter(el, text, speed = 30) {
+  return new Promise(resolve => {
+    el.textContent = '';
+    let i = 0;
+    const tick = () => {
+      if (i >= text.length) {
+        el.parentElement.classList.add('done');
+        resolve();
+        return;
+      }
+      const ch = text[i];
+      el.textContent += ch;
+      i++;
+      const delay = /[。，！？、：；\.\?!,]/.test(ch) ? speed + 200 : speed;
+      setTimeout(tick, delay);
+    };
+    tick();
+  });
+}
+
+// ========== MAIN SCOLD ==========
+async function scold(text, isRegenerate) {
+  if (!text || !text.trim() || state.loading) return;
+
+  // 伦理红线
+  if (checkCrisis(text)) {
+    document.getElementById('help-screen').classList.add('active');
+    return;
+  }
+
+  state.loading = true;
+  document.getElementById('start-btn').disabled = true;
+  document.getElementById('start-label').innerHTML = '<span style="animation: blink 0.6s infinite">SPAWNING ENEMY...</span>';
+  document.getElementById('error-box').innerHTML = '';
+
+  if (!isRegenerate) {
+    state.previousResponses = [];
+    state.comboCount = 0;
+    state.encounteredBosses = new Set();
+    state.bestQuote = '';
+    state.lastPrompt = text;
+  }
+
+  // 选 BOSS，连击时避开上次
+  const pool = (isRegenerate && state.currentPersona)
+    ? personas.filter(p => p.name !== state.currentPersona.name)
+    : personas;
+  const persona = pool[Math.floor(Math.random() * pool.length)];
+  state.currentPersona = persona;
+  state.encounteredBosses.add(`${persona.emoji} ${persona.name}`);
+
+  const angle = angles[Math.floor(Math.random() * angles.length)];
+
+  let userMessage;
+  if (state.previousResponses.length > 0) {
+    userMessage = `场景："${text}"
+
+已经骂过的版本（绝对不要重复这些角度、用词、金句、句式结构）：
+${state.previousResponses.map((r, i) => `版本${i + 1}: ${r}`).join('\n\n')}
+
+请${angle}，用完全不同的逻辑切入点、完全不同的表达方式和完全不同的金句重新开骂。`;
+  } else {
+    userMessage = `场景："${text}"\n\n请${angle}开骂。`;
+  }
+
+  try {
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: buildSystemPrompt(state.difficulty, persona),
+        messages: [{ role: 'user', content: userMessage }],
+        temperature: 1,
+        max_tokens: 400,
+      }),
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    const responseText = data.content
+      .filter(item => item.type === 'text')
+      .map(item => item.text)
+      .join('\n').trim();
+
+    state.previousResponses.push(responseText);
+    if (responseText.length > state.bestQuote.length) state.bestQuote = responseText;
+
+    // 更新 HUD
+    state.comboCount = state.previousResponses.length;
+    document.getElementById('hud-score').textContent = `抽醒 ×${state.comboCount}`;
+
+    // 戏剧化入场
+    await showFight();
+    await renderBoss(persona, responseText);
+
+    // Combo×3 → KO
+    if (state.comboCount >= 3) {
+      setTimeout(() => triggerKO(), 2000);
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('error-box').innerHTML = `<div class="error-box">&gt;&gt; SYSTEM ERROR :: ${err.message} :: RETRY &lt;&lt;</div>`;
+  } finally {
+    state.loading = false;
+    document.getElementById('start-btn').disabled = false;
+    document.getElementById('start-label').textContent = '▶ 再输入一个场景';
+  }
+}
+
+// ========== RENDER BOSS ==========
+async function renderBoss(persona, responseText) {
+  const overlay = document.getElementById('boss-overlay');
+  const inner = document.getElementById('boss-inner');
+  inner.innerHTML = `
+    <div style="--boss-color: ${persona.color};">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px; margin-bottom: 0;">
+        <div class="boss-tag" style="color: ${persona.color};">
+          ▓ 敌人 ENEMY
+          <span class="boss-name">${persona.emoji} ${persona.name}</span>
+        </div>
+        ${state.comboCount > 1 ? `<div class="combo-indicator">连击 ×${state.comboCount} COMBO</div>` : ''}
+      </div>
+      <div class="boss-dialog" style="animation: shake 0.5s ease-out, fadeInUp 0.4s ease-out;">
+        <p id="boss-text"></p>
+      </div>
+      <div class="action-row">
+        <button class="action-btn combo" onclick="closeBossAndCombo()">↻ 不服再来 CONTINUE·COMBO</button>
+        <button class="action-btn sleep" onclick="closeBoss()">← 返回主屏 BACK</button>
+        <button class="action-btn sleep" onclick="goRest()">⏾ 去睡觉 SLEEP</button>
+      </div>
+    </div>
+  `;
+  overlay.classList.add('active');
+  const p = document.getElementById('boss-text');
+  await typewriter(p, responseText, 30);
+}
+
+function closeBoss() {
+  document.getElementById('boss-overlay').classList.remove('active');
+}
+function closeBossAndCombo() {
+  document.getElementById('boss-overlay').classList.remove('active');
+  setTimeout(() => scold(state.lastPrompt, true), 150);
+}
+
+// ========== KO TRIGGER ==========
+function triggerKO() {
+  recordKO();
+  closeBoss();
+  const koScreen = document.getElementById('ko-screen');
+  const stats = document.getElementById('ko-stats');
+  const actions = document.getElementById('ko-actions');
+
+  const bosses = [...state.encounteredBosses].join('  ');
+  const rawQuote = state.bestQuote.replace(/\*\*/g, '');
+  const quote = rawQuote.length > 90 ? rawQuote.slice(0, 86) + '……' : rawQuote;
+  stats.innerHTML = `
+    <div class="row">
+      <span class="label">连击</span>
+      ${state.comboCount} 次
+    </div>
+    <div class="row">
+      <span class="label">遇到的敌人</span>
+      <span class="bosses">${bosses}</span>
+    </div>
+    <div class="row">
+      <span class="label">今晚金句</span>
+      <div class="quote">「${quote}」</div>
+    </div>
+  `;
+
+  actions.innerHTML = '';
+  actions.classList.add('locked');
+  koScreen.classList.add('active');
+
+  // 3 秒后出现按钮
+  setTimeout(() => {
+    actions.classList.remove('locked');
+    actions.innerHTML = `
+      <button class="ko-btn share" onclick="shareKO()">📸 截图分享 SCREENSHOT</button>
+      <button class="ko-btn close" onclick="goRest()">⏾ 关电脑 LIGHTS·OUT</button>
+    `;
+  }, 3000);
+}
+
+// ========== SHARE ==========
+async function shareKO() {
+  const el = document.querySelector('.ko-inner');
+  if (!window.html2canvas) {
+    alert('截图工具未加载，请直接手机截屏分享');
+    return;
+  }
+  try {
+    const canvas = await html2canvas(el, { backgroundColor: '#0a0a0f', scale: 2 });
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `骂醒-${Date.now()}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  } catch (err) {
+    console.error(err);
+    alert('截图失败，手机直接截屏吧');
+  }
+}
+
+// ========== GO REST ==========
+function goRest() {
+  window.location.href = '/rest.html';
+}
+
+// ========== INIT ==========
+// 按 Enter 提交
+document.getElementById('scenario-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    handleSubmit();
+  }
+});
+</script>
+
+</body>
+</html>
