@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Life · Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0014;
+    --surface: #1A0033;
+    --border: #3D1A5C;
+    --past: #9BDE6F;        /* GameBoy 柔绿：已通关（不刺眼的经典 retro 色）*/
+    --current: #FF4FA3;     /* 霓虹粉：你在这关 */
+    --future: #180028;      /* 深紫：未解锁 */
+    --t1: #F0F0FF;
+    --t2: #B0A0D0;
+    --t3: #8A7AAD;
+    --t4: #4D3A70;
+    --neon-yellow: #FFEE00;
+    --neon-cyan: #00E5FF;
+    --cell: clamp(4px, calc((100vh - 380px) / 90), 10px);
+    --cgap: 1px;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--t1);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "kern";
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    gap: 10px;
+  }
+
+  /* Header */
+  header { text-align: center; }
+  .eyebrow {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+    margin: 0 0 10px;
+    text-shadow: 1px 1px 0 rgba(0, 229, 255, 0.4);
+  }
+  h1 {
+    font-family: 'Press Start 2P', 'Monaco', monospace;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin: 0;
+    line-height: 1.3;
+    color: var(--t1);
+    text-shadow:
+      3px 3px 0 var(--current),
+      6px 6px 0 rgba(255, 79, 163, 0.3);
+  }
+  /* Tim Urban 引言 · retro dialog box */
+  .quote {
+    margin: 8px 0 0;
+    padding: 10px 16px;
+    background: rgba(26, 0, 51, 0.55);
+    border: 2px solid var(--past);
+    max-width: 560px;
+    text-align: center;
+    position: relative;
+  }
+  .quote::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(155, 222, 111, 0.25);
+    pointer-events: none;
+  }
+  .q-text {
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 18px;
+    color: var(--t1);
+    margin: 0 0 6px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+  }
+  .q-attr {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--neon-cyan);
+    margin: 0;
+    letter-spacing: 0.12em;
+  }
+
+  /* Calendar */
+  .calendar {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .years {
+    display: grid;
+    grid-template-rows: repeat(var(--rows), var(--cell));
+    gap: var(--cgap);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    color: var(--t4);
+    flex-shrink: 0;
+  }
+  .years span {
+    line-height: var(--cell);
+    text-align: right;
+    padding-right: 6px;
+    opacity: 0;
+  }
+  .years span.labeled { opacity: 1; color: var(--t3); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(52, var(--cell));
+    grid-template-rows: repeat(var(--rows), var(--cell));
+    gap: var(--cgap);
+  }
+  .cell {
+    width: var(--cell);
+    height: var(--cell);
+    background: var(--future);
+    border-radius: 0;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                background 0.22s ease-out;
+    image-rendering: pixelated;
+  }
+  .cell.past { background: var(--past); }
+  .cell.current {
+    background: var(--current);
+    animation: breathe 2.6s ease-in-out infinite;
+    z-index: 2;
+  }
+  .cell.current::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    animation: ringPulse 1.8s cubic-bezier(0.3, 0, 0.4, 1) infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  @keyframes ringPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 79, 163, 0.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(255, 79, 163, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 79, 163, 0); }
+  }
+  .cell:hover { transform: scale(2); z-index: 5; }
+  @keyframes breathe {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.85; }
+  }
+  /* Entrance sweep 由 JS 驱动，这里不再用 CSS animation 防主线程卡顿 */
+  /* Text stagger on first entry */
+  @keyframes textReveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  /* Act I (0-2000ms): 标题先到位，网格 sweep 揭示 */
+  /* Act II (2000-2400ms): 全静止停顿，让用户看清这张图 */
+  /* Act III (2400ms+): 数字区入场，count-up 砸下 */
+  /* Act I (0-2000ms): 标题先到位，网格 sweep 揭示 */
+  /* Act II (2000-2400ms): 全静止停顿，让用户看清这张图 */
+  /* Act III (2400ms+): 数字区入场，大数字 drop 砸下 */
+  @keyframes bigDrop {
+    from { opacity: 0; transform: translateY(-36px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  body.entering header      { animation: textReveal 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 0ms     backwards; }
+  body.entering .big-number { animation: bigDrop    0.9s cubic-bezier(0.2, 1.25, 0.3, 1) 2400ms backwards; }
+  body.entering .big-label  { animation: textReveal 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 2700ms  backwards; }
+  body.entering .sub-stats  { animation: textReveal 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 2900ms  backwards; }
+  body.entering .config     { animation: textReveal 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) 3100ms  backwards; }
+
+  /* Numbers */
+  .numbers { text-align: center; }
+  .big-number {
+    font-family: 'Press Start 2P', 'Monaco', monospace;
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    color: var(--neon-yellow);
+    text-shadow:
+      3px 3px 0 var(--current),
+      0 0 16px rgba(255, 238, 0, 0.4);
+  }
+  .big-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--past);
+    margin: 8px 0 0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+    text-shadow: 1px 1px 0 rgba(57, 255, 20, 0.3);
+  }
+  .sub-stats {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--t2);
+    margin: 12px 0 0;
+    letter-spacing: 0.1em;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .sub-stats .item { display: inline-flex; align-items: center; gap: 5px; }
+  .sub-stats .sep { color: var(--t4); }
+  .sub-stats .sw { display: inline-block; width: 8px; height: 8px; }
+  .sub-stats .sw.future { outline: 1px solid var(--border); background: var(--future); }
+
+  /* Config */
+  .config {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 11px;
+    color: var(--t3);
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .config label { display: inline-flex; align-items: center; gap: 6px; }
+  .config input, .config select {
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--t2);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 3px 4px;
+    outline: none;
+    border-radius: 0;
+    font-variant-numeric: tabular-nums;
+    transition: border-color 0.15s;
+  }
+  .config input:focus, .config select:focus { border-bottom-color: var(--t1); }
+  .config input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+    cursor: pointer;
+  }
+  .config .sep { color: var(--t4); }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(28, 28, 30, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: var(--t1);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 100;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+  }
+  .tooltip.show { opacity: 1; }
+  /* Signature hint: auto-reveal on current cell after intro animations */
+  .tooltip.auto-hint {
+    border-color: var(--current);
+    padding: 10px 14px;
+    font-size: 13px;
+    box-shadow: 0 0 24px rgba(255, 79, 163, 0.25);
+    animation: hintBreathe 2s ease-in-out infinite;
+  }
+  @keyframes hintBreathe {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 79, 163, 0.22); }
+    50%      { box-shadow: 0 0 32px rgba(255, 79, 163, 0.38); }
+  }
+
+  /* Empty state (first run) */
+  .empty-state {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 24px;
+    z-index: 10;
+    background: var(--bg);
+    animation: emptyIn 0.55s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  .empty-state[hidden] { display: none; }
+  .empty-state.hiding {
+    animation: emptyOut 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+  .empty-state .eyebrow { margin: 0; }
+  .empty-q {
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 100;
+    letter-spacing: -0.03em;
+    margin: 0;
+    text-align: center;
+    max-width: 800px;
+    line-height: 1.1;
+  }
+  .empty-input {
+    font-family: var(--font);
+    font-size: 20px;
+    color: var(--t1);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    outline: none;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    min-width: 220px;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .empty-input:focus { border-color: var(--t1); transform: scale(1.02); }
+  .empty-input::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+    cursor: pointer;
+  }
+  .empty-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+  }
+  .empty-btn {
+    font-family: var(--font);
+    font-size: 15px;
+    color: var(--bg);
+    background: var(--t1);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    cursor: pointer;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s, transform 0.12s;
+    min-width: 140px;
+  }
+  .empty-btn:hover { opacity: 0.88; }
+  .empty-btn:active { transform: scale(0.97); }
+  .empty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .empty-hint {
+    font-size: 13px;
+    color: var(--t3);
+    margin: 0;
+    text-align: center;
+    line-height: 1.7;
+    max-width: 400px;
+  }
+  .empty-hint .zh-hint {
+    color: var(--t4);
+    font-family: "PingFang SC", var(--font);
+  }
+  @keyframes emptyIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes emptyOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(1.03); }
+  }
+  body.has-empty main { opacity: 0; pointer-events: none; }
+  main { transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.3, 1); }
+
+  main { position: relative; z-index: 2; }
+
+  /* 图例 · 小色块 + 英文 */
+  .legend {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: var(--t2);
+    text-align: center;
+    margin: 0 0 2px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 5px; }
+  .legend .sw {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+  }
+  .legend .sw.future { outline: 1px solid var(--border); }
+
+  /* HP Hearts Bar · 每颗心可以半填，让 80/85/90/95 都能看出差别 */
+  .hp-bar {
+    display: flex;
+    gap: 5px;
+    margin: 0 0 2px;
+    align-items: center;
+    justify-content: center;
+  }
+  .heart-slot {
+    position: relative;
+    display: inline-block;
+    width: 22px;
+    height: 19px;
+  }
+  .heart {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 19px;
+    image-rendering: pixelated;
+  }
+  .heart.bg   { color: var(--t4); opacity: 0.45; }
+  .heart.fg   { color: var(--current); filter: drop-shadow(0 0 4px currentColor); }
+
+  /* Signature — 左下角低调署名 */
+  .signature {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    color: var(--t3);
+    text-decoration: none;
+    z-index: 4;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+  .signature:hover { opacity: 1; color: var(--neon-cyan); }
+  @media (max-width: 600px) {
+    .signature { bottom: 12px; left: 12px; font-size: 7px; }
+  }
+
+  /* Shooting star — 偶尔划过夜空的金色流星 */
+  .shooting-star {
+    position: fixed;
+    top: 15%;
+    right: -120px;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--past), var(--neon-cyan), transparent);
+    opacity: 0;
+    pointer-events: none;
+    transform: rotate(-28deg);
+    border-radius: 0;
+    box-shadow: 0 0 10px var(--past), 0 0 20px rgba(57, 255, 20, 0.4);
+    z-index: 3;
+    image-rendering: pixelated;
+  }
+  .shooting-star.shoot {
+    animation: shoot 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes shoot {
+    0%   { opacity: 0; transform: translate(0, 0) rotate(-28deg); }
+    8%   { opacity: 0.9; }
+    100% { opacity: 0; transform: translate(-75vw, 38vh) rotate(-28deg); }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-16px);
+    background: rgba(28, 28, 30, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: var(--t1);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+    border: 1px solid var(--border);
+    font-family: "PingFang SC", var(--font);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    :root { --cell: clamp(4px, calc((100vw - 60px) / 52), 8px); --cgap: 1px; }
+    main { padding: 24px 16px; gap: 22px; }
+    h1 { font-size: 24px; }
+    h1 .zh { font-size: 12px; margin-top: 8px; }
+    .big-number { font-size: 60px; }
+    .years { font-size: 9px; }
+    .years span { padding-right: 4px; }
+    .empty-q { font-size: 30px; }
+    .empty-input { font-size: 17px; padding: 12px 14px; }
+  }
+  @media (min-height: 1000px) {
+    :root { --cell: clamp(6px, calc((100vh - 420px) / 90), 10px); --cgap: 1px; }
+    .big-number { font-size: 54px; }
+    main { padding: 16px 24px; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="empty-state" id="emptyState" hidden>
+  <p class="eyebrow">Your Life</p>
+  <h2 class="empty-q">When were you born?</h2>
+  <form class="empty-form" id="emptyForm" novalidate>
+    <input type="date" id="emptyBirthday" class="empty-input" aria-label="Birthday" min="1900-01-01" required>
+    <button type="submit" class="empty-btn" id="emptyBtn" disabled>Continue</button>
+  </form>
+  <p class="empty-hint">We'll show you what your life looks like in weeks.</p>
+</div>
+
+<main>
+  <div class="hp-bar" id="hpBar"></div>
+  <header>
+    <p class="eyebrow">Player One</p>
+    <h1>Life in Weeks</h1>
+    <p class="sub-stats">
+      <span class="item"><span class="sw" style="background:var(--past)"></span><span id="statPassed">—</span> lived</span>
+      <span class="sep">·</span>
+      <span class="item"><span class="sw" style="background:var(--current)"></span>now</span>
+      <span class="sep">·</span>
+      <span class="item"><span class="sw future" style="background:var(--future)"></span>future</span>
+      <span class="sep">·</span>
+      <span class="item" style="color:var(--neon-cyan)">1 sq = 1 week</span>
+    </p>
+    <div class="config">
+      <label>Born <input type="date" id="birthday"></label>
+      <span class="sep">·</span>
+      <label>Life <select id="lifespan">
+        <option value="80">80</option>
+        <option value="85">85</option>
+        <option value="90" selected>90</option>
+        <option value="95">95</option>
+        <option value="100">100</option>
+      </select></label>
+    </div>
+  </header>
+
+
+  <section class="calendar">
+    <div class="years" id="yearLabels"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="numbers">
+    <p class="big-number"><span id="statRemaining">—</span></p>
+    <p class="big-label">weeks left</p>
+    <blockquote class="quote">
+      <p class="q-text">"If you live to 90, you have 4,680 weeks. That's it."</p>
+      <p class="q-attr">— TIM URBAN · WAIT BUT WHY</p>
+    </blockquote>
+  </section>
+
+</main>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="toast" id="toast"></div>
+<div class="shooting-star" id="shootingStar"></div>
+<a class="signature" href="https://weilinhu.com" target="_blank" rel="noopener">MADE BY WEILIN · WEILINHU.COM</a>
+<script>
+  const STORAGE_KEY = 'life_calendar_v1';
+  const MS_WEEK = 7 * 24 * 3600 * 1000;
+  const SWEEP_MS = 2000;
+  const PAUSE_MS = 400;
+  const COUNT_MS = 1400;
+
+  const $ = id => document.getElementById(id);
+  const grid = $('grid');
+  const yearLabels = $('yearLabels');
+  const tooltip = $('tooltip');
+  const toastEl = $('toast');
+
+  let state = { birthday: '', lifespan: 90 };
+  let animateNext = false;
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) state = Object.assign(state, JSON.parse(raw));
+    } catch (e) {}
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function parseDate(s) {
+    if (!s) return null;
+    const d = new Date(s + 'T00:00:00');
+    return isNaN(d) ? null : d;
+  }
+  function weeksBetween(a, b) { return Math.floor((b - a) / MS_WEEK); }
+  function weekToDate(b, i) { return new Date(b.getTime() + i * MS_WEEK); }
+  function fmtDateLong(d) {
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  // 数字 count-up 动画（带 delay）
+  function countUp(el, to, duration, isFloat, delay = 0) {
+    if (el._cancel) el._cancel();
+    el.textContent = isFloat ? '0.0' : '0';
+    const startAt = performance.now() + delay;
+    // linear: 和格子 sweep 节奏完全一致，每一刻都有可见变化，尾部不"虚停"
+    const ease = t => t;
+    let raf;
+    function frame(now) {
+      if (now < startAt) { raf = requestAnimationFrame(frame); return; }
+      const t = Math.min((now - startAt) / duration, 1);
+      const v = to * ease(t);
+      el.textContent = isFloat ? v.toFixed(1) : Math.round(v).toLocaleString('en-US');
+      if (t < 1) raf = requestAnimationFrame(frame);
+      else el.textContent = isFloat ? to.toFixed(1) : to.toLocaleString('en-US');
+    }
+    raf = requestAnimationFrame(frame);
+    el._cancel = () => cancelAnimationFrame(raf);
+  }
+
+  function renderHearts() {
+    const bar = $('hpBar');
+    if (!bar) return;
+    const birthday = parseDate(state.birthday);
+    const total = state.lifespan * 52;
+    const passed = birthday ? weeksBetween(birthday, new Date()) : 0;
+    const pctRemain = Math.max(0, 1 - passed / total);
+    const exact = pctRemain * 10;  // 0..10 的精确值，允许小数
+    const heartPath = '<g fill="currentColor"><rect x="1" y="0" width="2" height="1"/><rect x="4" y="0" width="2" height="1"/><rect x="0" y="1" width="7" height="2"/><rect x="1" y="3" width="5" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="3" y="5" width="1" height="1"/></g>';
+    let html = '';
+    for (let i = 0; i < 10; i++) {
+      // 第 i 颗心的填充比例（0-1）
+      const fill = Math.max(0, Math.min(1, exact - i));
+      const clipPct = Math.round((1 - fill) * 100);
+      html += `<span class="heart-slot">`
+            + `<svg class="heart bg" viewBox="0 0 7 6" shape-rendering="crispEdges">${heartPath}</svg>`
+            + `<svg class="heart fg" viewBox="0 0 7 6" shape-rendering="crispEdges" style="clip-path: inset(0 ${clipPct}% 0 0);">${heartPath}</svg>`
+            + `</span>`;
+    }
+    bar.innerHTML = html;
+  }
+
+  function renderYearLabels(lifespan) {
+    yearLabels.innerHTML = '';
+    yearLabels.style.setProperty('--rows', lifespan);
+    for (let y = 0; y < lifespan; y++) {
+      const s = document.createElement('span');
+      if (y % 10 === 0) {
+        s.textContent = y;
+        s.classList.add('labeled');
+      }
+      yearLabels.appendChild(s);
+    }
+  }
+
+  function renderGrid() {
+    const lifespan = state.lifespan;
+    const totalWeeks = lifespan * 52;
+    grid.style.setProperty('--rows', lifespan);
+    grid.innerHTML = '';
+
+    const birthday = parseDate(state.birthday);
+    const now = new Date();
+    const passed = birthday ? weeksBetween(birthday, now) : -1;
+
+    const shouldAnimate = animateNext && passed > 0;
+    const frag = document.createDocumentFragment();
+    const sweepCells = [];
+    for (let i = 0; i < totalWeeks; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      if (passed >= 0) {
+        if (shouldAnimate && i <= passed) {
+          sweepCells.push({ cell, isCurrent: i === passed });
+        } else if (i < passed) {
+          cell.classList.add('past');
+        } else if (i === passed) {
+          cell.classList.add('current');
+        }
+      }
+      cell.dataset.week = i;
+      frag.appendChild(cell);
+    }
+    grid.appendChild(frag);
+
+    if (shouldAnimate) {
+      document.body.classList.add('entering');
+      const totalMs = SWEEP_MS + PAUSE_MS + COUNT_MS + 800;
+      setTimeout(() => document.body.classList.remove('entering'), totalMs);
+      // Signature moment: 所有动画结束后，当前红色格子浮出 "You're here"
+      setTimeout(() => {
+        const cur = grid.querySelector('.cell.current');
+        if (!cur || !birthday) return;
+        const rect = cur.getBoundingClientRect();
+        const weekN = passed + 1;
+        tooltip.innerHTML = `You're on week ${weekN.toLocaleString('en-US')}<br><span style="color:var(--t3);font-size:11px;">${fmtDateLong(new Date())}</span>`;
+        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+        tooltip.style.top  = (rect.bottom + 12) + 'px';
+        tooltip.style.transform = 'translateX(-50%)';
+        tooltip.classList.add('show', 'auto-hint');
+        setTimeout(() => {
+          if (tooltip.classList.contains('auto-hint')) {
+            tooltip.classList.remove('show', 'auto-hint');
+            tooltip.style.transform = '';
+          }
+        }, 4000);
+      }, totalMs + 200);
+      // JS 驱动 sweep：用 rAF 按时间进度批量刷格子（补齐漏帧）
+      const totalSweep = sweepCells.length;
+      const startTime = performance.now();
+      let sweepIdx = 0;
+      const sweepFrame = () => {
+        const elapsed = performance.now() - startTime;
+        const progress = Math.min(elapsed / SWEEP_MS, 1);
+        const targetIdx = Math.min(Math.ceil(progress * totalSweep), totalSweep);
+        while (sweepIdx < targetIdx) {
+          const { cell, isCurrent } = sweepCells[sweepIdx];
+          cell.classList.add(isCurrent ? 'current' : 'past');
+          sweepIdx++;
+        }
+        if (sweepIdx < totalSweep) requestAnimationFrame(sweepFrame);
+      };
+      requestAnimationFrame(sweepFrame);
+    }
+
+    updateStats(passed, totalWeeks, shouldAnimate);
+    renderHearts();
+    animateNext = false;
+  }
+
+  function updateStats(passed, total, animate) {
+    if (passed < 0) {
+      $('statRemaining').textContent = '—';
+      $('statPassed').textContent = '—';
+      return;
+    }
+    const p = Math.max(0, passed);
+    const r = Math.max(0, total - p);
+    if (animate) {
+      const base = SWEEP_MS + PAUSE_MS;
+      countUp($('statRemaining'), r, COUNT_MS, false, base);
+      countUp($('statPassed'),    p, COUNT_MS, false, base + 200);
+    } else {
+      $('statRemaining').textContent = r.toLocaleString('en-US');
+      $('statPassed').textContent = p.toLocaleString('en-US');
+    }
+  }
+
+  grid.addEventListener('mousemove', e => {
+    const cell = e.target.closest('.cell');
+    if (!cell) { tooltip.classList.remove('show', 'auto-hint'); tooltip.style.transform = ''; return; }
+    tooltip.classList.remove('auto-hint');
+    tooltip.style.transform = '';
+    const week = +cell.dataset.week;
+    const year = Math.floor(week / 52);
+    const weekInYear = week % 52 + 1;
+    const birthday = parseDate(state.birthday);
+
+    let html = `Age ${year} · Week ${weekInYear}`;
+    if (birthday) {
+      const d = weekToDate(birthday, week);
+      html += `<br><span style="color:var(--t3);font-size:11px;">${fmtDateLong(d)}</span>`;
+    }
+    tooltip.innerHTML = html;
+    tooltip.classList.add('show');
+
+    const pad = 14;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    if (x + tw > window.innerWidth) x = e.clientX - tw - pad;
+    if (y + th > window.innerHeight) y = e.clientY - th - pad;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+  });
+  grid.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+
+  $('birthday').addEventListener('change', e => {
+    state.birthday = e.target.value;
+    saveState();
+    renderGrid();
+  });
+  $('lifespan').addEventListener('change', e => {
+    state.lifespan = +e.target.value;
+    saveState();
+    renderYearLabels(state.lifespan);
+    renderGrid();
+  });
+
+  // 空状态：第一次进入引导输入生日
+  function enterFromEmpty(birthday) {
+    state.birthday = birthday;
+    $('birthday').value = birthday;
+    saveState();
+    const es = $('emptyState');
+    es.classList.add('hiding');
+    setTimeout(() => {
+      document.body.classList.remove('has-empty');
+      es.remove();
+      animateNext = true;
+      renderGrid();
+    }, 380);
+  }
+
+  // 判断日期是否合法：必须是完整日期、年份 >= 1900、不在未来
+  function validBirthday(v) {
+    if (!v) return false;
+    const d = parseDate(v);
+    if (!d) return false;
+    if (d.getFullYear() < 1900) return false;
+    if (d > new Date()) return false;
+    return true;
+  }
+
+  // 用户输入时实时决定 Continue 是否可点
+  $('emptyBirthday').addEventListener('input', () => {
+    $('emptyBtn').disabled = !validBirthday($('emptyBirthday').value);
+  });
+
+  $('emptyForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = $('emptyBirthday').value;
+    if (!validBirthday(v)) {
+      if (!v) showToast('Pick a date');
+      else if (parseDate(v) && parseDate(v).getFullYear() < 1900) showToast('Finish typing your birth year');
+      else if (parseDate(v) > new Date()) showToast('Date is in the future');
+      else showToast('Invalid date');
+      return;
+    }
+    enterFromEmpty(v);
+  });
+
+  // 流星：每 12-22 秒随机划过一次
+  function scheduleStar() {
+    const delay = 12000 + Math.random() * 10000;
+    setTimeout(() => {
+      const star = $('shootingStar');
+      star.style.top = (5 + Math.random() * 25) + 'vh';
+      star.classList.remove('shoot');
+      void star.offsetWidth;
+      star.classList.add('shoot');
+      scheduleStar();
+    }, delay);
+  }
+  scheduleStar();
+
+  loadState();
+  $('lifespan').value = state.lifespan || 90;
+  renderYearLabels(state.lifespan);
+
+  if (!state.birthday) {
+    document.body.classList.add('has-empty');
+    // 日期选择器原生层面挡掉未来日期
+    const today = new Date();
+    const iso = today.toISOString().slice(0, 10);
+    $('emptyBirthday').max = iso;
+    $('emptyState').hidden = false;
+    setTimeout(() => $('emptyBirthday').focus(), 300);
+  } else {
+    $('birthday').value = state.birthday;
+    $('emptyState').remove();
+    animateNext = true;
+    // 等一个 frame 再渲染，让 CSS transition 的初始状态被登记
+    requestAnimationFrame(() => renderGrid());
+  }
+</script>
+</body>
+</html>
