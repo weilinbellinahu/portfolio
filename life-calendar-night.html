@@ -356,6 +356,20 @@
     transition: color 0.2s ease;
   }
   .signature:hover { color: var(--t2); }
+
+  /* 底部收尾横线：告知"页面到这儿了" */
+  body::after {
+    content: '';
+    position: fixed;
+    left: 50%;
+    bottom: 8px;
+    transform: translateX(-50%);
+    width: 64px;
+    height: 1px;
+    background: var(--border);
+    pointer-events: none;
+    z-index: 4;
+  }
   @media (max-width: 600px) {
     .signature { bottom: 12px; left: 12px; font-size: 9px; }
   }

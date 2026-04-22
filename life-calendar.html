@@ -461,6 +461,21 @@
     .signature { bottom: 12px; left: 12px; font-size: 7px; }
   }
 
+  /* 街机外框：明确告诉人"就到这儿，别滑了" */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 6px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 0 0 1px rgba(61, 26, 92, 0.25) inset;
+  }
+  @media (max-width: 600px) {
+    body::after { inset: 4px; }
+  }
+
   /* Shooting star — 偶尔划过夜空的金色流星 */
   .shooting-star {
     position: fixed;
