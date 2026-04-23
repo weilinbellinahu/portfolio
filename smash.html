@@ -1670,10 +1670,11 @@ document.addEventListener('keydown', function onceKey() {
   }
 }, { once: false });
 
-// 老用户直接跳过 INSERT COIN
+// 老用户直接跳过 INSERT COIN；?coin=1 可强制显示初始页
 (function maybeSkipCoin() {
+  const forceCoin = new URLSearchParams(location.search).has('coin');
   const mem = loadMemory();
-  if (mem.seenCoin) startGame();
+  if (mem.seenCoin && !forceCoin) startGame();
 })();
 
 // 恢复上次选的难度
@@ -1934,7 +1935,9 @@ async function renderBoss(persona, responseText) {
         <p id="boss-text"></p>
       </div>
       <div class="action-row">
-        <button class="action-btn combo" onclick="closeBossAndCombo()">↻ 不服再来 CONTINUE·COMBO</button>
+        ${state.comboCount >= 3
+          ? `<div class="action-btn combo" style="cursor:not-allowed;opacity:0.5;pointer-events:none;">▓ 已满连击·等待 KO</div>`
+          : `<button class="action-btn combo" onclick="closeBossAndCombo()">↻ 不服再来 CONTINUE·COMBO</button>`}
         <button class="action-btn sleep" onclick="closeBoss()">← 返回主屏 BACK</button>
         <button class="action-btn sleep" onclick="goRest()">⏾ 去睡觉 SLEEP</button>
       </div>
@@ -1949,6 +1952,8 @@ function closeBoss() {
   document.getElementById('boss-overlay').classList.remove('active');
 }
 function closeBossAndCombo() {
+  // 保险：combo 已满直接拦截，不再发请求
+  if (state.comboCount >= 3) return;
   document.getElementById('boss-overlay').classList.remove('active');
   setTimeout(() => scold(state.lastPrompt, true), 150);
 }

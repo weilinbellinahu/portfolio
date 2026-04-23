@@ -1629,7 +1629,8 @@ document.addEventListener('keydown', function onceKey() {
 // Visiteur de retour : on saute INSERT COIN
 (function maybeSkipCoin() {
   const mem = loadMemory();
-  if (mem.seenCoin) startGame();
+  const forceCoin = new URLSearchParams(location.search).has('coin');
+  if (mem.seenCoin && !forceCoin) startGame();
 })();
 
 // Restaurer la difficulté choisie la dernière fois
@@ -1888,7 +1889,9 @@ async function renderBoss(persona, responseText) {
         <p id="boss-text"></p>
       </div>
       <div class="action-row">
-        <button class="action-btn combo" onclick="closeBossAndCombo()">↻ ENCORE · COMBO</button>
+        ${state.comboCount >= 3
+          ? `<div class="action-btn combo" style="cursor:not-allowed;opacity:0.5;pointer-events:none;">▓ COMBO PLEIN · KO IMMINENT</div>`
+          : `<button class="action-btn combo" onclick="closeBossAndCombo()">↻ ENCORE · COMBO</button>`}
         <button class="action-btn sleep" onclick="closeBoss()">← RETOUR</button>
         <button class="action-btn sleep" onclick="goRest()">⏾ DODO</button>
       </div>
@@ -1903,6 +1906,7 @@ function closeBoss() {
   document.getElementById('boss-overlay').classList.remove('active');
 }
 function closeBossAndCombo() {
+  if (state.comboCount >= 3) return;
   document.getElementById('boss-overlay').classList.remove('active');
   setTimeout(() => scold(state.lastPrompt, true), 150);
 }
