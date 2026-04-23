@@ -343,6 +343,16 @@
   .diff-btn[data-level="2"].active {
     box-shadow: 2px 2px 0 rgba(214,53,59,0.4);
   }
+  /* Les deux non-sélectionnés s'éteignent */
+  .hud-diffs .diff-btn:not(.active) {
+    opacity: 0.32;
+    text-shadow: none;
+    filter: saturate(0.5);
+  }
+  .hud-diffs .diff-btn:not(.active):hover {
+    opacity: 0.9;
+    filter: saturate(1);
+  }
   @media (max-width: 420px) {
     .diff-btn { font-size: 8px; padding: 5px 7px; letter-spacing: 0.05em; }
   }
@@ -498,23 +508,20 @@
   }
   textarea::placeholder { color: #777; }
 
-  /* Curseur clignotant blanc (arcade prompt) dans le textarea vide */
+  /* Curseur clignotant (arcade prompt) — discret */
   .textarea-wrap { position: relative; }
   .input-cursor {
     position: absolute;
     left: 14px;
     top: 10px;
-    color: #ffffff;
+    color: rgba(255,255,255,0.55);
     font-family: 'VT323', monospace;
-    font-size: clamp(18px, 3.4vw, 22px);
+    font-size: clamp(14px, 2.6vw, 17px);
     line-height: 1;
-    font-weight: 700;
+    font-weight: 400;
     animation: blink 1s infinite;
     pointer-events: none;
-    text-shadow:
-      0 0 6px rgba(255,255,255,0.95),
-      0 0 12px rgba(255,255,255,0.75),
-      0 0 18px rgba(255,217,61,0.5);
+    text-shadow: 0 0 3px rgba(255,255,255,0.3);
   }
   .textarea-wrap.has-content .input-cursor,
   .textarea-wrap.is-focused .input-cursor { display: none; }
@@ -1145,7 +1152,7 @@
   </div>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
-    <span id="start-label">▶ GO · PRESS START</span>
+    <span id="start-label">▶ VAS-Y, CASSE-MOI ! · SMASH·ME</span>
   </button>
 
   <div id="error-box"></div>
