@@ -972,80 +972,175 @@
     background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0, rgba(0,0,0,0.3) 2px, transparent 2px, transparent 6px);
     pointer-events: none;
   }
-  .sc-brand {
+  /* Header bar */
+  .sc-header {
+    background: #D6353B;
+    padding: 26px 50px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 6px solid #FFD93D;
+  }
+  .sc-header-zh {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 48px;
+    font-weight: 900;
+    color: #FFD93D;
+    text-shadow: 4px 4px 0 #6B1217;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .sc-header-en {
     font-family: 'Press Start 2P', monospace;
     font-size: 18px;
-    color: #666;
-    letter-spacing: 0.25em;
-    margin-bottom: 8px;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.22em;
   }
-  .sc-date {
+  .sc-id {
+    display: flex;
+    justify-content: space-between;
+    padding: 22px 50px 8px;
     font-family: 'Press Start 2P', monospace;
-    font-size: 16px;
-    color: #444;
-    letter-spacing: 0.2em;
-    margin-bottom: 60px;
+    font-size: 17px;
+    color: #7ECFC0;
+    letter-spacing: 0.22em;
   }
-  .sc-hero {
-    text-align: center;
-    margin-bottom: 50px;
+  .sc-body {
+    display: grid;
+    grid-template-columns: 460px 1fr;
+    gap: 30px;
+    padding: 24px 50px 20px;
+    align-items: stretch;
   }
-  .sc-emoji {
-    font-size: 180px;
-    line-height: 1;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 40px rgba(214,53,59,0.3));
-  }
-  .sc-bossname {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 26px;
-    color: var(--sc-color, #D6353B);
-    letter-spacing: 0.2em;
-    text-shadow: 0 0 16px var(--sc-color, rgba(214,53,59,0.5));
-  }
-  .sc-label {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
-    color: #3DD6F0;
-    letter-spacing: 0.3em;
-    margin-bottom: 18px;
-    text-align: center;
-  }
-  .sc-quote {
-    font-size: 44px;
-    line-height: 1.4;
-    color: #f5f5f8;
-    text-align: center;
-    padding: 40px 30px;
-    border-left: 4px solid var(--sc-color, #D6353B);
-    border-right: 4px solid var(--sc-color, #D6353B);
-    letter-spacing: 0.02em;
-    flex-grow: 1;
+  .sc-portrait {
+    background: radial-gradient(circle, rgba(255,217,61,0.12), transparent 70%), #14141c;
+    border: 5px solid var(--sc-color, #D6353B);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: inset 0 0 40px rgba(255,255,255,0.04),
+                8px 8px 0 rgba(214,53,59,0.25);
+    aspect-ratio: 1;
+  }
+  .sc-portrait-emoji {
+    font-size: 260px;
+    line-height: 1;
+    filter: drop-shadow(0 0 60px var(--sc-color, rgba(214,53,59,0.6)));
+  }
+  .sc-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: center;
+  }
+  .sc-info-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 13px 18px;
+    background: rgba(255,255,255,0.03);
+    border-left: 4px solid var(--sc-color, #D6353B);
+  }
+  .sc-info-row.combo {
+    background: rgba(255,217,61,0.1);
+    border-left-color: #FFD93D;
+  }
+  .sc-info-k {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 0.2em;
+    min-width: 74px;
+  }
+  .sc-info-v {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    font-weight: 900;
+    color: #f5f5f8;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+  }
+  .sc-info-v.type-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 15px;
+    color: var(--sc-color, #D6353B);
+    letter-spacing: 0.15em;
+  }
+  .sc-info-combo {
+    color: #FFD93D;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 34px;
+    text-shadow: 0 0 14px rgba(255,217,61,0.7);
+    letter-spacing: 0.1em;
+  }
+  .sc-move {
+    padding: 10px 50px 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+  }
+  .sc-move-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 16px;
+    color: var(--sc-color, #D6353B);
+    letter-spacing: 0.2em;
+    margin-bottom: 14px;
+    text-shadow: 0 0 10px var(--sc-color, rgba(214,53,59,0.6));
+  }
+  .sc-quote {
+    font-family: 'VT323', monospace;
+    font-size: 44px;
+    line-height: 1.35;
+    color: #f5f5f8;
+    padding: 28px 34px;
+    background: #14141c;
+    border: 3px solid var(--sc-color, #D6353B);
+    box-shadow: 8px 8px 0 rgba(214,53,59,0.22);
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.02em;
   }
   .sc-footer {
-    margin-top: 50px;
+    padding: 22px 50px 36px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    border-top: 3px dashed #2a2a35;
   }
-  .sc-title {
+  .sc-ko {
     font-family: 'Press Start 2P', monospace;
-    font-size: 28px;
-    color: #D6353B;
-    letter-spacing: 0.18em;
-    text-shadow: 0 0 12px rgba(214,53,59,0.6);
-    line-height: 1.4;
+    font-size: 32px;
+    color: #FFD93D;
+    letter-spacing: 0.12em;
+    text-shadow: 3px 3px 0 #D6353B, 0 0 20px rgba(255,217,61,0.4);
+    line-height: 1.3;
   }
-  .sc-watermark {
+  .sc-url {
     font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
+    font-size: 18px;
     color: #7ECFC0;
     letter-spacing: 0.2em;
     text-align: right;
+    line-height: 1.6;
   }
+
+  /* ========== SFX TOGGLE ========== */
+  .sfx-toggle {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: #7ECFC0;
+    background: transparent;
+    border: 1px solid #7ECFC0;
+    padding: 5px 7px;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .sfx-toggle:hover { color: #fff; border-color: #fff; }
+  .sfx-toggle.muted { color: #444; border-color: #2a2a35; opacity: 0.55; }
 </style>
 </head>
 
@@ -1117,6 +1212,7 @@
     <div class="hud-left-group">
       <a class="lang-switch" href="/smash.html" title="中文版">🇨🇳 中</a>
       <span class="hud-left" id="hud-score">Gifles · 0</span>
+      <button class="sfx-toggle" id="sfx-toggle" title="Son" onclick="toggleSfx()">🔊</button>
     </div>
     <div class="hud-diffs">
       <button class="diff-btn" data-level="0">Léger</button>
@@ -1159,17 +1255,49 @@
 <!-- ============ SHARE CARD (hidden, 1080x1350) ============ -->
 <div id="share-card">
   <div class="sc-scanlines"></div>
-  <div class="sc-brand">WEILINHU · ARCADE · EST.2026</div>
-  <div class="sc-date" id="sc-date"></div>
-  <div class="sc-hero">
-    <div class="sc-emoji" id="sc-emoji">👊</div>
-    <div class="sc-bossname" id="sc-bossname"></div>
+
+  <div class="sc-header">
+    <span class="sc-header-zh">SECOUE-MOI</span>
+    <span class="sc-header-en">WORK·BRAIN·SMASHER</span>
   </div>
-  <div class="sc-label">► PUNCHLINE DU SOIR</div>
-  <div class="sc-quote" id="sc-quote"></div>
+
+  <div class="sc-id">
+    <span id="sc-idno">№ 001</span>
+    <span id="sc-date"></span>
+  </div>
+
+  <div class="sc-body">
+    <div class="sc-portrait">
+      <div class="sc-portrait-emoji" id="sc-emoji">🌻</div>
+    </div>
+    <div class="sc-info">
+      <div class="sc-info-row">
+        <span class="sc-info-k">BOSS</span>
+        <span class="sc-info-v" id="sc-bossname">Mamie</span>
+      </div>
+      <div class="sc-info-row">
+        <span class="sc-info-k">TYPE</span>
+        <span class="sc-info-v type-badge" id="sc-type">MAI·68</span>
+      </div>
+      <div class="sc-info-row">
+        <span class="sc-info-k">DIFF</span>
+        <span class="sc-info-v" id="sc-diff">Cinglant</span>
+      </div>
+      <div class="sc-info-row combo">
+        <span class="sc-info-k">COMBO</span>
+        <span class="sc-info-v sc-info-combo" id="sc-combo">×3</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sc-move">
+    <div class="sc-move-label">► SIGNATURE·MOVE · REPLIQUE</div>
+    <div class="sc-quote" id="sc-quote"></div>
+  </div>
+
   <div class="sc-footer">
-    <div class="sc-title">TU AS ÉTÉ<br>G I F L É</div>
-    <div class="sc-watermark">weilinhu.com<br>/smash-fr</div>
+    <div class="sc-ko">YOU HAVE BEEN<br>GIFLE</div>
+    <div class="sc-url">weilinhu.com<br>/smash-fr</div>
   </div>
 </div>
 
@@ -1190,6 +1318,79 @@
 
 // !!! 部署后替换为实际 Worker URL !!!
 const PROXY_URL = 'https://smash-proxy.weilin-bellina-hu.workers.dev/scold';
+
+// ========== SFX (Web Audio API 8-bit) ==========
+const SFX = (() => {
+  let ctx = null;
+  let muted = localStorage.getItem('smash_sfx_muted') === '1';
+
+  function ensure() {
+    if (!ctx) {
+      try { ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch (e) { return null; }
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  function beep({ freq=440, dur=0.1, type='square', vol=0.15, slideTo=null, attack=0.005 }) {
+    if (muted) return;
+    const c = ensure();
+    if (!c) return;
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(vol, t + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(gain).connect(c.destination);
+    osc.start(t);
+    osc.stop(t + dur + 0.02);
+  }
+
+  function coin() {
+    beep({ freq: 988, dur: 0.07, type: 'square', vol: 0.11 });
+    setTimeout(() => beep({ freq: 1319, dur: 0.14, type: 'square', vol: 0.11 }), 75);
+  }
+  function hit() {
+    beep({ freq: 220, dur: 0.1, type: 'sawtooth', vol: 0.16, slideTo: 70 });
+    setTimeout(() => beep({ freq: 110, dur: 0.1, type: 'square', vol: 0.1, slideTo: 50 }), 40);
+  }
+  function ko() {
+    const notes = [554, 494, 415, 349];
+    notes.forEach((f, i) => {
+      setTimeout(() => beep({ freq: f, dur: 0.32, type: 'triangle', vol: 0.14 }), i * 210);
+    });
+    beep({ freq: 110, dur: 1.4, type: 'sine', vol: 0.1 });
+  }
+  function toggle() {
+    muted = !muted;
+    localStorage.setItem('smash_sfx_muted', muted ? '1' : '0');
+    return muted;
+  }
+  function isMuted() { return muted; }
+  return { coin, hit, ko, toggle, isMuted };
+})();
+
+function toggleSfx() {
+  const muted = SFX.toggle();
+  const btn = document.getElementById('sfx-toggle');
+  if (btn) {
+    btn.textContent = muted ? '🔇' : '🔊';
+    btn.classList.toggle('muted', muted);
+  }
+  if (!muted) SFX.coin();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('sfx-toggle');
+  if (btn && SFX.isMuted()) {
+    btn.textContent = '🔇';
+    btn.classList.add('muted');
+  }
+});
 
 // ========== DATA ==========
 const presets = [
@@ -1362,6 +1563,7 @@ function startGame() {
   saveMemory(mem);
   updateMemoLine();
   renderCollection();
+  SFX.coin();
 }
 document.getElementById('coin-screen').addEventListener('click', startGame);
 document.addEventListener('keydown', function onceKey() {
@@ -1494,6 +1696,7 @@ Max 2 phrases : 1re = verdict tranchant, 2e (optionnelle) = punchline qui ferme.
 function showFight() {
   const ov = document.getElementById('fight-overlay');
   ov.classList.add('active');
+  SFX.hit();
   return new Promise(r => setTimeout(() => {
     ov.classList.remove('active');
     r();
@@ -1652,6 +1855,7 @@ function closeBossAndCombo() {
 
 // ========== KO TRIGGER ==========
 function triggerKO() {
+  SFX.ko();
   recordKO();
   closeBoss();
   const koScreen = document.getElementById('ko-screen');
@@ -1713,11 +1917,17 @@ async function generateShareBlob() {
   const card = document.getElementById('share-card');
   const p = state.currentPersona || personas[0];
   const rawQuote = state.bestQuote.replace(/\*\*/g, '');
-  const quote = smartTruncate(rawQuote, 180);
+  const quote = smartTruncate(rawQuote, 160);
   card.style.setProperty('--sc-color', p.color);
   document.getElementById('sc-emoji').textContent = p.emoji;
   document.getElementById('sc-bossname').textContent = p.name;
+  document.getElementById('sc-type').textContent = p.tag;
+  const diffLabels = ['Leger', 'Cinglant', 'Brutal'];
+  document.getElementById('sc-diff').textContent = diffLabels[state.difficulty] || 'Cinglant';
+  document.getElementById('sc-combo').textContent = `×${state.comboCount || 3}`;
   document.getElementById('sc-quote').textContent = `« ${quote} »`;
+  const idx = personas.findIndex(x => x.name === p.name);
+  document.getElementById('sc-idno').textContent = `N° ${String((idx >= 0 ? idx : 0) + 1).padStart(3, '0')}`;
   const d = new Date();
   document.getElementById('sc-date').textContent =
     `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
