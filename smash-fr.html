@@ -392,14 +392,15 @@
 
   .section-label {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(10px, 2.2vw, 12px);
-    letter-spacing: 0.2em;
-    margin-bottom: 8px;
+    font-size: clamp(13px, 2.8vw, 16px);
+    letter-spacing: 0.16em;
+    margin-bottom: 10px;
     color: #D6353B;
-    text-shadow: 0 0 10px rgba(214,53,59,0.4);
+    text-shadow: 0 0 12px rgba(214,53,59,0.6);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    line-height: 1.3;
   }
   .section-label::before {
     content: '♥';
@@ -417,8 +418,10 @@
     opacity: 0.5;
   }
   .section-label.cyan {
-    color: #7ECFC0;
-    text-shadow: 0 0 10px rgba(126,207,192,0.5);
+    color: #FFD93D;
+    text-shadow:
+      0 0 10px rgba(255,217,61,0.85),
+      0 0 20px rgba(255,217,61,0.45);
   }
   .section-label .sub {
     font-size: clamp(7px, 1.6vw, 8px);
@@ -1132,10 +1135,10 @@
     &gt; Ton boss s'en fout. Ton corps, non.
   </p>
 
-  <div class="section-label">CHOISIR UN NIVEAU · SELECT·LEVEL</div>
+  <div class="section-label">CHOISIR TON ÉTAT · SELECT·STATE</div>
   <div class="levels" id="levels-grid"></div>
 
-  <div class="section-label cyan">RACONTE-MOI · ENTER·SCENARIO</div>
+  <div class="section-label cyan">TU FAIS QUOI, LÀ ? · ENTER·SCENARIO</div>
   <div class="textarea-wrap">
     <textarea id="scenario-input" rows="3" placeholder="> Ex : Il est 2h du mat et j'ai encore « un dernier truc »… (décris ta situation puis clique GO)"></textarea>
     <span class="input-cursor" aria-hidden="true">▌</span>
