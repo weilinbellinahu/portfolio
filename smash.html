@@ -7,7 +7,7 @@
 
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#0F0E2B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="骂醒">
@@ -23,7 +23,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: #0a0a0f;
+    background: #0F0E2B;
     color: #f5f5f8;
     font-family: 'VT323', 'Courier New', monospace;
     height: 100%;
@@ -72,7 +72,7 @@
     75% { transform: translate(1px, -1px); }
   }
   @keyframes flashCoral {
-    0%, 100% { background: #0a0a0f; }
+    0%, 100% { background: #0F0E2B; }
     50% { background: rgba(214,53,59, 0.9); }
   }
   @keyframes pulse {
@@ -105,7 +105,7 @@
   /* ========== INSERT COIN ========== */
   #coin-screen {
     position: fixed; inset: 0;
-    background: #0a0a0f;
+    background: #0F0E2B;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     z-index: 200;
@@ -126,13 +126,14 @@
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     font-size: clamp(48px, 13vw, 100px);
     font-weight: 900;
-    color: #D6353B;
+    color: #FFD93D;
     letter-spacing: 0.18em;
     line-height: 1.1;
+    /* 像素立体投影：黄色字 + 深红边影（Canva GAME NIGHT 风） */
     text-shadow:
-      0 0 16px rgba(214,53,59,0.8),
-      0 0 36px rgba(214,53,59,0.5),
-      0 0 72px rgba(214,53,59,0.25);
+      4px 4px 0 #D6353B,
+      5px 5px 0 #6B1217,
+      0 0 24px rgba(255,217,61,0.35);
     margin-bottom: 14px;
   }
   .coin-en {
@@ -154,11 +155,11 @@
   .coin-cta {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(11px, 2.2vw, 14px);
-    color: #E8C06A;
+    color: #FFD93D;
     letter-spacing: 0.2em;
     line-height: 1.8;
     animation: blinkSlow 1.2s infinite;
-    text-shadow: 0 0 10px rgba(232,192,106,0.4);
+    text-shadow: 0 0 10px rgba(255,217,61,0.4);
   }
   .coin-anykey {
     font-family: 'VT323', monospace;
@@ -195,8 +196,8 @@
     flex-wrap: wrap; gap: 12px;
   }
   .hud-left {
-    color: #E8C06A;
-    text-shadow: 0 0 10px rgba(232,192,106,0.5);
+    color: #FFD93D;
+    text-shadow: 0 0 10px rgba(255,217,61,0.5);
   }
 
   /* Difficulty buttons inline in HUD */
@@ -218,7 +219,7 @@
     color: rgba(126,207,192,0.75); border-color: rgba(126,207,192,0.4);
   }
   .diff-btn[data-level="1"] {
-    color: rgba(232,192,106,0.75); border-color: rgba(232,192,106,0.4);
+    color: rgba(255,217,61,0.75); border-color: rgba(255,217,61,0.4);
   }
   .diff-btn[data-level="2"] {
     color: rgba(214,53,59,0.75); border-color: rgba(214,53,59,0.4);
@@ -234,11 +235,11 @@
   }
   .diff-btn[data-level="1"]:hover,
   .diff-btn[data-level="1"].active {
-    color: #E8C06A; border-color: #E8C06A;
-    text-shadow: 0 0 8px rgba(232,192,106,0.5);
+    color: #FFD93D; border-color: #FFD93D;
+    text-shadow: 0 0 8px rgba(255,217,61,0.5);
   }
   .diff-btn[data-level="1"].active {
-    box-shadow: 2px 2px 0 rgba(232,192,106,0.4);
+    box-shadow: 2px 2px 0 rgba(255,217,61,0.4);
   }
   .diff-btn[data-level="2"]:hover,
   .diff-btn[data-level="2"].active {
@@ -268,13 +269,14 @@
     line-height: 1.1;
     letter-spacing: 0.18em;
     margin: 6px 0 4px;
-    color: #D6353B;
+    color: #FFD93D;
     font-weight: 900;
     text-align: center;
+    /* 像素立体投影：黄字 + 深红边影 */
     text-shadow:
-      0 0 12px rgba(214,53,59,0.7),
-      0 0 28px rgba(214,53,59,0.4),
-      0 0 56px rgba(214,53,59,0.2);
+      3px 3px 0 #D6353B,
+      4px 4px 0 #6B1217,
+      0 0 18px rgba(255,217,61,0.3);
   }
 
   .subtitle-en {
@@ -440,13 +442,13 @@
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(9px, 2vw, 10px);
     letter-spacing: 0.2em;
-    background: #0a0a0f;
+    background: #0F0E2B;
     padding: 8px 12px;
     border: 2px solid var(--boss-color, #D6353B);
     border-bottom: none;
   }
   .boss-tag .boss-name {
-    color: #E8C06A;
+    color: #FFD93D;
     margin-left: 10px;
     font-family: 'VT323', monospace;
     font-size: 18px;
@@ -473,10 +475,10 @@
   .combo-indicator {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(10px, 2.2vw, 11px);
-    color: #E8C06A;
+    color: #FFD93D;
     letter-spacing: 0.1em;
     animation: blink 0.8s infinite;
-    text-shadow: 0 0 10px rgba(232,192,106,0.4);
+    text-shadow: 0 0 10px rgba(255,217,61,0.4);
   }
 
   .action-row {
@@ -526,7 +528,7 @@
   #ko-screen {
     display: none;
     position: fixed; inset: 0;
-    background: #0a0a0f;
+    background: #0F0E2B;
     z-index: 180;
     padding: 12px;
     align-items: center; justify-content: center;
@@ -561,7 +563,7 @@
     border: 2px solid #2a2a35;
     padding: 14px 16px;
     margin-bottom: 14px;
-    background: rgba(232,192,106,0.03);
+    background: rgba(255,217,61,0.03);
   }
   .ko-stats .row {
     font-family: 'VT323', monospace;
@@ -606,11 +608,11 @@
     background: transparent;
   }
   .ko-actions .ko-btn.share {
-    border: 2px solid #E8C06A; color: #E8C06A;
-    box-shadow: 4px 4px 0 rgba(232,192,106,0.3);
+    border: 2px solid #FFD93D; color: #FFD93D;
+    box-shadow: 4px 4px 0 rgba(255,217,61,0.3);
   }
   .ko-actions .ko-btn.share:hover {
-    background: rgba(232,192,106,0.1);
+    background: rgba(255,217,61,0.1);
     transform: translate(-1px, -1px);
   }
   .ko-actions .ko-btn.close {
@@ -626,7 +628,7 @@
   #help-screen {
     display: none;
     position: fixed; inset: 0;
-    background: #0a0a0f;
+    background: #0F0E2B;
     z-index: 190;
     padding: 40px 20px;
     overflow-y: auto;
@@ -654,10 +656,10 @@
   .help-inner .hotline {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(13px, 3vw, 16px);
-    color: #E8C06A;
+    color: #FFD93D;
     letter-spacing: 0.1em;
     padding: 20px;
-    border: 2px solid #E8C06A;
+    border: 2px solid #FFD93D;
     margin: 24px 0;
     display: inline-block;
   }
@@ -680,7 +682,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: #0a0a0f;
+    background: #0F0E2B;
     z-index: 170;
     padding: 24px 20px;
     overflow: hidden;
@@ -717,7 +719,7 @@
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
     color: #666;
-    background: rgba(10,10,15,0.7);
+    background: rgba(15,14,43,0.7);
     border: 1px solid #2a2a35;
     padding: 6px 10px;
     text-decoration: none;
@@ -765,8 +767,8 @@
     transform: scale(1.15);
   }
   .collection-complete {
-    color: #E8C06A;
-    text-shadow: 0 0 8px rgba(232,192,106,0.5);
+    color: #FFD93D;
+    text-shadow: 0 0 8px rgba(255,217,61,0.5);
   }
 
   /* ========== SHARE CARD (off-screen, 1080×1350) ========== */
@@ -774,7 +776,7 @@
     position: fixed;
     top: -99999px; left: -99999px;
     width: 1080px; height: 1350px;
-    background: #0a0a0f;
+    background: #0F0E2B;
     padding: 80px 72px;
     display: flex;
     flex-direction: column;
@@ -998,7 +1000,7 @@ const PROXY_URL = 'https://smash-proxy.weilin-bellina-hu.workers.dev/scold';
 const presets = [
   { name: '凌晨卷王', tag: 'LATE·NIGHT·GRIND', prompt: '我又在凌晨改代码了', color: '#3DD6F0' },
   { name: '病假自虐', tag: 'SICK·LEAVE·BUG', prompt: '我在病假中还想把所有项目都做完', color: '#D6353B' },
-  { name: 'FOMO 焦虑', tag: 'FEAR·OF·MISSING·OUT', prompt: '今天没发公众号，焦虑得睡不着', color: '#E8C06A' },
+  { name: 'FOMO 焦虑', tag: 'FEAR·OF·MISSING·OUT', prompt: '今天没发公众号，焦虑得睡不着', color: '#FFD93D' },
   { name: '多项目狂魔', tag: 'MULTI·TASK·MANIAC', prompt: '一天排了五个项目还觉得不够', color: '#7ECFC0' },
   { name: '前司纠结', tag: 'EX·JOB·HAUNT', prompt: '前公司那点破事我还在纠结', color: '#FB923C' },
   { name: '学习强迫', tag: 'STUDY·COMPULSION', prompt: '非要把这章学完才肯睡', color: '#22C55E' },
@@ -1032,7 +1034,7 @@ const personas = [
 示例："这是典型殉道妄想。你不是在努力，你在用疲惫证明自己值得被爱。临床上见过太多，下一步是身体崩。脑子骗不过胃。"`,
   },
   {
-    name: '前司老板', tag: 'EX·BOSS·FRIEND', emoji: '💼', color: '#E8C06A',
+    name: '前司老板', tag: 'EX·BOSS·FRIEND', emoji: '💼', color: '#FFD93D',
     voice: `你是一个创过业赚过钱、见过 100 个打工人白熬夜的前老板。以朋友身份讲资本真相。带脏话。
 脏话库（每次 1-2 个）：妈的、操、狗屁、老子、傻屄（慎用，但可以）、你他妈、别犯傻、你这是脑袋让门挤了、你配吗、你以为你谁啊。
 必用句式：告诉你个行业秘密 / 你老板此刻在 / 打工人最大的幻觉是 / 别给自己加戏。
@@ -1515,7 +1517,7 @@ async function shareKO() {
     `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
   try {
     const canvas = await html2canvas(card, {
-      backgroundColor: '#0a0a0f',
+      backgroundColor: '#0F0E2B',
       scale: 1,
       width: 1080,
       height: 1350,
