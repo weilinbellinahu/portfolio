@@ -945,7 +945,7 @@
   <div class="levels" id="levels-grid"></div>
 
   <div class="section-label cyan cursor">► 说出你的场景 ENTER·SCENARIO</div>
-  <textarea id="scenario-input" rows="3" placeholder="> 我又在凌晨三点改代码，明早还要送小孩上学..."></textarea>
+  <textarea id="scenario-input" rows="3" placeholder="> 例：我又在凌晨 3 点改 PPT，明早还要开会 …（在这里描述你的场景，然后点「开打」）"></textarea>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
     <span id="start-label">▶ 开打 PRESS START</span>
@@ -1140,6 +1140,21 @@ function recordKO() {
   mem.kosDate = today;
   mem.totalKOs = (mem.totalKOs || 0) + 1;
   saveMemory(mem);
+}
+
+// 按句号智能截断：找到 maxLen 内最后一个句末标点，在那里收
+function smartTruncate(text, maxLen) {
+  if (!text || text.length <= maxLen) return text;
+  const delim = /[。！？!?.]/g;
+  let lastEnd = -1, m;
+  while ((m = delim.exec(text)) !== null) {
+    const pos = m.index + 1;
+    if (pos <= maxLen) lastEnd = pos;
+    else break;
+  }
+  // 至少占一半长度才用句末截断，否则硬截
+  if (lastEnd >= Math.floor(maxLen * 0.5)) return text.slice(0, lastEnd);
+  return text.slice(0, maxLen - 1) + '…';
 }
 
 // ========== INSERT COIN ==========
@@ -1441,7 +1456,7 @@ function triggerKO() {
 
   const bosses = [...state.encounteredBosses].join('  ');
   const rawQuote = state.bestQuote.replace(/\*\*/g, '');
-  const quote = rawQuote.length > 240 ? rawQuote.slice(0, 236) + '……' : rawQuote;
+  const quote = smartTruncate(rawQuote, 240);
   stats.innerHTML = `
     <div class="row">
       <span class="label">连击</span>
@@ -1480,7 +1495,7 @@ async function shareKO() {
   const card = document.getElementById('share-card');
   const p = state.currentPersona || personas[0];
   const rawQuote = state.bestQuote.replace(/\*\*/g, '');
-  const quote = rawQuote.length > 180 ? rawQuote.slice(0, 176) + '……' : rawQuote;
+  const quote = smartTruncate(rawQuote, 180);
   card.style.setProperty('--sc-color', p.color);
   document.getElementById('sc-emoji').textContent = p.emoji;
   document.getElementById('sc-bossname').textContent = p.name;
