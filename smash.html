@@ -987,6 +987,9 @@ function recordKO() {
 function startGame() {
   document.getElementById('coin-screen').classList.add('hidden');
   document.getElementById('main-screen').style.display = 'block';
+  const mem = loadMemory();
+  mem.seenCoin = true;
+  saveMemory(mem);
   updateMemoLine();
 }
 document.getElementById('coin-screen').addEventListener('click', startGame);
@@ -995,6 +998,23 @@ document.addEventListener('keydown', function onceKey() {
     startGame();
   }
 }, { once: false });
+
+// 老用户直接跳过 INSERT COIN
+(function maybeSkipCoin() {
+  const mem = loadMemory();
+  if (mem.seenCoin) startGame();
+})();
+
+// 恢复上次选的难度
+(function restoreDiff() {
+  const mem = loadMemory();
+  if (typeof mem.difficulty === 'number' && mem.difficulty >= 0 && mem.difficulty <= 2) {
+    state.difficulty = mem.difficulty;
+    document.querySelectorAll('.diff-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.level) === state.difficulty);
+    });
+  }
+})();
 
 // ========== RENDER LEVELS ==========
 const levelsGrid = document.getElementById('levels-grid');
@@ -1020,13 +1040,23 @@ document.querySelectorAll('.diff-btn').forEach(btn => {
     state.difficulty = parseInt(btn.dataset.level);
     document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    const mem = loadMemory();
+    mem.difficulty = state.difficulty;
+    saveMemory(mem);
   };
 });
 
 // ========== SUBMIT ==========
 function handleSubmit() {
-  const text = document.getElementById('scenario-input').value;
-  if (text.trim()) scold(text, false);
+  const input = document.getElementById('scenario-input');
+  const text = input.value;
+  if (text.trim()) {
+    scold(text, false);
+  } else {
+    input.style.animation = 'shake 0.4s ease-out';
+    input.focus();
+    setTimeout(() => { input.style.animation = ''; }, 400);
+  }
 }
 
 // ========== CRISIS CHECK ==========
