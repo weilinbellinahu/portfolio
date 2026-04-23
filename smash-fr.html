@@ -413,19 +413,11 @@
     line-height: 1.3;
   }
   .section-label::before {
-    content: '♥';
-    color: #F472B6;
-    font-size: 1.1em;
-    text-shadow: 0 0 8px rgba(244,114,182,0.7);
-    font-family: inherit;
-  }
-  .section-label::after {
-    content: '♥';
-    color: #F472B6;
-    font-size: 1.1em;
-    text-shadow: 0 0 8px rgba(244,114,182,0.7);
-    margin-left: auto;
-    opacity: 0.5;
+    content: '►';
+    color: currentColor;
+    font-size: 0.85em;
+    opacity: 0.8;
+    font-family: 'Press Start 2P', monospace;
   }
   .section-label.cyan {
     color: #FFD93D;
@@ -1143,17 +1135,17 @@
     &gt; Ton boss s'en fout. Ton corps, non.
   </p>
 
-  <div class="section-label">CHOISIR TON ÉTAT · SELECT·STATE</div>
+  <div class="section-label">CHOISIR TON ETAT · SELECT·STATE</div>
   <div class="levels" id="levels-grid"></div>
 
-  <div class="section-label cyan">TU FAIS QUOI, LÀ ? · ENTER·SCENARIO</div>
+  <div class="section-label cyan">TU FAIS QUOI, LA ? · ENTER·SCENARIO</div>
   <div class="textarea-wrap">
-    <textarea id="scenario-input" rows="3" placeholder="> Ex : Il est 2h du mat et j'ai encore « un dernier truc »… (décris ta situation puis clique GO)"></textarea>
+    <textarea id="scenario-input" rows="3" placeholder="> Ex : Il est 2h du mat et j'ai encore « un dernier truc »…"></textarea>
     <span class="input-cursor" aria-hidden="true">▌</span>
   </div>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
-    <span id="start-label">▶ VAS-Y, CASSE-MOI ! · ROAST·ME</span>
+    <span id="start-label">▶ VAS-Y, ENGUEULE-MOI ! · ROAST·ME</span>
   </button>
 
   <div id="error-box"></div>

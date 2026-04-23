@@ -416,19 +416,11 @@
     line-height: 1.3;
   }
   .section-label::before {
-    content: '♥';
-    color: #F472B6;
-    font-size: 1.1em;
-    text-shadow: 0 0 8px rgba(244,114,182,0.7);
-    font-family: inherit;
-  }
-  .section-label::after {
-    content: '♥';
-    color: #F472B6;
-    font-size: 1.1em;
-    text-shadow: 0 0 8px rgba(244,114,182,0.7);
-    margin-left: auto;
-    opacity: 0.5;
+    content: '►';
+    color: currentColor;
+    font-size: 0.85em;
+    opacity: 0.8;
+    font-family: 'Press Start 2P', monospace;
   }
   .section-label.cyan {
     color: #FFD93D;
@@ -549,15 +541,22 @@
     transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
   }
   /* 中文在像素英文字体下会被缩得很小，单独放大 */
-  .start-btn .lab-zh {
+  .lab-zh {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    font-size: 1.5em;
     font-weight: 900;
-    letter-spacing: 0.08em;
     vertical-align: middle;
+  }
+  .lab-en { vertical-align: middle; }
+  .start-btn .lab-zh {
+    font-size: 1.5em;
+    letter-spacing: 0.08em;
     margin-right: 0.35em;
   }
-  .start-btn .lab-en { vertical-align: middle; }
+  .section-label .lab-zh {
+    font-size: 1.3em;
+    letter-spacing: 0.05em;
+    margin-right: 0.45em;
+  }
   .start-btn:hover:not(:disabled) {
     background: rgba(214,53,59,0.12);
     color: #fff;
@@ -1156,12 +1155,12 @@
     &gt; 老板不会感动，身体会
   </p>
 
-  <div class="section-label">状态选择 SELECT·STATE</div>
+  <div class="section-label"><span class="lab-zh">状态选择</span><span class="lab-en">SELECT·STATE</span></div>
   <div class="levels" id="levels-grid"></div>
 
-  <div class="section-label cyan">说说你又在做啥？ ENTER·SCENARIO</div>
+  <div class="section-label cyan"><span class="lab-zh">说说你又在做啥？</span><span class="lab-en">ENTER·SCENARIO</span></div>
   <div class="textarea-wrap">
-    <textarea id="scenario-input" rows="3" placeholder="> 例：我又在凌晨 3 点改 PPT，明早还要开会 …（在这里描述你的场景，然后点「开打」）"></textarea>
+    <textarea id="scenario-input" rows="3" placeholder="> 例：我又在凌晨 3 点改 PPT，明早还要开会 …"></textarea>
     <span class="input-cursor" aria-hidden="true">▌</span>
   </div>
 
