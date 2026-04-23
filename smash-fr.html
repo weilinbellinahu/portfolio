@@ -24,6 +24,15 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     background: #0F0E2B;
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,217,61,0.55), transparent 60%),
+      radial-gradient(1.5px 1.5px at 62% 22%, rgba(244,114,182,0.5), transparent 60%),
+      radial-gradient(1px 1px at 82% 60%, rgba(61,214,240,0.55), transparent 60%),
+      radial-gradient(1px 1px at 28% 72%, rgba(255,217,61,0.5), transparent 60%),
+      radial-gradient(1px 1px at 48% 88%, rgba(244,114,182,0.45), transparent 60%),
+      radial-gradient(1px 1px at 92% 34%, rgba(61,214,240,0.4), transparent 60%),
+      radial-gradient(1px 1px at 7% 52%, rgba(255,217,61,0.4), transparent 60%),
+      radial-gradient(2px 2px at 75% 82%, rgba(255,217,61,0.35), transparent 60%);
     color: #f5f5f8;
     font-family: 'VT323', 'Courier New', monospace;
     height: 100%;
@@ -174,7 +183,7 @@
   #main-screen {
     max-width: 760px;
     margin: 0 auto;
-    padding: 16px 18px;
+    padding: 18px 20px;
     position: relative;
     z-index: 1;
     animation: crtFlicker 4s infinite, fadeIn 0.6s ease-out;
@@ -183,8 +192,23 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    border-left: 3px dotted #FFD93D;
+    border-right: 3px dotted #FFD93D;
+    box-shadow:
+      inset 4px 0 0 #F472B6,
+      inset -4px 0 0 #F472B6;
   }
   #main-screen > * { flex-shrink: 0; }
+  @media (max-width: 480px) {
+    #main-screen {
+      border-left: 2px dotted #FFD93D;
+      border-right: 2px dotted #FFD93D;
+      padding: 14px 14px;
+      box-shadow:
+        inset 2px 0 0 #F472B6,
+        inset -2px 0 0 #F472B6;
+    }
+  }
 
   .hud {
     display: flex; justify-content: space-between; align-items: center;
@@ -303,6 +327,24 @@
     margin-bottom: 8px;
     color: #D6353B;
     text-shadow: 0 0 10px rgba(214,53,59,0.4);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label::before {
+    content: '♥';
+    color: #F472B6;
+    font-size: 1.1em;
+    text-shadow: 0 0 8px rgba(244,114,182,0.7);
+    font-family: inherit;
+  }
+  .section-label::after {
+    content: '♥';
+    color: #F472B6;
+    font-size: 1.1em;
+    text-shadow: 0 0 8px rgba(244,114,182,0.7);
+    margin-left: auto;
+    opacity: 0.5;
   }
   .section-label.cyan {
     color: #7ECFC0;
@@ -943,10 +985,10 @@
     &gt; Ton boss s'en fout. Ton corps, non.
   </p>
 
-  <div class="section-label">► CHOISIR UN NIVEAU · SELECT·LEVEL</div>
+  <div class="section-label">CHOISIR UN NIVEAU · SELECT·LEVEL</div>
   <div class="levels" id="levels-grid"></div>
 
-  <div class="section-label cyan cursor">► RACONTE-MOI · ENTER·SCENARIO</div>
+  <div class="section-label cyan cursor">RACONTE-MOI · ENTER·SCENARIO</div>
   <textarea id="scenario-input" rows="3" placeholder="> Ex : Il est 2h du mat et j'ai encore « un dernier truc »… (décris ta situation puis clique GO)"></textarea>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
