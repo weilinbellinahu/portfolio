@@ -710,7 +710,9 @@
 
   /* ========== LANG SWITCHER ========== */
   .lang-switch {
-    position: fixed; top: 10px; right: 10px;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: calc(env(safe-area-inset-right, 0px) + 10px);
     z-index: 300;
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
@@ -835,12 +837,12 @@ const PROXY_URL = 'https://smash-proxy.weilin-bellina-hu.workers.dev/scold';
 
 // ========== DATA ==========
 const presets = [
-  { name: 'Noctambule laptop', tag: 'LATE·NIGHT·GRIND', prompt: 'Il est 2h du matin et je code encore', color: '#A78BFA' },
-  { name: 'Malade mais je bosse', tag: 'SICK·LEAVE·BUG', prompt: 'Je suis en arrêt maladie mais je veux quand même finir ce projet', color: '#E8686A' },
-  { name: 'FOMO aigu', tag: 'FEAR·OF·MISSING·OUT', prompt: "J'ai rien posté aujourd'hui et j'arrive pas à dormir", color: '#E8C06A' },
-  { name: 'Projets à gogo', tag: 'MULTI·TASK·MANIAC', prompt: "J'ai cinq projets en parallèle et je trouve ça pas assez", color: '#7ECFC0' },
-  { name: 'Ex-boulot qui hante', tag: 'EX·JOB·HAUNT', prompt: 'Je rumine encore sur mon ancienne boîte depuis des semaines', color: '#FB923C' },
-  { name: 'Doit finir ce chapitre', tag: 'STUDY·COMPULSION', prompt: "Je dois absolument finir ce chapitre avant d'aller dormir", color: '#F472B6' },
+  { name: 'Forcené du clavier', tag: 'LATE·NIGHT·GRIND', prompt: 'Il est 3h et je refactore encore', color: '#A78BFA' },
+  { name: 'Martyr sous antibio', tag: 'SICK·LEAVE·BUG', prompt: 'Je suis en arrêt mais je DOIS finir ce livrable', color: '#E8686A' },
+  { name: 'Accro au scroll', tag: 'FEAR·OF·MISSING·OUT', prompt: "J'ai rien posté, je dors pas", color: '#E8C06A' },
+  { name: 'Mégalo multi-tâche', tag: 'MULTI·TASK·MANIAC', prompt: "5 projets en parallèle et c'est pas assez", color: '#7ECFC0' },
+  { name: "Rumineur d'ex-job", tag: 'EX·JOB·HAUNT', prompt: 'Je tourne encore sur mon ancienne boîte', color: '#FB923C' },
+  { name: 'TOC du MOOC', tag: 'STUDY·COMPULSION', prompt: 'Je dois finir ce chapitre avant de dormir', color: '#F472B6' },
 ];
 
 const angles = [
