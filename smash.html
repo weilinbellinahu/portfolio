@@ -918,6 +918,16 @@
     white-space: nowrap;
     text-shadow: 0 0 8px rgba(255,217,61,0.5);
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .lang-switch .flag {
+    display: inline-block;
+    transform: scale(0.7);
+    transform-origin: center;
+    margin: 0 -3px;
+    line-height: 1;
   }
   .lang-switch:hover {
     color: #fff;
@@ -1234,7 +1244,7 @@
 
   <div class="hud">
     <div class="hud-left-group">
-      <a class="lang-switch" href="/smash-fr.html" title="Version française">FR</a>
+      <a class="lang-switch" href="/smash-fr.html" title="Version française"><span class="flag" aria-hidden="true">🇫🇷</span>FR</a>
       <span class="hud-left" id="hud-score">抽醒 ×0</span>
       <button class="sfx-toggle" id="sfx-toggle" title="音效开关" onclick="toggleSfx()">🔊</button>
     </div>
