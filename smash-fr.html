@@ -1356,6 +1356,20 @@ const SFX = (() => {
     beep({ freq: 988, dur: 0.07, type: 'square', vol: 0.11 });
     setTimeout(() => beep({ freq: 1319, dur: 0.14, type: 'square', vol: 0.11 }), 75);
   }
+  function start() {
+    const melody = [
+      { f: 523,  d: 0.08, t: 0 },
+      { f: 659,  d: 0.08, t: 80 },
+      { f: 784,  d: 0.08, t: 160 },
+      { f: 1047, d: 0.14, t: 240 },
+      { f: 784,  d: 0.18, t: 420 },
+      { f: 1047, d: 0.3,  t: 600 },
+    ];
+    melody.forEach(n => setTimeout(() =>
+      beep({ freq: n.f, dur: n.d, type: 'square', vol: 0.11 }), n.t));
+    setTimeout(() => beep({ freq: 131, dur: 0.3, type: 'triangle', vol: 0.09 }), 240);
+    setTimeout(() => beep({ freq: 262, dur: 0.3, type: 'triangle', vol: 0.09 }), 600);
+  }
   function hit() {
     beep({ freq: 220, dur: 0.1, type: 'sawtooth', vol: 0.16, slideTo: 70 });
     setTimeout(() => beep({ freq: 110, dur: 0.1, type: 'square', vol: 0.1, slideTo: 50 }), 40);
@@ -1373,7 +1387,7 @@ const SFX = (() => {
     return muted;
   }
   function isMuted() { return muted; }
-  return { coin, hit, ko, toggle, isMuted };
+  return { coin, start, hit, ko, toggle, isMuted };
 })();
 
 function toggleSfx() {
@@ -1564,7 +1578,7 @@ function startGame() {
   saveMemory(mem);
   updateMemoLine();
   renderCollection();
-  SFX.coin();
+  SFX.start();
 }
 document.getElementById('coin-screen').addEventListener('click', startGame);
 document.addEventListener('keydown', function onceKey() {
