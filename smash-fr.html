@@ -676,6 +676,39 @@
     letter-spacing: 0.12em;
     background: transparent;
   }
+  .ko-actions .share-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .ko-actions .ko-btn.sm {
+    padding: 10px 6px;
+    font-size: clamp(9px, 1.8vw, 10px);
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+  }
+  .ko-actions .ko-btn.sm .sub {
+    font-family: 'VT323', monospace;
+    font-size: clamp(11px, 2.2vw, 13px);
+    color: #b5b5c0;
+    letter-spacing: 0;
+    display: block;
+    margin-top: 2px;
+  }
+  #share-toast {
+    font-family: 'VT323', monospace;
+    font-size: clamp(15px, 2.6vw, 17px);
+    color: #22C55E;
+    text-align: center;
+    min-height: 22px;
+    letter-spacing: 0.02em;
+  }
+  #share-toast.warn { color: #FB923C; }
+  @media (max-width: 480px) {
+    .ko-actions .share-row { grid-template-columns: 1fr; gap: 5px; }
+    .ko-actions .ko-btn.sm { padding: 10px 12px; }
+    .ko-actions .ko-btn.sm .sub { display: inline; margin-left: 8px; }
+  }
   .ko-actions .ko-btn.share {
     border: 2px solid #FFD93D; color: #FFD93D;
     box-shadow: 4px 4px 0 rgba(255,217,61,0.3);
@@ -1566,18 +1599,32 @@ function triggerKO() {
   setTimeout(() => {
     actions.classList.remove('locked');
     actions.innerHTML = `
-      <button class="ko-btn share" onclick="shareKO()">📸 CAPTURE · PARTAGE</button>
+      <div class="share-row">
+        <button class="ko-btn share sm" onclick="shareCopyImage()">📋 COPIER IMG<br><span class="sub">coller → WhatsApp</span></button>
+        <button class="ko-btn share sm" onclick="shareCopyCaption()">📝 COPIER TEXTE<br><span class="sub">avec le lien</span></button>
+        <button class="ko-btn share sm" onclick="shareDownload()">💾 DL PNG<br><span class="sub">LinkedIn / Insta</span></button>
+      </div>
+      <div id="share-toast"></div>
       <button class="ko-btn close" onclick="goRest()">⏾ ÉTEINDRE · DODO</button>
     `;
+    cachedShareBlob = null;
   }, 3000);
 }
 
-// ========== SHARE ==========
-async function shareKO() {
-  if (!window.html2canvas) {
-    alert("Outil de capture indisponible — fais une capture d'écran manuelle.");
-    return;
-  }
+// ========== SHARE (3 méthodes) ==========
+let cachedShareBlob = null;
+
+function showShareToast(msg, warn) {
+  const el = document.getElementById('share-toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = warn ? 'warn' : '';
+  setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 2800);
+}
+
+async function generateShareBlob() {
+  if (cachedShareBlob) return cachedShareBlob;
+  if (!window.html2canvas) throw new Error('html2canvas non chargé');
   const card = document.getElementById('share-card');
   const p = state.currentPersona || personas[0];
   const rawQuote = state.bestQuote.replace(/\*\*/g, '');
@@ -1589,20 +1636,57 @@ async function shareKO() {
   const d = new Date();
   document.getElementById('sc-date').textContent =
     `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+  const canvas = await html2canvas(card, {
+    backgroundColor: '#0F0E2B',
+    scale: 1,
+    width: 1080,
+    height: 1350,
+    windowWidth: 1080,
+    windowHeight: 1350,
+  });
+  const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+  cachedShareBlob = blob;
+  return blob;
+}
+
+function shareGetCaption() {
+  const p = state.currentPersona || personas[0];
+  const rawQuote = state.bestQuote.replace(/\*\*/g, '');
+  const quote = smartTruncate(rawQuote, 120);
+  return `Je me suis fait gifler par ${p.emoji} ${p.name} 😵‍💫\n\n« ${quote} »\n\n— Secoue-moi\n→ weilinhu.com/smash-fr`;
+}
+
+async function shareCopyImage() {
   try {
-    const canvas = await html2canvas(card, {
-      backgroundColor: '#0F0E2B',
-      scale: 1,
-      width: 1080,
-      height: 1350,
-      windowWidth: 1080,
-      windowHeight: 1350,
-    });
-    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    const blob = await generateShareBlob();
+    if (!navigator.clipboard || !window.ClipboardItem) {
+      showShareToast('Navigateur non compatible, utilise DL PNG', true);
+      return;
+    }
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    showShareToast('✓ Image copiée ! Colle dans WhatsApp / Insta');
+  } catch (err) {
+    console.error(err);
+    showShareToast('Copie échouée, utilise DL PNG', true);
+  }
+}
+
+async function shareCopyCaption() {
+  try {
+    await navigator.clipboard.writeText(shareGetCaption());
+    showShareToast('✓ Texte copié ! Colle dans ta story / LinkedIn');
+  } catch (err) {
+    console.error(err);
+    showShareToast('Copie échouée', true);
+  }
+}
+
+async function shareDownload() {
+  try {
+    const blob = await generateShareBlob();
     const filename = `secoue-moi-${Date.now()}.png`;
     const file = new File([blob], filename, { type: 'image/png' });
 
-    // Mobile : Web Share API (menu natif iMessage / WhatsApp / Twitter)
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
@@ -1611,21 +1695,19 @@ async function shareKO() {
           text: "Je me suis fait gifler. weilinhu.com/smash-fr",
         });
         return;
-      } catch (shareErr) {
-        if (shareErr.name === 'AbortError') return; // user cancelled, pas de fallback
-      }
+      } catch (e) { if (e.name === 'AbortError') return; }
     }
 
-    // Desktop / vieux navigateur : téléchargement
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+    showShareToast('✓ Téléchargement OK');
   } catch (err) {
     console.error(err);
-    alert("Capture échouée — utilise la capture d'écran du téléphone.");
+    showShareToast('Échec, réessaie', true);
   }
 }
 
