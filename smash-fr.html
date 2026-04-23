@@ -725,6 +725,143 @@
     transition: color .2s, border-color .2s;
   }
   .lang-switch:hover { color: #E8686A; border-color: #E8686A; }
+
+  /* ========== BOSS COLLECTION (pokedex) ========== */
+  .collection {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-top: 1px dashed #222229;
+    font-family: 'Press Start 2P', monospace;
+  }
+  .collection-label {
+    font-size: clamp(8px, 1.8vw, 10px);
+    color: #666;
+    letter-spacing: 0.15em;
+    margin-right: 6px;
+    align-self: center;
+  }
+  .collection-slot {
+    width: 26px; height: 26px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 16px;
+    filter: grayscale(1) brightness(0.35);
+    opacity: 0.5;
+    transition: filter .3s, opacity .3s, transform .3s;
+    border: 1px solid transparent;
+  }
+  .collection-slot.met {
+    filter: none;
+    opacity: 1;
+    border-color: var(--slot-color, #2a2a35);
+    text-shadow: 0 0 6px var(--slot-color, transparent);
+  }
+  .collection-slot.just-met {
+    animation: jitter 0.4s ease-out 2;
+    transform: scale(1.15);
+  }
+  .collection-complete {
+    color: #E8C06A;
+    text-shadow: 0 0 8px rgba(232,192,106,0.5);
+  }
+
+  /* ========== SHARE CARD (off-screen, 1080×1350) ========== */
+  #share-card {
+    position: fixed;
+    top: -99999px; left: -99999px;
+    width: 1080px; height: 1350px;
+    background: #0a0a0f;
+    padding: 80px 72px;
+    display: flex;
+    flex-direction: column;
+    color: #f5f5f8;
+    font-family: 'VT323', monospace;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .sc-scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0, rgba(0,0,0,0.3) 2px, transparent 2px, transparent 6px);
+    pointer-events: none;
+  }
+  .sc-brand {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 18px;
+    color: #666;
+    letter-spacing: 0.25em;
+    margin-bottom: 8px;
+  }
+  .sc-date {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 16px;
+    color: #444;
+    letter-spacing: 0.2em;
+    margin-bottom: 60px;
+  }
+  .sc-hero {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .sc-emoji {
+    font-size: 180px;
+    line-height: 1;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 40px rgba(232,104,106,0.3));
+  }
+  .sc-bossname {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 26px;
+    color: var(--sc-color, #E8686A);
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 16px var(--sc-color, rgba(232,104,106,0.5));
+  }
+  .sc-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: #A78BFA;
+    letter-spacing: 0.3em;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .sc-quote {
+    font-size: 44px;
+    line-height: 1.4;
+    color: #f5f5f8;
+    text-align: center;
+    padding: 40px 30px;
+    border-left: 4px solid var(--sc-color, #E8686A);
+    border-right: 4px solid var(--sc-color, #E8686A);
+    letter-spacing: 0.02em;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sc-footer {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .sc-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 28px;
+    color: #E8686A;
+    letter-spacing: 0.18em;
+    text-shadow: 0 0 12px rgba(232,104,106,0.6);
+    line-height: 1.4;
+  }
+  .sc-watermark {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: #7ECFC0;
+    letter-spacing: 0.2em;
+    text-align: right;
+  }
 </style>
 </head>
 
@@ -815,6 +952,28 @@
   </button>
 
   <div id="error-box"></div>
+
+  <div class="collection" id="collection">
+    <span class="collection-label">► COLLECTION</span>
+    <!-- rendu dynamique -->
+  </div>
+</div>
+
+<!-- ============ SHARE CARD (hidden, 1080x1350) ============ -->
+<div id="share-card">
+  <div class="sc-scanlines"></div>
+  <div class="sc-brand">WEILINHU · ARCADE · EST.2026</div>
+  <div class="sc-date" id="sc-date"></div>
+  <div class="sc-hero">
+    <div class="sc-emoji" id="sc-emoji">👊</div>
+    <div class="sc-bossname" id="sc-bossname"></div>
+  </div>
+  <div class="sc-label">► PUNCHLINE DU SOIR</div>
+  <div class="sc-quote" id="sc-quote"></div>
+  <div class="sc-footer">
+    <div class="sc-title">TU AS ÉTÉ<br>G I F L É</div>
+    <div class="sc-watermark">weilinhu.com<br>/smash-fr</div>
+  </div>
 </div>
 
 <div class="corner-footer">© WEILINHU · ARCADE</div>
@@ -991,6 +1150,7 @@ function startGame() {
   mem.seenCoin = true;
   saveMemory(mem);
   updateMemoLine();
+  renderCollection();
 }
 document.getElementById('coin-screen').addEventListener('click', startGame);
 document.addEventListener('keydown', function onceKey() {
@@ -1150,6 +1310,7 @@ async function scold(text, isRegenerate) {
   const persona = pool[Math.floor(Math.random() * pool.length)];
   state.currentPersona = persona;
   state.encounteredBosses.add(`${persona.emoji} ${persona.name}`);
+  recordMetBoss(persona.name);
 
   const angle = angles[Math.floor(Math.random() * angles.length)];
 
@@ -1286,13 +1447,30 @@ function triggerKO() {
 
 // ========== SHARE ==========
 async function shareKO() {
-  const el = document.querySelector('.ko-inner');
   if (!window.html2canvas) {
     alert("Outil de capture indisponible — fais une capture d'écran manuelle.");
     return;
   }
+  const card = document.getElementById('share-card');
+  const p = state.currentPersona || personas[0];
+  const rawQuote = state.bestQuote.replace(/\*\*/g, '');
+  const quote = rawQuote.length > 180 ? rawQuote.slice(0, 176) + '……' : rawQuote;
+  card.style.setProperty('--sc-color', p.color);
+  document.getElementById('sc-emoji').textContent = p.emoji;
+  document.getElementById('sc-bossname').textContent = p.name;
+  document.getElementById('sc-quote').textContent = `« ${quote} »`;
+  const d = new Date();
+  document.getElementById('sc-date').textContent =
+    `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
   try {
-    const canvas = await html2canvas(el, { backgroundColor: '#0a0a0f', scale: 2 });
+    const canvas = await html2canvas(card, {
+      backgroundColor: '#0a0a0f',
+      scale: 1,
+      width: 1080,
+      height: 1350,
+      windowWidth: 1080,
+      windowHeight: 1350,
+    });
     canvas.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1304,6 +1482,46 @@ async function shareKO() {
   } catch (err) {
     console.error(err);
     alert("Capture échouée — utilise la capture d'écran du téléphone.");
+  }
+}
+
+// ========== BOSS COLLECTION ==========
+function renderCollection() {
+  const mem = loadMemory();
+  const met = new Set(mem.metBosses || []);
+  const container = document.getElementById('collection');
+  container.querySelectorAll('.collection-slot').forEach(n => n.remove());
+  const complete = met.size >= personas.length;
+  personas.forEach(p => {
+    const slot = document.createElement('span');
+    slot.className = 'collection-slot' + (met.has(p.name) ? ' met' : '');
+    slot.style.setProperty('--slot-color', p.color);
+    slot.textContent = p.emoji;
+    slot.title = met.has(p.name) ? p.name : '???';
+    container.appendChild(slot);
+  });
+  const counter = document.createElement('span');
+  counter.className = 'collection-label' + (complete ? ' collection-complete' : '');
+  counter.textContent = complete ? `✨ Complet ${met.size}/${personas.length}` : `${met.size}/${personas.length}`;
+  container.appendChild(counter);
+}
+
+function recordMetBoss(personaName) {
+  const mem = loadMemory();
+  const met = new Set(mem.metBosses || []);
+  const isNew = !met.has(personaName);
+  met.add(personaName);
+  mem.metBosses = [...met];
+  saveMemory(mem);
+  if (isNew) {
+    renderCollection();
+    const slots = document.querySelectorAll('.collection-slot');
+    personas.forEach((p, i) => {
+      if (p.name === personaName && slots[i]) {
+        slots[i].classList.add('just-met');
+        setTimeout(() => slots[i].classList.remove('just-met'), 900);
+      }
+    });
   }
 }
 
