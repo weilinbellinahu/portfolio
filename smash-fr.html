@@ -1371,8 +1371,11 @@ const SFX = (() => {
     setTimeout(() => beep({ freq: 262, dur: 0.3, type: 'triangle', vol: 0.09 }), 600);
   }
   function hit() {
-    beep({ freq: 220, dur: 0.1, type: 'sawtooth', vol: 0.16, slideTo: 70 });
-    setTimeout(() => beep({ freq: 110, dur: 0.1, type: 'square', vol: 0.1, slideTo: 50 }), 40);
+    // FIGHT! 戏剧化下行三音 + 低音 growl（~0.4s）
+    beep({ freq: 110, dur: 0.32, type: 'sawtooth', vol: 0.13, slideTo: 55 });
+    beep({ freq: 1047, dur: 0.08, type: 'square', vol: 0.12 });
+    setTimeout(() => beep({ freq: 784, dur: 0.08, type: 'square', vol: 0.12 }), 95);
+    setTimeout(() => beep({ freq: 587, dur: 0.2, type: 'square', vol: 0.12 }), 190);
   }
   function ko() {
     const notes = [554, 494, 415, 349];
@@ -1751,7 +1754,7 @@ async function scold(text, isRegenerate) {
 
   state.loading = true;
   document.getElementById('start-btn').disabled = true;
-  document.getElementById('start-label').innerHTML = '<span style="animation: blink 0.6s infinite">UN ENNEMI ARRIVE...</span>';
+  document.getElementById('start-label').innerHTML = '<span style="animation: blink 0.6s infinite">UN GIFLEUR ARRIVE...</span>';
   document.getElementById('error-box').innerHTML = '';
 
   if (!isRegenerate) {

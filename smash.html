@@ -1401,9 +1401,11 @@ const SFX = (() => {
   }
 
   function hit() {
-    // POW 击打：锯齿波下滑
-    beep({ freq: 220, dur: 0.1, type: 'sawtooth', vol: 0.16, slideTo: 70 });
-    setTimeout(() => beep({ freq: 110, dur: 0.1, type: 'square', vol: 0.1, slideTo: 50 }), 40);
+    // FIGHT! 戏剧化下行三音 + 低音 growl（~0.4s）
+    beep({ freq: 110, dur: 0.32, type: 'sawtooth', vol: 0.13, slideTo: 55 });
+    beep({ freq: 1047, dur: 0.08, type: 'square', vol: 0.12 });         // C6
+    setTimeout(() => beep({ freq: 784, dur: 0.08, type: 'square', vol: 0.12 }), 95);   // G5
+    setTimeout(() => beep({ freq: 587, dur: 0.2, type: 'square', vol: 0.12 }), 190);   // D5 (hold)
   }
 
   function ko() {
