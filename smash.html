@@ -440,6 +440,22 @@
   }
   textarea::placeholder { color: #777; }
 
+  /* Blinking cursor inside empty textarea — arcade "prompt here" */
+  .textarea-wrap { position: relative; }
+  .input-cursor {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    color: #D6353B;
+    font-family: 'VT323', monospace;
+    font-size: clamp(16px, 3vw, 20px);
+    animation: blink 1s infinite;
+    pointer-events: none;
+    text-shadow: 0 0 8px rgba(214,53,59,0.6);
+  }
+  .textarea-wrap.has-content .input-cursor,
+  .textarea-wrap.is-focused .input-cursor { display: none; }
+
   .cursor::after {
     content: '_';
     animation: blink 1s infinite;
@@ -800,33 +816,27 @@
     pointer-events: none;
   }
 
-  /* ========== LANG SWITCHER ========== */
+  /* ========== LANG SWITCHER (inline in HUD) ========== */
+  .hud-left-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   .lang-switch {
-    position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 10px);
-    right: calc(env(safe-area-inset-right, 0px) + 10px);
-    z-index: 300;
     font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: #666;
-    background: rgba(15,14,43,0.85);
+    background: transparent;
     border: 1px solid #2a2a35;
-    padding: 6px 10px;
+    padding: 4px 7px;
     text-decoration: none;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     transition: color .2s, border-color .2s;
+    white-space: nowrap;
   }
   .lang-switch:hover { color: #D6353B; border-color: #D6353B; }
-  /* 手机：挪到左下，让出顶部 HUD 难度按钮 */
   @media (max-width: 560px) {
-    .lang-switch {
-      top: auto;
-      right: auto;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
-      left: calc(env(safe-area-inset-left, 0px) + 10px);
-      font-size: 9px;
-      padding: 5px 8px;
-    }
+    .lang-switch { font-size: 8px; padding: 3px 6px; }
     .corner-footer { display: none !important; }
   }
 
@@ -971,7 +981,6 @@
 
 <body>
 
-<a class="lang-switch" href="/smash-fr.html" title="Version française">🇫🇷 FR</a>
 
 <div class="scanlines"></div>
 <div class="vignette"></div>
@@ -1035,7 +1044,10 @@
 <div id="main-screen" style="display:none;">
 
   <div class="hud">
-    <span class="hud-left" id="hud-score">抽醒 ×0</span>
+    <div class="hud-left-group">
+      <a class="lang-switch" href="/smash-fr.html" title="Version française">🇫🇷 FR</a>
+      <span class="hud-left" id="hud-score">抽醒 ×0</span>
+    </div>
     <div class="hud-diffs">
       <button class="diff-btn" data-level="0">轻拍</button>
       <button class="diff-btn active" data-level="1">打脸</button>
@@ -1057,7 +1069,10 @@
   <div class="levels" id="levels-grid"></div>
 
   <div class="section-label cyan cursor">说出你的场景 ENTER·SCENARIO</div>
-  <textarea id="scenario-input" rows="3" placeholder="> 例：我又在凌晨 3 点改 PPT，明早还要开会 …（在这里描述你的场景，然后点「开打」）"></textarea>
+  <div class="textarea-wrap">
+    <textarea id="scenario-input" rows="3" placeholder="> 例：我又在凌晨 3 点改 PPT，明早还要开会 …（在这里描述你的场景，然后点「开打」）"></textarea>
+    <span class="input-cursor" aria-hidden="true">▌</span>
+  </div>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
     <span id="start-label">▶ 开打 PRESS START</span>
@@ -1770,6 +1785,18 @@ document.getElementById('scenario-input').addEventListener('keydown', e => {
     handleSubmit();
   }
 });
+
+// 输入框空态时显示红色闪烁光标
+(function(){
+  const ta = document.getElementById('scenario-input');
+  const wrap = ta.closest('.textarea-wrap');
+  if (!wrap) return;
+  const sync = () => wrap.classList.toggle('has-content', ta.value.length > 0);
+  ta.addEventListener('input', sync);
+  ta.addEventListener('focus', () => wrap.classList.add('is-focused'));
+  ta.addEventListener('blur', () => wrap.classList.remove('is-focused'));
+  sync();
+})();
 </script>
 
 </body>
