@@ -539,7 +539,7 @@
     width: 100%;
     padding: 14px;
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(10px, 2.2vw, 13px);
+    font-size: clamp(12px, 2.6vw, 15px);
     letter-spacing: 0.12em;
     background: transparent;
     color: #D6353B;
@@ -548,6 +548,16 @@
     margin-top: 8px;
     transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
   }
+  /* 中文在像素英文字体下会被缩得很小，单独放大 */
+  .start-btn .lab-zh {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 1.5em;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    vertical-align: middle;
+    margin-right: 0.35em;
+  }
+  .start-btn .lab-en { vertical-align: middle; }
   .start-btn:hover:not(:disabled) {
     background: rgba(214,53,59,0.12);
     color: #fff;
@@ -1156,7 +1166,7 @@
   </div>
 
   <button class="start-btn" id="start-btn" onclick="handleSubmit()">
-    <span id="start-label">▶ 快骂我！SMASH·ME</span>
+    <span id="start-label">▶ <span class="lab-zh">快骂我！</span><span class="lab-en">ROAST·ME</span></span>
   </button>
 
   <div id="error-box"></div>
@@ -1625,7 +1635,7 @@ ${state.previousResponses.map((r, i) => `版本${i + 1}: ${r}`).join('\n\n')}
   } finally {
     state.loading = false;
     document.getElementById('start-btn').disabled = false;
-    document.getElementById('start-label').textContent = '▶ 再输入一个场景';
+    document.getElementById('start-label').innerHTML = '▶ <span class="lab-zh">再输入一个场景</span>';
   }
 }
 
