@@ -753,15 +753,21 @@
     background: transparent;
   }
   .ko-actions .share-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .ko-actions .share-row > * {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
   }
   .ko-actions .ko-btn.sm {
-    padding: 10px 6px;
-    font-size: clamp(9px, 1.8vw, 10px);
-    line-height: 1.5;
+    padding: 14px 8px;
+    font-size: clamp(9px, 1.8vw, 11px);
+    line-height: 1.4;
     letter-spacing: 0.04em;
+    min-height: 52px;
   }
   .ko-actions .ko-btn.sm .sub {
     font-family: 'VT323', monospace;
@@ -781,8 +787,8 @@
   }
   #share-toast.warn { color: #FB923C; }
   @media (max-width: 480px) {
-    .ko-actions .share-row { grid-template-columns: 1fr; gap: 5px; }
-    .ko-actions .ko-btn.sm { padding: 10px 12px; }
+    .ko-actions .share-row { flex-direction: column; gap: 6px; }
+    .ko-actions .ko-btn.sm { padding: 12px 12px; min-height: 44px; }
     .ko-actions .ko-btn.sm .sub { display: inline; margin-left: 8px; }
   }
   .ko-actions .ko-btn.share {
@@ -1147,18 +1153,19 @@
   /* ========== SFX TOGGLE ========== */
   .sfx-toggle {
     font-family: 'Press Start 2P', monospace;
-    font-size: 11px;
+    font-size: clamp(10px, 2.2vw, 12px);
     color: #7ECFC0;
     background: transparent;
-    border: 1px solid #7ECFC0;
-    padding: 5px 7px;
+    border: none;
+    border-bottom: 1px dotted rgba(126,207,192,0.55);
+    padding: 0 2px 1px;
     cursor: pointer;
-    transition: all .2s;
-    letter-spacing: 0.05em;
+    transition: color .2s, border-bottom-color .2s;
     line-height: 1;
+    letter-spacing: 0.05em;
   }
-  .sfx-toggle:hover { color: #fff; border-color: #fff; }
-  .sfx-toggle.muted { color: #444; border-color: #2a2a35; opacity: 0.55; }
+  .sfx-toggle:hover { color: #fff; border-bottom-color: #fff; }
+  .sfx-toggle.muted { color: #555; border-bottom-color: #2a2a35; }
 </style>
 </head>
 
@@ -1432,13 +1439,22 @@ const SFX = (() => {
     }, 230);
   }
   function ko() {
-    // K.O. 人声 + 8-bit 失败 jingle
     speak('K. O.', { pitch: 0.2, rate: 0.6, vol: 1.0 });
     const notes = [554, 494, 415, 349];
     notes.forEach((f, i) => {
       setTimeout(() => beep({ freq: f, dur: 0.32, type: 'triangle', vol: 0.12 }), i * 210 + 500);
     });
     beep({ freq: 110, dur: 1.8, type: 'sine', vol: 0.08 });
+    // GAME OVER 戏剧终曲
+    setTimeout(() => {
+      beep({ freq: 440, dur: 0.2,  type: 'square', vol: 0.14 });
+      setTimeout(() => beep({ freq: 349, dur: 0.2,  type: 'square', vol: 0.14 }), 220);
+      setTimeout(() => beep({ freq: 262, dur: 0.85, type: 'square', vol: 0.15 }), 440);
+      setTimeout(() => {
+        beep({ freq: 65, dur: 1.4, type: 'sawtooth', vol: 0.2, slideTo: 30 });
+        noise({ dur: 0.35, vol: 0.1, filterFreq: 400 });
+      }, 440);
+    }, 1600);
   }
   function toggle() {
     muted = !muted;
