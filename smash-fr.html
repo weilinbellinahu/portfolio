@@ -1471,14 +1471,31 @@ async function shareKO() {
       windowWidth: 1080,
       windowHeight: 1350,
     });
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `secoue-moi-${Date.now()}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    const filename = `secoue-moi-${Date.now()}.png`;
+    const file = new File([blob], filename, { type: 'image/png' });
+
+    // Mobile : Web Share API (menu natif iMessage / WhatsApp / Twitter)
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'Secoue-moi',
+          text: "Je me suis fait gifler. weilinhu.com/smash-fr",
+        });
+        return;
+      } catch (shareErr) {
+        if (shareErr.name === 'AbortError') return; // user cancelled, pas de fallback
+      }
+    }
+
+    // Desktop / vieux navigateur : téléchargement
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   } catch (err) {
     console.error(err);
     alert("Capture échouée — utilise la capture d'écran du téléphone.");
