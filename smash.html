@@ -158,9 +158,36 @@
     color: #888;
     letter-spacing: 0.04em;
     line-height: 1.6;
-    margin-bottom: 56px;
+    margin-bottom: 28px;
     max-width: 540px;
   }
+  .coin-rules {
+    font-family: 'VT323', monospace;
+    font-size: clamp(14px, 2.6vw, 17px);
+    color: #b5b5c0;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    border: 1px dashed #3a3a50;
+    padding: 14px 22px;
+    margin-bottom: 40px;
+    max-width: 420px;
+    text-align: left;
+  }
+  .coin-rules .rules-title {
+    color: #FFD93D;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(9px, 1.8vw, 11px);
+    letter-spacing: 0.2em;
+    display: block;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .coin-rules ol {
+    padding-left: 22px;
+    margin: 0;
+  }
+  .coin-rules li { margin-bottom: 2px; }
+  .coin-rules li::marker { color: #D6353B; font-weight: bold; }
   .coin-cta {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(11px, 2.2vw, 14px);
@@ -925,6 +952,14 @@
   <div class="coin-tag">
     &gt; 当你对工作太认真时<br>
     &gt; 我把你骂醒
+  </div>
+  <div class="coin-rules">
+    <span class="rules-title">怎么玩 · HOW TO PLAY</span>
+    <ol>
+      <li>选一个关卡，或写你的真实场景</li>
+      <li>6 个老江湖随机上场骂你一顿</li>
+      <li>连击 3 次 → 强制关机睡觉</li>
+    </ol>
   </div>
   <div class="coin-cta">▶ INSERT COIN</div>
   <div class="coin-anykey">&gt; 按任意键开始</div>
