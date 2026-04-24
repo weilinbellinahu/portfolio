@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weilin Hu — Automatisation, IA & E-commerce franco-chinois</title>
-<meta name="description" content="Weilin Hu, entre la France et la Chine. Automatisation, workflows IA, outils e-commerce. Basée à Bordeaux.">
-<meta name="keywords" content="Weilin Hu, automatisation, IA, e-commerce, franco-chinois, Cdiscount, n8n, Python, Bordeaux">
-<meta property="og:title" content="Weilin Hu — Entre deux mondes, je construis le troisième">
-<meta property="og:description" content="Automatisation, workflows IA & e-commerce franco-chinois. Bordeaux, France.">
+<title>Weilin Hu — Chef de Projet · Automatisation IA · E-commerce Franco-Chinois</title>
+<meta name="description" content="Chef de Projet Digitalisation. Automatisation, workflows IA et outils e-commerce franco-chinois. 4 outils en production, 45 min/jour économisées. Bordeaux.">
+<meta name="keywords" content="Weilin Hu, chef de projet, automatisation, IA, e-commerce, franco-chinois, Cdiscount, Octopia, n8n, Python, Bordeaux">
+<meta property="og:title" content="Weilin Hu — Chef de Projet · Automatisation IA · E-commerce Franco-Chinois">
+<meta property="og:description" content="4 outils en production, 45 min/jour économisées. Automatisation, workflows IA & e-commerce franco-chinois. Bordeaux.">
 <meta property="og:image" content="https://weilinhu.com/og-image.png">
 <meta property="og:url" content="https://weilinhu.com">
 <meta property="og:type" content="website">
@@ -15,30 +15,37 @@
 <meta property="og:locale:alternate" content="zh_CN">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Weilin Hu — Automatisation & IA">
-<meta name="twitter:description" content="Entre deux mondes, je construis le troisième.">
+<meta name="twitter:title" content="Weilin Hu — Chef de Projet · Automatisation IA">
+<meta name="twitter:description" content="4 outils en production, 45 min/jour économisées. Entre deux mondes, je construis le troisième.">
 <meta name="twitter:image" content="https://weilinhu.com/og-image.png">
 <link rel="icon" type="image/png" href="avatar.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #080808;
+  --bg: #000000;
+  --bg2: #0f0f0f;
   --white: #ffffff;
   --white-dim: rgba(255,255,255,0.55);
+  --white-faint: rgba(255,255,255,0.4);
   --white-ghost: rgba(255,255,255,0.05);
   --accent: #E8686A;
+  --mint: #9DC8B5;
+  --apricot: #E8C4A0;
   --mono: 'DM Mono', 'Courier New', monospace;
   --sans: 'Figtree', 'Arial Black', sans-serif;
 }
-html, body { height: 100%; overflow: hidden; }
+html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--white);
   font-family: var(--sans);
   font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 body::before {
   content: '';
@@ -60,27 +67,28 @@ nav {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--white-ghost);
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(12px);
 }
 .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--white-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
 .nav-logo:hover { color: var(--white); }
 .nav-logo:hover .nav-avatar { transform: scale(1.08); }
 .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.12); }
-.nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; background: #080808; }
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
 .nav-links { display: flex; gap: 2rem; list-style: none; }
 .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
 .nav-links a:hover { color: var(--white); }
 
-/* HERO — 上下左右完全居中 */
+/* HERO */
 .hero {
-  position: fixed;
-  inset: 0;
+  position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 5vw 0;   /* 60px 为 nav 高度补偿 */
+  min-height: 100vh;
+  padding: 120px 5vw 80px;
 }
-
 .hero-inner {
   display: grid;
   grid-template-columns: 1fr 360px;
@@ -89,53 +97,157 @@ nav {
   width: 100%;
   max-width: 1100px;
 }
-
 .hero-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 2rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.1s forwards; }
 .hero-headline { font-weight: 900; line-height: 1.0; letter-spacing: -0.035em; margin-bottom: 2rem; }
 .h-line-1 { font-size: clamp(2.2rem, 4.8vw, 4.2rem); color: rgba(255,255,255,0.18); display: block; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease 0.2s forwards; }
 .h-line-2 { font-size: clamp(2.2rem, 4.8vw, 4.2rem); color: rgba(255,255,255,0.50); display: block; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease 0.35s forwards; }
 .h-line-3 { font-size: clamp(2.2rem, 4.8vw, 4.2rem); color: #ffffff; display: block; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease 0.5s forwards; }
-.hero-sub { margin-bottom: 2.5rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.7s forwards; }
+
+/* 身份标签 — 核心升级：30 秒内让人知道你是干什么的 */
+.hero-identity {
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.1vw, 13px);
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.78);
+  text-transform: uppercase;
+  margin-bottom: 1.8rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--accent);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.7s ease 0.6s forwards;
+  line-height: 1.7;
+}
+
+.hero-sub { margin-bottom: 2.5rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.75s forwards; }
 .hero-sub p { font-size: clamp(0.9rem, 1.5vw, 1rem); font-weight: 300; color: var(--white-dim); font-style: italic; line-height: 1.5; }
-.hero-cta { display: flex; align-items: center; gap: 2rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.9s forwards; }
+.hero-cta { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.9s forwards; }
 .btn-primary { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.6rem; background: var(--white); color: var(--bg); font-family: var(--sans); font-weight: 700; font-size: 13px; letter-spacing: 0.03em; text-decoration: none; border-radius: 10px; transition: background 0.2s, transform 0.2s; }
 .btn-primary:hover { background: rgba(255,255,255,0.88); transform: translateY(-1px); }
 .btn-ghost { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
 .btn-ghost:hover { color: var(--white); border-color: var(--white-dim); }
-.hero-keywords { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.75); text-transform: uppercase; margin-top: 1.5rem; opacity: 0; animation: fadeUp 0.7s ease 1.1s forwards; }
 
 .hero-right { position: relative; display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(16px); animation: fadeUp 0.9s ease 0.6s forwards; }
 .avatar-img { width: 100%; max-width: 340px; filter: drop-shadow(0 0 30px rgba(232,104,106,0.12)); position: relative; z-index: 2; }
-
-/* Sparkles — behind avatar */
 #sparkles-hero { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; z-index: 1; }
 #sparkles-hero canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
 .sparkles-fade { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; z-index: 1; pointer-events: none; background: radial-gradient(ellipse 220px 220px at center, transparent 40%, var(--bg) 100%); }
+
+/* STATS BAR — 数据栏（社交证明）*/
+.stats-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--white-ghost);
+  border-bottom: 1px solid var(--white-ghost);
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.3s forwards;
+}
+.stat-item { text-align: left; }
+.stat-num { font-weight: 900; font-size: clamp(1.6rem, 2.8vw, 2.4rem); letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.4rem; color: var(--white); }
+.stat-num .unit { font-size: 0.55em; font-weight: 500; color: var(--white-dim); margin-left: 0.2em; }
+.stat-label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; color: var(--white-faint); text-transform: uppercase; line-height: 1.5; }
+
+/* FEATURED — 首页精选项目预览 */
+.featured {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 5vw 4rem;
+}
+.featured-head { margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 1rem; }
+.featured-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem; }
+.featured-title { font-weight: 900; font-size: clamp(1.8rem, 3.5vw, 2.6rem); letter-spacing: -0.03em; line-height: 1.05; }
+.featured-title span { color: rgba(255,255,255,0.25); }
+.featured-link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--white-dim); text-decoration: none; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.featured-link:hover { color: var(--white); border-color: var(--white-dim); }
+
+.featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.f-card {
+  background: var(--bg2);
+  padding: 2.2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  transition: background 0.25s, transform 0.25s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.f-card:hover { background: #161616; transform: translateY(-2px); }
+.f-badge { position: absolute; top: 1.4rem; right: 1.4rem; font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; padding: 3px 8px; border-radius: 6px; }
+.f-badge-live { border: 1px solid var(--accent); color: var(--accent); }
+.f-badge-deployed { border: 1px solid var(--mint); color: var(--mint); }
+.f-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem; }
+.f-title { font-weight: 900; font-size: 1.2rem; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.9rem; color: var(--white); }
+.f-desc { font-size: 0.85rem; color: var(--white-dim); font-weight: 300; line-height: 1.7; margin-bottom: 1rem; }
+.f-impact {
+  font-size: 0.82rem;
+  color: var(--mint);
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 1.3rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--mint);
+  line-height: 1.55;
+}
+.f-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.f-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.45); border-radius: 6px; }
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--white-ghost);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); }
 
 @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
 /* Hamburger */
 .nav-burger { display: none; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
 
-/* Page transition */
-
 @media (max-width: 780px) {
-  .hero { padding: 0 1.5rem; }
-  .hero-inner { grid-template-columns: 1fr; padding-top: 80px; text-align: center; }
-  .hero-right { margin-top: 2rem; }
+  .hero { padding: 100px 1.5rem 3rem; min-height: auto; }
+  .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+  .hero-identity { text-align: left; max-width: 90%; margin-left: auto; margin-right: auto; }
+  .hero-right { order: -1; margin-top: 1rem; }
   .avatar-img { max-width: 180px; }
   #sparkles-hero { width: 260px; height: 260px; }
   .sparkles-fade { width: 260px; height: 260px; background: radial-gradient(ellipse 120px 120px at center, transparent 40%, var(--bg) 100%); }
   .hero-cta { justify-content: center; }
-  .hero-keywords { text-align: center; }
-  html, body { height: auto; overflow: auto; }
-  .hero { position: relative; }
   nav { padding: 1.2rem 1.5rem; }
   .nav-burger { display: block; }
-  .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,8,8,0.95); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 2rem; gap: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 2rem; gap: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .nav-links.open { display: flex; }
   .nav-links a { font-size: 10px; }
+
+  .stats-wrap { padding: 0 1.5rem; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; padding: 1.8rem 0; }
+
+  .featured { padding: 3.5rem 1.5rem 2rem; }
+  .featured-grid { grid-template-columns: 1fr; }
+  .featured-head { flex-direction: column; align-items: flex-start; }
+
+  footer { padding: 1.5rem; justify-content: center; text-align: center; }
 }
+
 /* Page transition - body fade */
 body { opacity: 0; animation: pageIn 0.5s ease forwards; }
 body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
@@ -155,7 +267,8 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
     <li><a href="contact.html">Contact</a></li>
   </ul>
 </nav>
-<div class="hero">
+
+<section class="hero">
   <div class="hero-inner">
     <div class="hero-left">
       <p class="hero-tag">Bordeaux, France — 2026</p>
@@ -164,15 +277,18 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
         <span class="h-line-2">j'apprends à construire</span>
         <span class="h-line-3">le troisième.</span>
       </h1>
+      <p class="hero-identity">
+        Chef de Projet Digitalisation<br>
+        Automatisation IA &middot; E-commerce Franco-Chinois
+      </p>
       <div class="hero-sub">
         <p>Quelque chose s'est transformé.</p>
         <p>J'écris ce chemin ici.</p>
       </div>
       <div class="hero-cta">
-        <a href="projets.html" class="btn-primary">Voir ce que je construis →</a>
-        <a href="https://www.linkedin.com/in/weilin-b-b68416303/" target="_blank" class="btn-ghost">LinkedIn</a>
+        <a href="projets.html" class="btn-primary">Voir ce que je construis &rarr;</a>
+        <a href="https://www.linkedin.com/in/weilin-b-b68416303/" target="_blank" rel="noopener" class="btn-ghost">LinkedIn</a>
       </div>
-      <p class="hero-keywords">Automatisation · Workflows IA · E-commerce</p>
     </div>
     <div class="hero-right">
       <div id="sparkles-hero"></div>
@@ -180,7 +296,75 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
       <img src="avatar.png" alt="Weilin Hu" class="avatar-img">
     </div>
   </div>
+</section>
+
+<div class="stats-wrap">
+  <div class="stats-bar">
+    <div class="stat-item">
+      <p class="stat-num">5</p>
+      <p class="stat-label">Projets actifs</p>
+    </div>
+    <div class="stat-item">
+      <p class="stat-num">4</p>
+      <p class="stat-label">En production</p>
+    </div>
+    <div class="stat-item">
+      <p class="stat-num">45<span class="unit">min/jour</span></p>
+      <p class="stat-label">Temps économisé</p>
+    </div>
+    <div class="stat-item">
+      <p class="stat-num">FR / CN</p>
+      <p class="stat-label">Marchés ciblés</p>
+    </div>
+  </div>
 </div>
+
+<section class="featured">
+  <div class="featured-head">
+    <div>
+      <p class="featured-tag">Travaux en production</p>
+      <h2 class="featured-title">Projets <span>phares</span></h2>
+    </div>
+    <a href="projets.html" class="featured-link">Voir tout &rarr;</a>
+  </div>
+
+  <div class="featured-grid">
+    <a href="projets.html" class="f-card">
+      <span class="f-badge f-badge-deployed">EN SERVICE</span>
+      <p class="f-category">Knowledge Base IA</p>
+      <h3 class="f-title">Octopia Help Centre &mdash; Base IA interne</h3>
+      <p class="f-desc">Scraping complet du Help Centre Octopia &rarr; Markdown &rarr; Tencent IMA. Les vendeurs interrogent la base en langage naturel depuis WeChat Entreprise.</p>
+      <p class="f-impact">Les vendeurs trouvent une réponse en 30 secondes au lieu de 5 minutes.</p>
+      <div class="f-stack">
+        <span class="f-tag">Web Scraping</span>
+        <span class="f-tag">Markdown</span>
+        <span class="f-tag">Tencent IMA</span>
+        <span class="f-tag">WeChat API</span>
+        <span class="f-tag">RAG</span>
+      </div>
+    </a>
+
+    <a href="https://miamfr.app/" target="_blank" rel="noopener" class="f-card">
+      <span class="f-badge f-badge-live">LIVE</span>
+      <p class="f-category">Application Web</p>
+      <h3 class="f-title">MIAM &mdash; Suivi calories par photo</h3>
+      <p class="f-desc">Photo du repas &rarr; reconnaissance IA &rarr; calcul automatique des calories. Suivi quotidien, historique, objectif perte de poids.</p>
+      <p class="f-impact">Produit end-to-end en production sur domaine propre, bilingue FR / 中文.</p>
+      <div class="f-stack">
+        <span class="f-tag">Lovable</span>
+        <span class="f-tag">Vision IA</span>
+        <span class="f-tag">Français</span>
+        <span class="f-tag">中文</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>&copy; Weilin Hu</span>
+  <span>Entre deux mondes.</span>
+  <span>Bordeaux, France</span>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
 <script>

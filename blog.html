@@ -79,6 +79,8 @@ nav {
 .post-category { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.4rem; }
 .post-title { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; line-height: 1.3; color: var(--white-dim); transition: color 0.2s; margin-bottom: 0.5rem; }
 .post-excerpt { font-size: 0.82rem; color: rgba(255,255,255,0.4); font-weight: 300; line-height: 1.6; }
+.post-meta { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; color: rgba(255,255,255,0.28); text-transform: uppercase; margin-top: 0.7rem; display: inline-flex; align-items: center; gap: 0.5em; }
+.post-meta::before { content: '◷'; font-size: 11px; color: rgba(255,255,255,0.35); }
 .post-arrow { font-size: 1rem; color: rgba(255,255,255,0.3); padding-top: 4px; transition: opacity 0.2s, transform 0.2s; opacity: 0; }
 
 .soon-banner { margin-top: 4rem; padding: 2rem; border: 1px dashed var(--white-ghost); text-align: center; opacity: 0; animation: fadeUp 0.6s ease 0.9s forwards; border-radius: 12px; }
@@ -138,6 +140,7 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
         <p class="post-category">Projets &#8212; IA &#183; Arcade &#183; PWA</p>
         <p class="post-title">Work Brain Smasher &#8212; quand tu bosses trop, l'IA t'engueule</p>
         <p class="post-excerpt">Un arcade web qui appelle 6 personnages pour te remettre &#224; ta place. Claude + Cloudflare Workers + PWA &#8212; 3h de build.</p>
+        <p class="post-meta">6 min de lecture</p>
       </div>
       <span class="post-arrow">&#8594;</span>
     </a>
@@ -147,6 +150,7 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
         <p class="post-category">Projets &#8212; Vote</p>
         <p class="post-title">Life in Weeks &#8212; deux versions, vote pour la tienne</p>
         <p class="post-excerpt">Arcade n&#233;on vs. Night minimal &#8212; 30 min de d&#233;mo + 3h de micro-it&#233;rations. Vote embarqu&#233; pour d&#233;partager.</p>
+        <p class="post-meta">4 min de lecture</p>
       </div>
       <span class="post-arrow">&#8594;</span>
     </a>
@@ -156,6 +160,7 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
         <p class="post-category">Projets</p>
         <p class="post-title">Comment j'ai construit ce site en 3h30 avec Claude</p>
         <p class="post-excerpt">De z&#233;ro &#224; weilinhu.com : GitHub, SSH, DNS, GitHub Pages &#8212; le process complet avec une IA comme copilote.</p>
+        <p class="post-meta">3 min de lecture</p>
       </div>
       <span class="post-arrow">&#8594;</span>
     </a>
@@ -165,6 +170,7 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
         <p class="post-category">Outils IA</p>
         <p class="post-title">J'ai licenci&#233; Google News. Mon IA fait &#231;a maintenant.</p>
         <p class="post-excerpt">Chaque matin, un briefing personnalis&#233; m'attend sur Telegram. Je n'ai rien fait pour &#231;a ce jour-l&#224;.</p>
+        <p class="post-meta">2 min de lecture</p>
       </div>
       <span class="post-arrow">&#8594;</span>
     </a>
