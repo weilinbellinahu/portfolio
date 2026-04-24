@@ -81,77 +81,6 @@ const SFX = (() => {
     try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
   }
 
-  // ========== AMBIENT BED (CRT 电流嗡鸣，永恒底噪) ==========
-  let ambNodes = null;
-  let ambWanted = false;
-  function _ambUp() {
-    if (muted || !ambWanted || ambNodes) return;
-    const c = ensure();
-    if (!c) return;
-    const t = c.currentTime;
-    const master = c.createGain();
-    master.gain.setValueAtTime(0, t);
-    master.gain.linearRampToValueAtTime(1, t + 1.8); // 缓慢淡入
-    master.connect(c.destination);
-    // 60Hz 交流电嗡
-    const hum = c.createOscillator();
-    hum.type = 'sine'; hum.frequency.value = 60;
-    const humG = c.createGain(); humG.gain.value = 0.012;
-    hum.connect(humG).connect(master);
-    hum.start(t);
-    // 120Hz 二次谐波
-    const harm = c.createOscillator();
-    harm.type = 'sine'; harm.frequency.value = 120;
-    const harmG = c.createGain(); harmG.gain.value = 0.006;
-    harm.connect(harmG).connect(master);
-    harm.start(t);
-    // ~8kHz CRT 高频 whine（窄带通白噪）
-    const buf = c.createBuffer(1, c.sampleRate * 2, c.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    const whine = c.createBufferSource();
-    whine.buffer = buf; whine.loop = true;
-    const wf = c.createBiquadFilter();
-    wf.type = 'bandpass'; wf.frequency.value = 8000; wf.Q.value = 60;
-    const wg = c.createGain(); wg.gain.value = 0.06;
-    whine.connect(wf).connect(wg).connect(master);
-    whine.start(t);
-    // 慢 LFO 轻微颤动（防止底噪过死）
-    const lfo = c.createOscillator();
-    lfo.type = 'sine'; lfo.frequency.value = 0.18;
-    const lfoG = c.createGain(); lfoG.gain.value = 0.04;
-    lfo.connect(lfoG).connect(master.gain);
-    lfo.start(t);
-    ambNodes = { hum, harm, whine, lfo, master };
-  }
-  function _ambDown() {
-    if (!ambNodes || !ctx) return;
-    const n = ambNodes;
-    ambNodes = null;
-    const t = ctx.currentTime;
-    try {
-      n.master.gain.cancelScheduledValues(t);
-      n.master.gain.linearRampToValueAtTime(0, t + 0.5);
-    } catch (e) { /* ignore */ }
-    setTimeout(() => {
-      try { n.hum.stop(); n.harm.stop(); n.whine.stop(); n.lfo.stop(); }
-      catch (e) { /* ignore */ }
-    }, 600);
-  }
-  const ambient = {
-    start() { ambWanted = true; _ambUp(); },
-    stop()  { ambWanted = false; _ambDown(); },
-  };
-
-  // ========== MICRO SWEETENERS ==========
-  function tick() { // 按钮 hover — 极轻高频
-    beep({ freq: 6500, dur: 0.012, type: 'square', vol: 0.03, attack: 0.001 });
-  }
-  function powerOn() { // 输入框聚焦 — 低到中 swell
-    beep({ freq: 180, dur: 0.22, type: 'sine', vol: 0.08, slideTo: 440, attack: 0.02 });
-    setTimeout(() => beep({ freq: 880, dur: 0.08, type: 'triangle', vol: 0.04 }), 180);
-  }
-
   function coin() {
     // 街机投币 B5→E6（用于欢迎 chirp / toggle 预览）
     beep({ freq: 988, dur: 0.07, type: 'square', vol: 0.11 });
@@ -232,14 +161,11 @@ const SFX = (() => {
   function toggle() {
     muted = !muted;
     localStorage.setItem('smash_sfx_muted', muted ? '1' : '0');
-    // 静音时 ambient 立即停；恢复时如果仍被需要，重启
-    if (muted) _ambDown();
-    else if (ambWanted) _ambUp();
     return muted;
   }
   function isMuted() { return muted; }
 
-  return { beep, noise, speak, shutUp, coin, start, hit, ko, type, tick, powerOn, ambient, toggle, isMuted };
+  return { beep, noise, speak, shutUp, coin, start, hit, ko, type, toggle, isMuted };
 })();
 
 // 🔊/🔇 按钮（绑定 id="sfx-toggle"）
