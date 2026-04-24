@@ -65,15 +65,32 @@ const SFX = (() => {
   function speak(text, { pitch=0.3, rate=0.65, vol=1.0, lang='en-US' }={}) {
     if (muted) return;
     if (!('speechSynthesis' in window)) return;
-    try {
-      window.speechSynthesis.cancel();
-      // 去掉 markdown 星号和零宽字符，避免 TTS 念出 "star star"
-      const clean = (text || '').replace(/\*+/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
-      if (!clean.trim()) return;
-      const u = new SpeechSynthesisUtterance(clean);
-      u.pitch = pitch; u.rate = rate; u.volume = vol; u.lang = lang;
-      window.speechSynthesis.speak(u);
-    } catch (e) { /* ignore */ }
+    const clean = (text || '').replace(/\*+/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
+    if (!clean.trim()) return;
+    try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    // iOS/Safari 在 cancel() 之后立刻 speak() 有时被 drop，延迟一 tick 最稳
+    const fire = () => {
+      try {
+        const u = new SpeechSynthesisUtterance(clean);
+        u.pitch = pitch; u.rate = rate; u.volume = vol; u.lang = lang;
+        window.speechSynthesis.speak(u);
+      } catch (e) { /* ignore */ }
+    };
+    // 如果 voices 还没加载完（某些浏览器首次进入），等 voiceschanged
+    if (window.speechSynthesis.getVoices().length === 0) {
+      const onReady = () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', onReady);
+        setTimeout(fire, 50);
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', onReady);
+      // 兜底：0.8s 内 voices 还没来也强跑
+      setTimeout(() => {
+        window.speechSynthesis.removeEventListener('voiceschanged', onReady);
+        fire();
+      }, 800);
+    } else {
+      setTimeout(fire, 80);
+    }
   }
 
   function shutUp() {
