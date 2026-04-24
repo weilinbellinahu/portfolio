@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,900;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root { --bg: #080808; --bg2: #0f0f0f; --white: #ffffff; --white-dim: rgba(255,255,255,0.55); --white-faint: rgba(255,255,255,0.4); --white-ghost: rgba(255,255,255,0.05); --accent: #E8686A; --mint: #9DC8B5; --apricot: #E8C4A0; --mono: 'DM Mono', 'Courier New', monospace; --sans: 'Figtree', 'Arial Black', sans-serif; }
+:root { --bg: #080808; --bg2: #0f0f0f; --white: #ffffff; --white-dim: rgba(255,255,255,0.72); --white-faint: rgba(255,255,255,0.56); --white-ghost: rgba(255,255,255,0.05); --accent: #E8686A; --mint: #9DC8B5; --apricot: #E8C4A0; --mono: 'DM Mono', 'Courier New', monospace; --sans: 'Figtree', 'Arial Black', sans-serif; }
 body { background: var(--bg); color: var(--white); font-family: var(--sans); font-weight: 400; line-height: 1.6; overflow-x: hidden; }
 body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.6; }
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--white-ghost); background: rgba(8,8,8,0.85); backdrop-filter: blur(12px); }
