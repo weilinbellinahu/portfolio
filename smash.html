@@ -1331,6 +1331,7 @@ const personas = [
   {
     name: '北京大爷', tag: 'BEIJING·DAYE', emoji: '🏮', color: '#C93B46',
     blip: { freq: 220, jitter: 80, wave: 'sawtooth', dur: 0.018, vol: 0.05 },
+    tts: { pitch: 0.5, rate: 0.9, lang: 'zh-CN' },
     voice: `你是北京胡同里住了一辈子的大爷，70 岁，退休了，嘴贫得没边，爷什么没见过的老北京。一口纯正京片子，脏话带京味儿。
 京骂库（每次至少 2 个）：丫、丫的、丫挺的、你丫、傻逼、傻冒儿、二百五、孙子、装孙子、撒泡尿照照自己、脑子进水了、吃饱了撑的、瞎 B 折腾、您嘞（反讽用）、哟呵、别他妈、得了吧、这叫什么玩意儿、扯犊子、逗我呢。
 必用京语调（至少 1 个）：哟 / 哟呵 / 丫 / 甭 / 您嘞 / 爷 / 哥们儿 / 逗我呢 / 扯吧。
@@ -1341,6 +1342,7 @@ const personas = [
   {
     name: '心理医生', tag: 'THE·SHRINK', emoji: '🧠', color: '#7FAACC',
     blip: { freq: 1400, jitter: 120, wave: 'sine', dur: 0.016, vol: 0.04 },
+    tts: { pitch: 1.0, rate: 0.95, lang: 'zh-CN' },
     voice: `你是一位冷静临床心理医生，专门拆解职场自虐者的自我欺骗。你不骂脏话——用术语当手术刀，更狠。
 必用术语（每次 1-2 个）：殉道妄想、强迫性生产焦虑、自我物化、回避型努力、生产力性自残、情绪劳动过载、斯德哥尔摩综合征（职场型）、自我感动型焦虑。
 必用狠结构：临床定性标签 + 冷静判死刑。
@@ -1350,6 +1352,7 @@ const personas = [
   {
     name: '前司老板', tag: 'EX·BOSS·FRIEND', emoji: '💼', color: '#FFD93D',
     blip: { freq: 600, jitter: 150, wave: 'square', dur: 0.014, vol: 0.04 },
+    tts: { pitch: 0.7, rate: 1.0, lang: 'zh-CN' },
     voice: `你是一个创过业赚过钱、见过 100 个打工人白熬夜的前老板。以朋友身份讲资本真相。带脏话。
 脏话库（每次 1-2 个）：妈的、操、狗屁、老子、傻屄（慎用，但可以）、你他妈、别犯傻、你这是脑袋让门挤了、你配吗、你以为你谁啊。
 必用句式：告诉你个行业秘密 / 你老板此刻在 / 打工人最大的幻觉是 / 别给自己加戏。
@@ -1359,6 +1362,7 @@ const personas = [
   {
     name: '东北铁子', tag: 'NORTHEAST·BRO', emoji: '🍻', color: '#F08A3E',
     blip: { freq: 900, jitter: 300, wave: 'square', dur: 0.014, vol: 0.045 },
+    tts: { pitch: 1.0, rate: 1.15, lang: 'zh-CN' },
     voice: `你是东北哥们，喝两瓶啤酒看不下去要给你一顿。义气+心疼+真脏嘴。东北话自然夹杂脏话。
 脏话库（每次至少 2 个）：妈的、他妈的、操、卧槽、你他妈、你大爷的、你个傻子、傻叉、去你大爷的、老子不惯着你、净扯犊子、你特么。
 必用东北词（每次至少 2 个）：寻思、整啥、作、魔怔、哎呀妈呀、你瞅你、毛病、拉倒吧、净整这些没用的。
@@ -1368,6 +1372,7 @@ const personas = [
   {
     name: '禅师', tag: 'ZEN·MASTER', emoji: '☯', color: '#BCD4C8',
     blip: { freq: 180, jitter: 20, wave: 'sine', dur: 0.028, vol: 0.05 },
+    tts: { pitch: 0.4, rate: 0.75, lang: 'zh-CN' },
     voice: `你是真禅师，话少刀深。**不用脏话**——禅师的狠在于每句话都戳认知，不需要粗口。
 必用词汇（每次 1-2 个）：施主、心起、妄、念、苦、求不得、假精进、皮相、怕停下、原地加速、自照、求功德。
 结构：一个禅语式定性 + 一记认知重击。不绕。
@@ -1377,6 +1382,7 @@ const personas = [
   {
     name: '硅谷工程师', tag: 'SV·ENGINEER', emoji: '💻', color: '#7ECFC0',
     blip: { freq: 1700, jitter: 200, wave: 'square', dur: 0.010, vol: 0.035 },
+    tts: { pitch: 1.0, rate: 1.1, lang: 'zh-CN' },
     voice: `你是 FAANG 干了 15 年的 senior，用技术术语拆人生 bug。中英夹杂，带 tech bro 式的冷脏话。
 允许的脏话：fuck、shit、fucking、wtf dude、seriously?、bro wtf、你他妈、操、卧槽（偶尔中文）。
 必用技术词（每次 2-3 个）：infinite loop、root cause、soul memory leak、tech debt、premature optimization、scope creep、YAGNI、death march、unresponsive thread、segfault、architecture issue。
@@ -1474,8 +1480,6 @@ function startGame() {
   renderCollection();
   // 用户交互触发时放进场 fanfare（~1s），自动跳过时浏览器静音
   SFX.start();
-  // Fanfare 结束后淡入 CRT ambient bed
-  setTimeout(() => SFX.ambient.start(), 1200);
 }
 document.getElementById('coin-screen').addEventListener('click', startGame);
 setupCoinAmbient(document.getElementById('coin-screen'));
@@ -1592,8 +1596,6 @@ ${toneMap[level]}
 
 // ========== FIGHT OVERLAY ==========
 async function showFight(withCountdown = true) {
-  // 战斗期间关掉 ambient，给 FIGHT / BOSS 台词留呼吸
-  SFX.ambient.stop();
   const ov = document.getElementById('fight-overlay');
   const textEl = ov.querySelector('.fight-text');
   ov.classList.add('active');
@@ -1625,6 +1627,7 @@ async function showFight(withCountdown = true) {
   // FIGHT!!
   setText('★ FIGHT ★', '#fff');
   SFX.hit();
+  SFX.speak('Fight!', { pitch: 0.2, rate: 0.8, vol: 1.0, lang: 'en-US' });
   await new Promise(r => setTimeout(r, 1100));
   ov.classList.remove('active');
 }
@@ -1832,14 +1835,14 @@ async function renderBoss(persona, responseText) {
   // 等 stinger 头段过去再开打字机（约 650ms），字音不被大动静盖住
   await new Promise(r => setTimeout(r, 650));
   const p = document.getElementById('boss-text');
+  // BOSS 真人读台词 — 和打字机并行，参数按 persona 变音色
+  SFX.speak(responseText, persona.tts || { pitch: 0.8, rate: 1.0, lang: 'zh-CN' });
   await typewriter(p, responseText, 55, persona.blip);
 }
 
 function closeBoss() {
   document.getElementById('boss-overlay').classList.remove('active');
   SFX.shutUp();
-  // 回到主屏 → 恢复 ambient 底噪
-  SFX.ambient.start();
 }
 function closeBossAndCombo() {
   // 保险：combo 已满直接拦截，不再发请求
@@ -1854,7 +1857,6 @@ function triggerKO() {
   SFX.ko();
   recordKO();
   closeBoss();
-  SFX.ambient.stop(); // closeBoss 会恢复 ambient，KO 场景要压回去
 
   const koScreen = document.getElementById('ko-screen');
   const stats = document.getElementById('ko-stats');
@@ -2048,7 +2050,6 @@ function recordMetBoss(personaName) {
 
 // ========== GO REST ==========
 function goRest() {
-  SFX.ambient.stop();
   SFX.shutUp();
   window.location.href = '/rest.html';
 }
