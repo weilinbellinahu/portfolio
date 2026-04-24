@@ -168,6 +168,13 @@
   #coin-screen .coin-rules    { animation: fadeSlideUp 0.35s 1.75s both; }
   #coin-screen .coin-cta      { animation: fadeSlideUp 0.35s 2.0s both, blinkSlow 1.2s 2.4s infinite; }
   #coin-screen .coin-anykey   { animation: fadeSlideUp 0.3s 2.2s both, pulse 1.8s 2.5s infinite; }
+  #coin-screen .coin-lang-switch {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 18px);
+    right: calc(env(safe-area-inset-right, 0px) + 20px);
+    z-index: 5;
+    animation: fadeSlideDown 0.4s 0.55s both;
+  }
   .coin-brand {
     position: absolute; top: 24px;
     font-family: 'Press Start 2P', monospace;
@@ -1174,6 +1181,7 @@
 
 <!-- ============ INSERT COIN SCREEN ============ -->
 <div id="coin-screen">
+  <a class="lang-switch coin-lang-switch" href="/smash.html" title="中文版" onclick="event.stopPropagation();"><span class="flag" aria-hidden="true">🇨🇳</span>中</a>
   <div class="coin-brand">WEILINHU · ARCADE · EST.2026</div>
   <div class="coin-zh">SECOUE-MOI</div>
   <div class="coin-en">WORK BRAIN SMASHER · VERSION FR</div>
