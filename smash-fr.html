@@ -311,69 +311,6 @@
     text-shadow: 0 0 10px rgba(255,217,61,0.5);
   }
 
-  /* Difficulty buttons inline in HUD */
-  .hud-diffs {
-    display: flex;
-    gap: 4px;
-  }
-  .diff-btn {
-    font-family: 'Press Start 2P', monospace;
-    font-size: clamp(8px, 1.8vw, 10px);
-    padding: 6px 10px;
-    background: transparent;
-    letter-spacing: 0.08em;
-    transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, text-shadow 0.2s;
-    border: 2px solid;
-  }
-  /* 默认态三档各自色 但低饱和（预示狠度） */
-  .diff-btn[data-level="0"] {
-    color: rgba(126,207,192,0.75); border-color: rgba(126,207,192,0.4);
-  }
-  .diff-btn[data-level="1"] {
-    color: rgba(255,217,61,0.75); border-color: rgba(255,217,61,0.4);
-  }
-  .diff-btn[data-level="2"] {
-    color: rgba(214,53,59,0.75); border-color: rgba(214,53,59,0.4);
-  }
-  /* hover 和 active 饱和化 */
-  .diff-btn[data-level="0"]:hover,
-  .diff-btn[data-level="0"].active {
-    color: #7ECFC0; border-color: #7ECFC0;
-    text-shadow: 0 0 8px rgba(126,207,192,0.5);
-  }
-  .diff-btn[data-level="0"].active {
-    box-shadow: 2px 2px 0 rgba(126,207,192,0.4);
-  }
-  .diff-btn[data-level="1"]:hover,
-  .diff-btn[data-level="1"].active {
-    color: #FFD93D; border-color: #FFD93D;
-    text-shadow: 0 0 8px rgba(255,217,61,0.5);
-  }
-  .diff-btn[data-level="1"].active {
-    box-shadow: 2px 2px 0 rgba(255,217,61,0.4);
-  }
-  .diff-btn[data-level="2"]:hover,
-  .diff-btn[data-level="2"].active {
-    color: #D6353B; border-color: #D6353B;
-    text-shadow: 0 0 8px rgba(214,53,59,0.5);
-  }
-  .diff-btn[data-level="2"].active {
-    box-shadow: 2px 2px 0 rgba(214,53,59,0.4);
-  }
-  /* Les deux non-sélectionnés s'éteignent */
-  .hud-diffs .diff-btn:not(.active) {
-    opacity: 0.32;
-    text-shadow: none;
-    filter: saturate(0.5);
-  }
-  .hud-diffs .diff-btn:not(.active):hover {
-    opacity: 0.9;
-    filter: saturate(1);
-  }
-  @media (max-width: 420px) {
-    .diff-btn { font-size: 8px; padding: 5px 7px; letter-spacing: 0.05em; }
-  }
-
   .memo-line {
     font-family: 'VT323', monospace;
     font-size: clamp(14px, 2.4vw, 16px);
@@ -1244,11 +1181,6 @@
       <span class="hud-left" id="hud-score">Gifles · 0</span>
       <button class="sfx-toggle" id="sfx-toggle" title="Son" onclick="toggleSfx()">🔊</button>
     </div>
-    <div class="hud-diffs">
-      <button class="diff-btn" data-level="0">Léger</button>
-      <button class="diff-btn active" data-level="1">Cinglant</button>
-      <button class="diff-btn" data-level="2">Brutal</button>
-    </div>
   </div>
 
   <div class="memo-line" id="memo-line"></div>
@@ -1311,7 +1243,7 @@
       </div>
       <div class="sc-info-row">
         <span class="sc-info-k">DIFF</span>
-        <span class="sc-info-v" id="sc-diff">Cinglant</span>
+        <span class="sc-info-v" id="sc-diff">Brutal</span>
       </div>
       <div class="sc-info-row combo">
         <span class="sc-info-k">COMBO</span>
@@ -1428,7 +1360,7 @@ const CRISIS_KEYWORDS = ['suicide', 'me tuer', 'me suicider', 'en finir', 'me su
 
 // ========== STATE ==========
 const state = {
-  difficulty: 1,           // 0 Léger / 1 Cinglant / 2 Brutal
+  difficulty: 2,           // verrouillé sur « Brutal »
   currentPersona: null,
   previousResponses: [],
   lastPrompt: '',
@@ -1527,17 +1459,6 @@ document.addEventListener('keydown', function onceKey() {
   if (mem.seenCoin && !forceCoin) startGame();
 })();
 
-// Restaurer la difficulté choisie la dernière fois
-(function restoreDiff() {
-  const mem = loadMemory();
-  if (typeof mem.difficulty === 'number' && mem.difficulty >= 0 && mem.difficulty <= 2) {
-    state.difficulty = mem.difficulty;
-    document.querySelectorAll('.diff-btn').forEach(b => {
-      b.classList.toggle('active', parseInt(b.dataset.level) === state.difficulty);
-    });
-  }
-})();
-
 // ========== RENDER LEVELS ==========
 const levelsGrid = document.getElementById('levels-grid');
 presets.forEach((p, i) => {
@@ -1554,18 +1475,6 @@ presets.forEach((p, i) => {
     scold(p.prompt, false);
   };
   levelsGrid.appendChild(btn);
-});
-
-// ========== DIFFICULTY (inline buttons in HUD) ==========
-document.querySelectorAll('.diff-btn').forEach(btn => {
-  btn.onclick = () => {
-    state.difficulty = parseInt(btn.dataset.level);
-    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const mem = loadMemory();
-    mem.difficulty = state.difficulty;
-    saveMemory(mem);
-  };
 });
 
 // ========== SUBMIT ==========
@@ -1873,8 +1782,7 @@ async function generateShareBlob() {
   document.getElementById('sc-emoji').textContent = p.emoji;
   document.getElementById('sc-bossname').textContent = p.name;
   document.getElementById('sc-type').textContent = p.tag;
-  const diffLabels = ['Leger', 'Cinglant', 'Brutal'];
-  document.getElementById('sc-diff').textContent = diffLabels[state.difficulty] || 'Cinglant';
+  document.getElementById('sc-diff').textContent = 'Brutal';
   document.getElementById('sc-combo').textContent = `×${state.comboCount || 3}`;
   document.getElementById('sc-quote').textContent = `« ${quote} »`;
   const idx = personas.findIndex(x => x.name === p.name);
