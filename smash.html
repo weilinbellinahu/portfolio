@@ -1330,6 +1330,7 @@ const angles = [
 const personas = [
   {
     name: '北京大爷', tag: 'BEIJING·DAYE', emoji: '🏮', color: '#C93B46',
+    blip: { freq: 220, jitter: 80, wave: 'sawtooth', dur: 0.018, vol: 0.05 },
     voice: `你是北京胡同里住了一辈子的大爷，70 岁，退休了，嘴贫得没边，爷什么没见过的老北京。一口纯正京片子，脏话带京味儿。
 京骂库（每次至少 2 个）：丫、丫的、丫挺的、你丫、傻逼、傻冒儿、二百五、孙子、装孙子、撒泡尿照照自己、脑子进水了、吃饱了撑的、瞎 B 折腾、您嘞（反讽用）、哟呵、别他妈、得了吧、这叫什么玩意儿、扯犊子、逗我呢。
 必用京语调（至少 1 个）：哟 / 哟呵 / 丫 / 甭 / 您嘞 / 爷 / 哥们儿 / 逗我呢 / 扯吧。
@@ -1339,6 +1340,7 @@ const personas = [
   },
   {
     name: '心理医生', tag: 'THE·SHRINK', emoji: '🧠', color: '#7FAACC',
+    blip: { freq: 1400, jitter: 120, wave: 'sine', dur: 0.016, vol: 0.04 },
     voice: `你是一位冷静临床心理医生，专门拆解职场自虐者的自我欺骗。你不骂脏话——用术语当手术刀，更狠。
 必用术语（每次 1-2 个）：殉道妄想、强迫性生产焦虑、自我物化、回避型努力、生产力性自残、情绪劳动过载、斯德哥尔摩综合征（职场型）、自我感动型焦虑。
 必用狠结构：临床定性标签 + 冷静判死刑。
@@ -1347,6 +1349,7 @@ const personas = [
   },
   {
     name: '前司老板', tag: 'EX·BOSS·FRIEND', emoji: '💼', color: '#FFD93D',
+    blip: { freq: 600, jitter: 150, wave: 'square', dur: 0.014, vol: 0.04 },
     voice: `你是一个创过业赚过钱、见过 100 个打工人白熬夜的前老板。以朋友身份讲资本真相。带脏话。
 脏话库（每次 1-2 个）：妈的、操、狗屁、老子、傻屄（慎用，但可以）、你他妈、别犯傻、你这是脑袋让门挤了、你配吗、你以为你谁啊。
 必用句式：告诉你个行业秘密 / 你老板此刻在 / 打工人最大的幻觉是 / 别给自己加戏。
@@ -1355,6 +1358,7 @@ const personas = [
   },
   {
     name: '东北铁子', tag: 'NORTHEAST·BRO', emoji: '🍻', color: '#F08A3E',
+    blip: { freq: 900, jitter: 300, wave: 'square', dur: 0.014, vol: 0.045 },
     voice: `你是东北哥们，喝两瓶啤酒看不下去要给你一顿。义气+心疼+真脏嘴。东北话自然夹杂脏话。
 脏话库（每次至少 2 个）：妈的、他妈的、操、卧槽、你他妈、你大爷的、你个傻子、傻叉、去你大爷的、老子不惯着你、净扯犊子、你特么。
 必用东北词（每次至少 2 个）：寻思、整啥、作、魔怔、哎呀妈呀、你瞅你、毛病、拉倒吧、净整这些没用的。
@@ -1363,6 +1367,7 @@ const personas = [
   },
   {
     name: '禅师', tag: 'ZEN·MASTER', emoji: '☯', color: '#BCD4C8',
+    blip: { freq: 180, jitter: 20, wave: 'sine', dur: 0.028, vol: 0.05 },
     voice: `你是真禅师，话少刀深。**不用脏话**——禅师的狠在于每句话都戳认知，不需要粗口。
 必用词汇（每次 1-2 个）：施主、心起、妄、念、苦、求不得、假精进、皮相、怕停下、原地加速、自照、求功德。
 结构：一个禅语式定性 + 一记认知重击。不绕。
@@ -1371,6 +1376,7 @@ const personas = [
   },
   {
     name: '硅谷工程师', tag: 'SV·ENGINEER', emoji: '💻', color: '#7ECFC0',
+    blip: { freq: 1700, jitter: 200, wave: 'square', dur: 0.010, vol: 0.035 },
     voice: `你是 FAANG 干了 15 年的 senior，用技术术语拆人生 bug。中英夹杂，带 tech bro 式的冷脏话。
 允许的脏话：fuck、shit、fucking、wtf dude、seriously?、bro wtf、你他妈、操、卧槽（偶尔中文）。
 必用技术词（每次 2-3 个）：infinite loop、root cause、soul memory leak、tech debt、premature optimization、scope creep、YAGNI、death march、unresponsive thread、segfault、architecture issue。
@@ -1589,7 +1595,7 @@ function showFight() {
 }
 
 // ========== TYPEWRITER ==========
-function typewriter(el, text, speed = 55) {
+function typewriter(el, text, speed = 55, blipOpts = null) {
   return new Promise(resolve => {
     el.textContent = '';
     let i = 0;
@@ -1601,9 +1607,9 @@ function typewriter(el, text, speed = 55) {
       }
       const ch = text[i];
       el.textContent += ch;
-      // 打字机 blip：跳过空白和标点，每 2 字出一声（省得机关枪）
+      // 打字机 blip：跳过空白和标点，每 2 字出一声；按 BOSS 变音色
       if (i % 2 === 0 && !/[\s。，！？、：；\.\?!,"'""''（）()]/.test(ch)) {
-        SFX.type();
+        SFX.type(blipOpts || {});
       }
       i++;
       const delay = /[。，！？、：；\.\?!,]/.test(ch) ? speed + 350 : speed;
@@ -1611,6 +1617,60 @@ function typewriter(el, text, speed = 55) {
     };
     tick();
   });
+}
+
+// ========== BOSS STINGERS ==========
+// 每人登场 ~0.8 秒专属音节，放在 FIGHT 之后 / 台词之前
+const BOSS_STINGERS = {
+  '北京大爷': () => {
+    // 京锣 + 布帘被掀动（低击 + 高频带通噪声 + 金属回响）
+    SFX.beep({ freq: 180, dur: 0.55, type: 'sawtooth', vol: 0.14, slideTo: 70 });
+    SFX.noise({ dur: 0.4, vol: 0.08, filterFreq: 3500, filterType: 'bandpass' });
+    setTimeout(() => SFX.beep({ freq: 440, dur: 0.35, type: 'triangle', vol: 0.06 }), 120);
+  },
+  '心理医生': () => {
+    // 心电监护仪 3 声 + 长拉断
+    [0, 280, 560].forEach(t => setTimeout(() =>
+      SFX.beep({ freq: 1047, dur: 0.08, type: 'sine', vol: 0.09 }), t));
+    setTimeout(() =>
+      SFX.beep({ freq: 1047, dur: 0.5, type: 'sine', vol: 0.09, slideTo: 180 }), 860);
+  },
+  '前司老板': () => {
+    // 电梯叮 + 股票行情 tick 串
+    SFX.beep({ freq: 1760, dur: 0.45, type: 'sine', vol: 0.11 });
+    SFX.beep({ freq: 2349, dur: 0.45, type: 'sine', vol: 0.05 });
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() =>
+        SFX.beep({ freq: 4200, dur: 0.012, type: 'square', vol: 0.04 }), 320 + i * 55);
+    }
+  },
+  '东北铁子': () => {
+    // 摔瓶子 + 唢呐半拍
+    SFX.noise({ dur: 0.15, vol: 0.22, filterFreq: 3200, filterType: 'highpass' });
+    setTimeout(() =>
+      SFX.beep({ freq: 660, dur: 0.4, type: 'sawtooth', vol: 0.12, slideTo: 920 }), 110);
+  },
+  '禅师': () => {
+    // 钵：低基 + 两泛音 + 木鱼 3 击
+    SFX.beep({ freq: 110, dur: 1.6, type: 'sine', vol: 0.16 });
+    SFX.beep({ freq: 220, dur: 1.1, type: 'sine', vol: 0.07 });
+    SFX.beep({ freq: 330, dur: 0.8, type: 'sine', vol: 0.03 });
+    [280, 480, 680].forEach(t => setTimeout(() =>
+      SFX.beep({ freq: 90, dur: 0.03, type: 'square', vol: 0.1 }), t));
+  },
+  '硅谷工程师': () => {
+    // Mac terminal bell + 键盘 cluster
+    SFX.beep({ freq: 2637, dur: 0.09, type: 'sine', vol: 0.09 });
+    SFX.beep({ freq: 3520, dur: 0.07, type: 'sine', vol: 0.04 });
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() =>
+        SFX.noise({ dur: 0.015, vol: 0.05, filterFreq: 6000, filterType: 'highpass' }), 110 + i * 42);
+    }
+  },
+};
+function playBossStinger(persona) {
+  const fn = BOSS_STINGERS[persona.name];
+  if (fn) fn();
 }
 
 // ========== MAIN SCOLD ==========
@@ -1732,8 +1792,12 @@ async function renderBoss(persona, responseText) {
     </div>
   `;
   overlay.classList.add('active');
+  // BOSS 专属出场 stinger
+  playBossStinger(persona);
+  // 等 stinger 头段过去再开打字机（约 650ms），字音不被大动静盖住
+  await new Promise(r => setTimeout(r, 650));
   const p = document.getElementById('boss-text');
-  await typewriter(p, responseText, 55);
+  await typewriter(p, responseText, 55, persona.blip);
 }
 
 function closeBoss() {

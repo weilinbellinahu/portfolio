@@ -1307,6 +1307,7 @@ const angles = [
 const personas = [
   {
     name: "Mamie gauchiste", tag: 'MAMIE·68', emoji: '🌻', color: '#F28B7E',
+    blip: { freq: 780, jitter: 120, wave: 'triangle', dur: 0.016, vol: 0.045 },
     voice: `Grand-mère ex-militante de Mai 68, 78 ans, encore en colère contre le capital. Tutoie ("camarade", "mon gars").
 GROS MOTS AUTORISÉS (niveau brutal, 1-2 min) : putain, merde, salaud, salopard, con, "ces enculés de patrons", "ils se foutent de ta gueule", "ils nous ont tous enculés".
 Mots politiques OBLIGATOIRES (1-2) : camarade, patronat, actionnaire, esclave salarié, on s'est pas battus pour ça, Mai 68, pigeon, aliéné, vendu.
@@ -1315,6 +1316,7 @@ Exemple (brutal) : "Camarade putain, tu sais pour qui tu bosses à 2h ? Pour ce 
   },
   {
     name: 'Prof de philo', tag: 'PROF·PHILO', emoji: '📚', color: '#FFD93D',
+    blip: { freq: 520, jitter: 60, wave: 'sine', dur: 0.018, vol: 0.04 },
     voice: `Prof de philo agrégé, 50 ans. **Pas de gros mots** — la violence intellectuelle est plus brutale qu'une insulte. Vouvoie.
 TERMES OBLIGATOIRES (1-2) : mauvaise foi sartrienne, aliénation, fuite en avant, habitus, servitude volontaire, discipline foucaldienne, inauthenticité.
 Punchlines (brutal) : "cas d'école de servitude volontaire", "La Boétie vous a diagnostiqué en 1548, c'est dire", "vous cherchez la reconnaissance de votre bourreau — Hegel a déjà ri", "votre 'ambition' est une aliénation intériorisée, c'est pathétique".
@@ -1323,6 +1325,7 @@ Exemple (brutal) : "Votre 'ambition' est un cas d'école de mauvaise foi sartrie
   },
   {
     name: 'Taxi de nuit', tag: 'TAXI·NUIT·PARIS', emoji: '🚖', color: '#A8937E',
+    blip: { freq: 320, jitter: 200, wave: 'sawtooth', dur: 0.015, vol: 0.045 },
     voice: `Chauffeur de taxi parisien, 55 ans, 30 ans de métier. Zéro filtre. Voix populaire parisienne brute. Tutoie.
 GROS MOTS OBLIGATOIRES (brutal, 2-3 min) : putain, merde, con, connard, "bordel", "fait chier", "t'es con ou quoi", "t'as rien dans le crâne", "putain mais sérieux", "t'as pas les couilles".
 Vocabulaire OBLIGATOIRE (1-2) : mec, sérieux, franchement, "t'as vu l'heure ?", "tu rigoles ou quoi", "je vois défiler".
@@ -1331,6 +1334,7 @@ Exemple (brutal) : "Putain mec sérieux, t'as vu l'heure et ta gueule ? T'as l'a
   },
   {
     name: 'Tonton Coluche', tag: 'COLUCHE·STYLE', emoji: '🎭', color: '#F08A3E',
+    blip: { freq: 560, jitter: 180, wave: 'square', dur: 0.014, vol: 0.045 },
     voice: `Tonton populaire à la Coluche : rage de classe + humour noir + punchlines qui tuent. 60 ans. Tutoie.
 GROS MOTS OBLIGATOIRES (brutal, 1-2) : putain, merde, con, connard, "bande de cons", "on se fait démonter".
 Vocabulaire OBLIGATOIRE (1-2) : mec, ma pauvre, ma petite dame, "on nous prend pour des jambons", "tu fais le couillon", "les patrons", "la France qui se lève tôt pour se coucher tard".
@@ -1339,6 +1343,7 @@ Exemple (brutal) : "Mec, tu fais le couillon à minuit pour un gars qui sait pas
   },
   {
     name: 'Psy parisienne', tag: 'PSY·PARIS', emoji: '🧠', color: '#BCD4C8',
+    blip: { freq: 1250, jitter: 100, wave: 'sine', dur: 0.016, vol: 0.04 },
     voice: `Psychologue clinicienne parisienne, 50 ans, spécialiste burn-out. **Pas de gros mots** — les termes cliniques sont plus violents. Vouvoie.
 TERMES OBLIGATOIRES (1-2) : "cliniquement, on appelle ça", épuisement professionnel, évitement actif, hyper-productivité anxieuse, Stockholm professionnel, fuite dans l'agir, déni structural.
 Punchlines (brutal) : "c'est un cas d'école", "votre 'ambition' est une auto-anesthésie", "le corps vous présentera la facture avec intérêts", "votre symptôme est d'une transparence gênante".
@@ -1347,6 +1352,7 @@ Exemple (brutal) : "Cliniquement, c'est une fuite dans l'agir. Vous vous submerg
   },
   {
     name: 'Ingé French Tech', tag: 'INGÉ·TECH', emoji: '💻', color: '#7ECFC0',
+    blip: { freq: 1700, jitter: 200, wave: 'square', dur: 0.010, vol: 0.035 },
     voice: `Ingénieur français, 38 ans, ex-Criteo/ex-Doctolib, blasé du YC-cosplay. Tutoie.
 GROS MOTS AUTORISÉS (brutal, 1-2) : fuck, shit, "fucking", "wtf dude", "putain", "merde", "tu fais chier".
 TECH TERMS OBLIGATOIRES (2-3) : ship, prod, staging, tech debt, scope creep, root cause, soul memory leak, YAGNI, death march, "on n'est pas à Palo Alto", "burn-out c'est pas un KPI".
@@ -1562,7 +1568,7 @@ function showFight() {
 }
 
 // ========== TYPEWRITER ==========
-function typewriter(el, text, speed = 55) {
+function typewriter(el, text, speed = 55, blipOpts = null) {
   return new Promise(resolve => {
     el.textContent = '';
     let i = 0;
@@ -1574,9 +1580,9 @@ function typewriter(el, text, speed = 55) {
       }
       const ch = text[i];
       el.textContent += ch;
-      // Blip machine à écrire : saute blancs et ponctuation, 1 son / 2 chars
+      // Blip machine à écrire : saute blancs et ponctuation, timbre selon BOSS
       if (i % 2 === 0 && !/[\s。，！？、：；\.\?!,"'""''（）()]/.test(ch)) {
-        SFX.type();
+        SFX.type(blipOpts || {});
       }
       i++;
       const delay = /[。，！？、：；\.\?!,]/.test(ch) ? speed + 350 : speed;
@@ -1584,6 +1590,54 @@ function typewriter(el, text, speed = 55) {
     };
     tick();
   });
+}
+
+// ========== STINGERS PAR BOSS ==========
+const BOSS_STINGERS = {
+  'Mamie gauchiste': () => {
+    // Accordéon wheeze + sifflement militant (mid slow pitch + high whistle)
+    SFX.beep({ freq: 440, dur: 0.55, type: 'triangle', vol: 0.12, slideTo: 360 });
+    SFX.beep({ freq: 660, dur: 0.4, type: 'triangle', vol: 0.06, slideTo: 540 });
+    setTimeout(() => SFX.beep({ freq: 1760, dur: 0.25, type: 'sine', vol: 0.06 }), 380);
+  },
+  'Prof de philo': () => {
+    // Cloche de bibliothèque + craie
+    SFX.beep({ freq: 1320, dur: 0.5, type: 'sine', vol: 0.1 });
+    SFX.beep({ freq: 2637, dur: 0.4, type: 'sine', vol: 0.05 });
+    setTimeout(() => SFX.noise({ dur: 0.15, vol: 0.04, filterFreq: 2500, filterType: 'highpass' }), 300);
+  },
+  'Taxi de nuit': () => {
+    // Klaxon parisien 2 tons + crissement pneu
+    SFX.beep({ freq: 440, dur: 0.15, type: 'square', vol: 0.13 });
+    setTimeout(() => SFX.beep({ freq: 370, dur: 0.22, type: 'square', vol: 0.13 }), 160);
+    setTimeout(() => SFX.noise({ dur: 0.3, vol: 0.1, filterFreq: 1800, filterType: 'bandpass' }), 400);
+  },
+  'Tonton Coluche': () => {
+    // Tap micro stand-up + rire clip
+    SFX.noise({ dur: 0.04, vol: 0.18, filterFreq: 300, filterType: 'lowpass' });
+    setTimeout(() => SFX.noise({ dur: 0.04, vol: 0.15, filterFreq: 300, filterType: 'lowpass' }), 120);
+    setTimeout(() => SFX.beep({ freq: 500, dur: 0.3, type: 'square', vol: 0.08, slideTo: 700 }), 280);
+  },
+  'Psy parisienne': () => {
+    // Moniteur cardiaque 3 + tonalité plate
+    [0, 280, 560].forEach(t => setTimeout(() =>
+      SFX.beep({ freq: 1047, dur: 0.08, type: 'sine', vol: 0.09 }), t));
+    setTimeout(() =>
+      SFX.beep({ freq: 1047, dur: 0.5, type: 'sine', vol: 0.09, slideTo: 180 }), 860);
+  },
+  'Ingé French Tech': () => {
+    // Mac terminal bell + clavier mécanique
+    SFX.beep({ freq: 2637, dur: 0.09, type: 'sine', vol: 0.09 });
+    SFX.beep({ freq: 3520, dur: 0.07, type: 'sine', vol: 0.04 });
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() =>
+        SFX.noise({ dur: 0.015, vol: 0.05, filterFreq: 6000, filterType: 'highpass' }), 110 + i * 42);
+    }
+  },
+};
+function playBossStinger(persona) {
+  const fn = BOSS_STINGERS[persona.name];
+  if (fn) fn();
 }
 
 // ========== MAIN SCOLD ==========
@@ -1705,8 +1759,12 @@ async function renderBoss(persona, responseText) {
     </div>
   `;
   overlay.classList.add('active');
+  // Stinger d'entrée propre au BOSS
+  playBossStinger(persona);
+  // Laisse passer la partie forte du stinger (~650ms) avant la machine à écrire
+  await new Promise(r => setTimeout(r, 650));
   const p = document.getElementById('boss-text');
-  await typewriter(p, responseText, 55);
+  await typewriter(p, responseText, 55, persona.blip);
 }
 
 function closeBoss() {

@@ -67,10 +67,18 @@ const SFX = (() => {
     if (!('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
+      // 去掉 markdown 星号和零宽字符，避免 TTS 念出 "star star"
+      const clean = (text || '').replace(/\*+/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
+      if (!clean.trim()) return;
+      const u = new SpeechSynthesisUtterance(clean);
       u.pitch = pitch; u.rate = rate; u.volume = vol; u.lang = lang;
       window.speechSynthesis.speak(u);
     } catch (e) { /* ignore */ }
+  }
+
+  function shutUp() {
+    if (!('speechSynthesis' in window)) return;
+    try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
   }
 
   function coin() {
@@ -110,29 +118,44 @@ const SFX = (() => {
   }
 
   function ko() {
-    // 阶段 1：K.O. 人声 + 小调下行四音
-    speak('K. O.', { pitch: 0.2, rate: 0.6, vol: 1.0 });
-    const notes = [554, 494, 415, 349]; // C#5 B4 Ab4 F4
-    notes.forEach((f, i) => {
-      setTimeout(() => beep({ freq: f, dur: 0.32, type: 'triangle', vol: 0.12 }), i * 210 + 500);
-    });
-    beep({ freq: 110, dur: 1.8, type: 'sine', vol: 0.08 });
-    // 阶段 2：GAME OVER 戏剧终曲
+    // 先切断一切口播（BOSS 正在说的话），400ms 静默 punch
+    shutUp();
+    const SILENCE = 400;
     setTimeout(() => {
-      beep({ freq: 440, dur: 0.2,  type: 'square', vol: 0.14 });
-      setTimeout(() => beep({ freq: 349, dur: 0.2,  type: 'square', vol: 0.14 }), 220);
-      setTimeout(() => beep({ freq: 262, dur: 0.85, type: 'square', vol: 0.15 }), 440);
+      // 阶段 1：K.O. 人声 + 小调下行四音
+      speak('K. O.', { pitch: 0.2, rate: 0.6, vol: 1.0 });
+      const notes = [554, 494, 415, 349]; // C#5 B4 Ab4 F4
+      notes.forEach((f, i) => {
+        setTimeout(() => beep({ freq: f, dur: 0.32, type: 'triangle', vol: 0.12 }), i * 210 + 500);
+      });
+      beep({ freq: 110, dur: 1.8, type: 'sine', vol: 0.08 });
+      // 阶段 2：GAME OVER 戏剧终曲
       setTimeout(() => {
-        beep({ freq: 65, dur: 1.4, type: 'sawtooth', vol: 0.2, slideTo: 30 });
-        noise({ dur: 0.35, vol: 0.1, filterFreq: 400 });
-      }, 440);
-    }, 1600);
+        beep({ freq: 440, dur: 0.2,  type: 'square', vol: 0.14 });
+        setTimeout(() => beep({ freq: 349, dur: 0.2,  type: 'square', vol: 0.14 }), 220);
+        setTimeout(() => beep({ freq: 262, dur: 0.85, type: 'square', vol: 0.15 }), 440);
+        setTimeout(() => {
+          beep({ freq: 65, dur: 1.4, type: 'sawtooth', vol: 0.2, slideTo: 30 });
+          noise({ dur: 0.35, vol: 0.1, filterFreq: 400 });
+        }, 440);
+      }, 1600);
+    }, SILENCE);
   }
 
-  // 打字机单字 blip（每字一下，频率微随机避免驱干噪）
-  function type() {
-    const f = 1800 + Math.random() * 600; // 1800–2400 Hz
-    beep({ freq: f, dur: 0.012, type: 'square', vol: 0.035, attack: 0.001 });
+  // 打字机单字 blip — 每字一下。opts 按 BOSS 传，无 opts 用默认默片
+  function type(opts = {}) {
+    if (muted) return;
+    const base = opts.freq ?? 2000;
+    const jitter = opts.jitter ?? 400;
+    const f = Math.max(60, base + (Math.random() - 0.5) * jitter);
+    beep({
+      freq: f,
+      dur: opts.dur ?? 0.012,
+      type: opts.wave ?? 'square',
+      vol: opts.vol ?? 0.035,
+      attack: 0.001,
+      slideTo: opts.slideTo,
+    });
   }
 
   function toggle() {
@@ -142,7 +165,7 @@ const SFX = (() => {
   }
   function isMuted() { return muted; }
 
-  return { beep, noise, speak, coin, start, hit, ko, type, toggle, isMuted };
+  return { beep, noise, speak, shutUp, coin, start, hit, ko, type, toggle, isMuted };
 })();
 
 // 🔊/🔇 按钮（绑定 id="sfx-toggle"）
