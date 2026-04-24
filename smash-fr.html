@@ -1448,6 +1448,7 @@ function startGame() {
   updateMemoLine();
   renderCollection();
   SFX.start();
+  setTimeout(() => SFX.ambient.start(), 1200);
 }
 document.getElementById('coin-screen').addEventListener('click', startGame);
 setupCoinAmbient(document.getElementById('coin-screen'));
@@ -1480,8 +1481,11 @@ presets.forEach((p, i) => {
     document.getElementById('scenario-input').value = p.prompt;
     scold(p.prompt, false);
   };
+  btn.addEventListener('mouseenter', SFX.tick);
   levelsGrid.appendChild(btn);
 });
+
+document.getElementById('scenario-input').addEventListener('focus', SFX.powerOn);
 
 // ========== SUBMIT ==========
 function handleSubmit() {
@@ -1557,14 +1561,39 @@ Max 2 phrases : 1re = verdict tranchant, 2e (optionnelle) = punchline qui ferme.
 }
 
 // ========== FIGHT OVERLAY ==========
-function showFight() {
+async function showFight(withCountdown = true) {
+  SFX.ambient.stop();
   const ov = document.getElementById('fight-overlay');
+  const textEl = ov.querySelector('.fight-text');
   ov.classList.add('active');
+
+  function setText(txt, color) {
+    textEl.textContent = txt;
+    textEl.style.color = color || '';
+    textEl.style.animation = 'none';
+    void textEl.offsetWidth;
+    textEl.style.animation = '';
+  }
+
+  if (withCountdown) {
+    // Décompte 3 → 2 → 1 : carré montant + voix en-US
+    const seq = [
+      { t: '3', f: 392 },
+      { t: '2', f: 494 },
+      { t: '1', f: 587 },
+    ];
+    for (const c of seq) {
+      setText(c.t, '#FFD93D');
+      SFX.beep({ freq: c.f, dur: 0.25, type: 'square', vol: 0.14 });
+      SFX.speak(c.t, { pitch: 0.4, rate: 0.85, vol: 1.0, lang: 'en-US' });
+      await new Promise(r => setTimeout(r, 520));
+    }
+  }
+
+  setText('★ FIGHT ★', '#fff');
   SFX.hit();
-  return new Promise(r => setTimeout(() => {
-    ov.classList.remove('active');
-    r();
-  }, 1400));
+  await new Promise(r => setTimeout(r, 1100));
+  ov.classList.remove('active');
 }
 
 // ========== TYPEWRITER ==========
@@ -1714,7 +1743,8 @@ ${angle} avec un angle logique complètement différent, une formulation complè
     document.getElementById('hud-score').textContent = `Gifles · ${state.comboCount}`;
 
     // 戏剧化入场
-    await showFight();
+    // Première frappe avec décompte 3-2-1 ; combos enchaînent direct
+    await showFight(state.comboCount === 1);
     await renderBoss(persona, responseText);
 
     // Combo×3 → KO (on garde la ref du timer pour pouvoir l'annuler en cas de nouvelle scène)
@@ -1769,10 +1799,13 @@ async function renderBoss(persona, responseText) {
 
 function closeBoss() {
   document.getElementById('boss-overlay').classList.remove('active');
+  SFX.shutUp();
+  SFX.ambient.start();
 }
 function closeBossAndCombo() {
   if (state.comboCount >= 3) return;
   document.getElementById('boss-overlay').classList.remove('active');
+  SFX.shutUp();
   setTimeout(() => scold(state.lastPrompt, true), 150);
 }
 
@@ -1781,6 +1814,8 @@ function triggerKO() {
   SFX.ko();
   recordKO();
   closeBoss();
+  SFX.ambient.stop();
+
   const koScreen = document.getElementById('ko-screen');
   const stats = document.getElementById('ko-stats');
   const actions = document.getElementById('ko-actions');
@@ -1969,6 +2004,8 @@ function recordMetBoss(personaName) {
 
 // ========== GO REST ==========
 function goRest() {
+  SFX.ambient.stop();
+  SFX.shutUp();
   window.location.href = '/rest-fr.html';
 }
 
