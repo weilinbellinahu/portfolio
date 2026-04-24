@@ -1841,12 +1841,11 @@ function triggerKO() {
     actions.classList.remove('locked');
     actions.innerHTML = `
       <div class="share-row">
-        <button class="ko-btn share sm" onclick="shareCopyImage()">📋 COPIER IMG<br><span class="sub">coller → WhatsApp</span></button>
-        <button class="ko-btn share sm" onclick="shareCopyCaption()">📝 COPIER TEXTE<br><span class="sub">avec le lien</span></button>
-        <button class="ko-btn share sm" onclick="shareDownload()">💾 DL PNG<br><span class="sub">LinkedIn / Insta</span></button>
+        <button class="ko-btn share sm" onclick="shareCopyImage()">📋 COLLER</button>
+        <button class="ko-btn share sm" onclick="shareDownload()">💾 DL PNG</button>
       </div>
       <div id="share-toast"></div>
-      <button class="ko-btn close" onclick="goRest()">⏾ ÉTEINDRE · DODO</button>
+      <button class="ko-btn close" onclick="goRest()">⏾ ETEINDRE · DODO</button>
     `;
     cachedShareBlob = null;
   }, 3000);
