@@ -1574,6 +1574,10 @@ function typewriter(el, text, speed = 55) {
       }
       const ch = text[i];
       el.textContent += ch;
+      // Blip machine à écrire : saute blancs et ponctuation, 1 son / 2 chars
+      if (i % 2 === 0 && !/[\s。，！？、：；\.\?!,"'""''（）()]/.test(ch)) {
+        SFX.type();
+      }
       i++;
       const delay = /[。，！？、：；\.\?!,]/.test(ch) ? speed + 350 : speed;
       setTimeout(tick, delay);

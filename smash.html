@@ -1601,6 +1601,10 @@ function typewriter(el, text, speed = 55) {
       }
       const ch = text[i];
       el.textContent += ch;
+      // 打字机 blip：跳过空白和标点，每 2 字出一声（省得机关枪）
+      if (i % 2 === 0 && !/[\s。，！？、：；\.\?!,"'""''（）()]/.test(ch)) {
+        SFX.type();
+      }
       i++;
       const delay = /[。，！？、：；\.\?!,]/.test(ch) ? speed + 350 : speed;
       setTimeout(tick, delay);

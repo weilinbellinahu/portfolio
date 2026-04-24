@@ -129,6 +129,12 @@ const SFX = (() => {
     }, 1600);
   }
 
+  // 打字机单字 blip（每字一下，频率微随机避免驱干噪）
+  function type() {
+    const f = 1800 + Math.random() * 600; // 1800–2400 Hz
+    beep({ freq: f, dur: 0.012, type: 'square', vol: 0.035, attack: 0.001 });
+  }
+
   function toggle() {
     muted = !muted;
     localStorage.setItem('smash_sfx_muted', muted ? '1' : '0');
@@ -136,7 +142,7 @@ const SFX = (() => {
   }
   function isMuted() { return muted; }
 
-  return { beep, noise, speak, coin, start, hit, ko, toggle, isMuted };
+  return { beep, noise, speak, coin, start, hit, ko, type, toggle, isMuted };
 })();
 
 // 🔊/🔇 按钮（绑定 id="sfx-toggle"）
