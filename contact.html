@@ -147,15 +147,16 @@ body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
       </a>
     </div>
 
-    <!-- Contact Form -->
+    <!-- Contact Form — ouvre le client mail du visiteur avec le message prérempli -->
     <div class="contact-form" style="margin-top: 2.5rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.7s ease 0.8s forwards;">
       <p style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem;">Envoyez-moi un message</p>
-      <form action="https://formspree.io/f/xovdqvpz" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+      <form id="contact-form" novalidate style="display: flex; flex-direction: column; gap: 1rem;">
         <input type="text" name="name" placeholder="Votre nom" required style="padding: 1rem 1.2rem; background: #0f0f0f; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; color: #fff; font-family: var(--sans); font-size: 0.9rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,104,106,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
         <input type="email" name="email" placeholder="Votre email" required style="padding: 1rem 1.2rem; background: #0f0f0f; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; color: #fff; font-family: var(--sans); font-size: 0.9rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,104,106,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
         <textarea name="message" placeholder="Votre message..." rows="4" required style="padding: 1rem 1.2rem; background: #0f0f0f; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; color: #fff; font-family: var(--sans); font-size: 0.9rem; resize: vertical; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,104,106,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'"></textarea>
         <button type="submit" style="padding: 1rem 2rem; background: #fff; color: #080808; font-family: var(--sans); font-weight: 700; font-size: 14px; border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s, transform 0.2s; align-self: flex-start;" onmouseover="this.style.background='rgba(255,255,255,0.88)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#fff';this.style.transform='none'">Envoyer le message &#8594;</button>
       </form>
+      <p id="contact-feedback" style="display:none; margin-top: 1rem; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--white-dim); line-height: 1.7;"></p>
     </div>
   </div>
 </div>
@@ -169,6 +170,39 @@ document.getElementById('email-link').addEventListener('click', function(e) {
     setTimeout(() => { el.textContent = orig; }, 2000);
   });
 });
+
+// Contact form → mailto:  点击 submit 打开访客邮件客户端，预填主题和内容
+(function() {
+  const form = document.getElementById('contact-form');
+  const feedback = document.getElementById('contact-feedback');
+  if (!form) return;
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const msg = form.message.value.trim();
+
+    if (!name || !email || !msg) {
+      feedback.textContent = 'Merci de remplir tous les champs.';
+      feedback.style.color = '#E8686A';
+      feedback.style.display = 'block';
+      return;
+    }
+
+    const subject = 'Contact depuis weilinhu.com — ' + name;
+    const body = 'De : ' + name + ' <' + email + '>\n\n' + msg + '\n\n—\nEnvoyé depuis weilinhu.com';
+    const mailto = 'mailto:weilin.bellina.hu@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+    // 触发邮件客户端
+    window.location.href = mailto;
+
+    // 反馈 + 兜底：如果客户端没打开，提示直接复制邮箱
+    feedback.innerHTML = 'Votre client mail s\'ouvre… si rien ne se passe, écrivez-moi directement à <strong style="color:#fff">weilin.bellina.hu@gmail.com</strong>';
+    feedback.style.color = 'rgba(255,255,255,0.55)';
+    feedback.style.display = 'block';
+  });
+})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
 <script>
