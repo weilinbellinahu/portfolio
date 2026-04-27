@@ -1,350 +1,388 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Miam ! v2 — j'ai refait toute mon app en une après-midi · weilin.hu</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1;1,9..144,400..900,0..100,0..1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0a0a0a;
-    --bg2:#141414;
-    --card:#1a1a1a;
-    --line:#2a2a2a;
-    --line2:#3a3a3a;
-    --ink:#f0ece4;
-    --ink2:#a8a298;
-    --ink3:#6e6a62;
-    --coral:#FF6B5C;
-    --coral-soft:#FF9A8C;
-    --gold:#E8C547;
-    --gold-dim:#A88A1E;
-    --orange:#FF8B4F;
-    --display:'Fraunces',Georgia,serif;
-    --body:'Inter',-apple-system,sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.7;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:760px;margin:0 auto;padding:48px 28px 96px}
-  /* ============ NAV ============ */
-  nav.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:64px}
-  nav.top .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:18px;font-weight:600}
-  nav.top .logo-mark{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
-  nav.top a{color:var(--ink2);text-decoration:none;font-size:13px;letter-spacing:.5px;text-transform:uppercase;font-weight:500;margin-left:24px;transition:color .15s}
-  nav.top a:hover,nav.top a.active{color:var(--coral)}
-  /* ============ BACK ============ */
-  a.back{display:inline-block;color:var(--ink2);text-decoration:none;font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;margin-bottom:32px;transition:color .15s}
-  a.back:hover{color:var(--coral)}
-  /* ============ TAG CHAIN ============ */
-  .tag-chain{font-size:11.5px;color:var(--coral);letter-spacing:1.4px;text-transform:uppercase;font-weight:700;margin-bottom:18px}
-  /* ============ TITLE ============ */
-  h1.post-title{font-family:var(--display);font-size:54px;line-height:1.05;letter-spacing:-1.5px;font-weight:600;font-variation-settings:"opsz" 144,"SOFT" 50;margin:0 0 8px}
-  h1.post-title em{font-style:italic;color:var(--coral);font-weight:600}
-  h1.post-title .light{font-weight:300;font-style:italic;color:var(--ink2)}
-  @media(max-width:600px){h1.post-title{font-size:38px;letter-spacing:-1px}}
-  /* ============ META LINE ============ */
-  .meta{margin:24px 0 36px;font-size:13.5px;color:var(--ink3);font-family:var(--body)}
-  .meta span{margin-right:8px}
-  .meta .dot{color:var(--coral);margin:0 8px}
-  /* ============ CALLOUT ============ */
-  .callout{background:var(--bg2);border-left:3px solid var(--gold);padding:22px 26px;margin:36px 0;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;border-radius:0 8px 8px 0}
-  .callout .big{font-family:var(--display);font-size:48px;font-weight:600;letter-spacing:-1px;color:var(--gold);font-variation-settings:"opsz" 144}
-  .callout .body{color:var(--ink2);font-size:14px}
-  .callout .body b{color:var(--ink);font-weight:600}
-  .callout .stamp{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink3);text-align:right;line-height:1.6}
-  @media(max-width:600px){.callout{grid-template-columns:1fr;text-align:left}.callout .big{font-size:36px}.callout .stamp{text-align:left}}
-  /* ============ SECTION HEADERS ============ */
-  h2{font-family:var(--display);font-size:32px;font-weight:600;letter-spacing:-.6px;font-variation-settings:"opsz" 144,"SOFT" 50;margin:64px 0 16px;line-height:1.2}
-  h2 em{font-style:italic;color:var(--coral)}
-  /* ============ BODY TEXT ============ */
-  p{font-size:16px;line-height:1.75;margin:0 0 16px;color:var(--ink)}
-  p.lead{font-family:var(--display);font-size:20px;font-style:italic;font-weight:400;color:var(--ink);margin:24px 0;line-height:1.5;font-variation-settings:"opsz" 144}
-  p .em{color:var(--coral)}
-  blockquote{margin:24px 0;padding:18px 22px;background:var(--bg2);border-left:3px solid var(--coral);font-family:var(--display);font-style:italic;font-size:17px;line-height:1.5;border-radius:0 8px 8px 0;color:var(--ink)}
-  blockquote b{font-style:normal;color:var(--coral);font-weight:600}
-  /* ============ TIMELINE ============ */
-  .timeline-section{margin:36px 0}
-  .timeline-row{display:grid;grid-template-columns:80px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}
-  .timeline-row:last-child{border-bottom:0}
-  .timeline-row .time{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--coral);font-weight:600;letter-spacing:.5px}
-  .timeline-row .what{font-size:15px;color:var(--ink);line-height:1.5}
-  .timeline-row .what .sub{display:block;font-size:13px;color:var(--ink2);margin-top:3px}
-  /* ============ LULU SHOWCASE ============ */
-  .lulu-showcase{margin:36px 0;padding:32px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;text-align:center}
-  .lulu-poses{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-  .lulu-poses svg{width:80px;height:80px;background:var(--card);border-radius:12px;padding:6px;border:1px solid var(--line)}
-  .lulu-quote{font-family:var(--display);font-style:italic;font-size:17px;color:var(--ink);max-width:480px;margin:0 auto;line-height:1.5}
-  .lulu-quote b{color:var(--coral);font-weight:600;font-style:normal}
-  /* ============ BIG TAKEAWAYS ============ */
-  ol.takeaways{padding-left:0;list-style:none;counter-reset:t;margin:24px 0}
-  ol.takeaways li{counter-increment:t;padding:18px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:48px 1fr;gap:18px}
-  ol.takeaways li::before{content:counter(t);font-family:var(--display);font-size:32px;color:var(--coral);font-weight:600;font-style:italic;line-height:1;font-variation-settings:"opsz" 144}
-  ol.takeaways li b{color:var(--ink);font-weight:600;display:block;margin-bottom:4px;font-size:16px}
-  ol.takeaways li span{color:var(--ink2);font-size:14.5px;line-height:1.6}
-  /* ============ STACK CHIPS ============ */
-  .stack{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 36px}
-  .stack span{font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;padding:5px 12px;border:1px solid var(--line2);border-radius:99px;color:var(--ink2)}
-  /* ============ END NOTE ============ */
-  .end{margin-top:64px;padding-top:36px;border-top:1px solid var(--line);font-family:var(--display);font-size:15px;font-style:italic;color:var(--ink2);line-height:1.5}
-  /* ============ LINKS ============ */
-  a:not(.back):not(nav.top a){color:var(--coral);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
-  a:not(.back):not(nav.top a):hover{border-color:var(--coral)}
-  /* HR */
-  hr{border:0;border-top:1px solid var(--line);margin:48px 0}
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miam ! v2 — j'ai refait toute mon app en une après-midi | Weilin Hu</title>
+    <meta name="description" content="Audit, refonte, mascotte Lulu, IA photo et mise en ligne. 6h chrono avec Claude (Cowork).">
+    <meta property="og:title" content="Miam ! v2 — j'ai refait toute mon app en une après-midi">
+    <meta property="og:description" content="Une mascotte escargot, 6 poses, l'IA photo, et la mise en ligne sur miamfr.app — 6h chrono avec Claude.">
+    <meta property="og:image" content="https://weilinhu.com/og-image.png">
+    <meta property="og:url" content="https://weilinhu.com/blog-post-04-miam-v2.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="avatar.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700;800&family=DM+Mono:wght@300;400&family=Figtree:ital,wght@0,300;0,400;0,900&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root { --bg: #0a0a0f; --bg2: #111118; --white: #f0eee8; --dim: rgba(240,238,232,0.45); --faint: rgba(240,238,232,0.08); --coral: #E8686A; --mint: #7ECFC0; --gold: #E8C06A; --peach: #E8A06A; --mono: 'DM Mono', monospace; --display: 'Jost', sans-serif; --body: 'Figtree', sans-serif; }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--white); font-family: var(--body); min-height: 100vh; overflow-x: hidden; font-weight: 400; opacity: 0; animation: pageIn 0.5s ease forwards; }
+      body.leaving { opacity: 0 !important; transition: opacity 0.3s ease; }
+      @keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+      body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.4; }
+      nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(240,238,232,0.05); background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); }
+      .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 10px; }
+      .nav-logo:hover { color: var(--white); }
+      .nav-logo:hover .nav-avatar { transform: scale(1.08); }
+      .nav-avatar { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.2s; border: 1px solid rgba(240,238,232,0.12); background: #0a0a0f; }
+      .nav-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .nav-links { display: flex; gap: 2rem; list-style: none; }
+      .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+      .nav-links a:hover, .nav-links a.active { color: var(--white); }
+      .nav-burger { display: none; background: none; border: none; color: rgba(240,238,232,0.7); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; }
+      .wrap { max-width: 900px; margin: 0 auto; padding: 120px 40px 120px; position: relative; z-index: 1; }
+      .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; margin-bottom: 48px; transition: color 0.2s; }
+      .back-link:hover { color: var(--white); }
+      .post-header { margin-bottom: 64px; }
+      .post-category { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--coral); text-transform: uppercase; margin-bottom: 20px; }
+      .post-title { font-family: var(--display); font-size: clamp(22px, 3.8vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
+      .post-title em { font-style: normal; color: var(--coral); }
+      .post-meta { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+      .post-meta span { display: flex; align-items: center; gap: 6px; }
+      .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
+      .time-banner { display: flex; align-items: center; gap: 24px; background: var(--faint); border: 1px solid rgba(240,238,232,0.1); border-left: 3px solid var(--gold); padding: 24px 32px; margin-bottom: 64px; }
+      .time-banner-number { font-family: var(--display); font-size: 56px; font-weight: 800; color: var(--gold); line-height: 1; letter-spacing: -0.03em; flex-shrink: 0; }
+      .time-banner-text h3 { font-family: var(--display); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+      .time-banner-text p { font-size: 13px; color: var(--dim); font-family: var(--mono); line-height: 1.6; }
+      .time-arrow { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--dim); text-align: right; line-height: 1.8; flex-shrink: 0; }
 
-<!-- ====== SVG: 6 LULU POSES (sprite) ====== -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="lulu" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q16 40 14 28" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="14" cy="26" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="14" cy="26" r="1.4" fill="#231811"/><path d="M28 53 Q26 42 26 32" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="26" cy="30" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="26" cy="30" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2.2" ry="1.4" fill="#FFA088"/><path d="M14 63 Q18 65.5 22 63" stroke="#231811" stroke-width="1.3" fill="none" stroke-linecap="round"/></symbol>
-    <symbol id="lulu-curious" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q14 36 16 18" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="16" cy="16" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="16" cy="16" r="1.4" fill="#231811"/><path d="M28 53 Q24 36 28 20" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="28" cy="18" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="28" cy="18" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2" ry="1.3" fill="#FFA088"/><path d="M14 63 L22 63" stroke="#231811" stroke-width="1.2" stroke-linecap="round"/><text x="2" y="22" font-size="11" fill="#FFB070">✦</text></symbol>
-    <symbol id="lulu-thinking" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><g transform="rotate(8 46 38)"><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/></g><path d="M20 53 Q15 38 18 24" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="18" cy="22" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="18" cy="22" r="1.4" fill="#231811"/><path d="M28 53 Q26 40 28 30" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="28" cy="28" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="28" cy="28" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2" ry="1.3" fill="#FFA088"/><path d="M16 64 L20 64" stroke="#231811" stroke-width="1.2" stroke-linecap="round"/><text x="60" y="18" font-size="14" fill="#FF6B5C" font-style="italic" font-weight="700">?</text></symbol>
-    <symbol id="lulu-running" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><line x1="2" y1="40" x2="10" y2="40" stroke="#FFB070" stroke-width="1.6" stroke-linecap="round"/><line x1="0" y1="50" x2="8" y2="50" stroke="#FFB070" stroke-width="1.4" stroke-linecap="round"/><line x1="2" y1="60" x2="10" y2="60" stroke="#FFB070" stroke-width="1.4" stroke-linecap="round"/><g transform="rotate(-6 40 60)"><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q24 42 30 36" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="30" cy="34" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="30" cy="34" r="1.4" fill="#231811"/><path d="M28 53 Q32 44 38 38" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="38" cy="36" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="38" cy="36" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2.2" ry="1.4" fill="#FFA088"/><path d="M14 62 Q18 65 22 62" stroke="#231811" stroke-width="1.3" fill="none" stroke-linecap="round"/></g></symbol>
-    <symbol id="lulu-cheering" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q8 36 4 14" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="4" cy="12" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><text x="0" y="6" font-size="10" fill="#FFB070">✦</text><path d="M28 53 Q34 38 38 16" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="38" cy="14" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><text x="34" y="8" font-size="10" fill="#FFB070">✦</text><path d="M2 19 Q4 17 6 19" stroke="#231811" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M36 19 Q38 17 40 19" stroke="#231811" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="18" cy="62" rx="2.2" ry="1.4" fill="#FFA088"/><path d="M13 62 Q18 67 23 62" stroke="#231811" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
-    <symbol id="lulu-sleepy" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q14 50 12 44" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="12" cy="42" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><path d="M28 53 Q26 52 26 48" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="26" cy="46" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><path d="M10 41 Q12 42.5 14 41" stroke="#231811" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M24 45 Q26 46.5 28 45" stroke="#231811" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M14 63 L22 63" stroke="#231811" stroke-width="1.2" stroke-linecap="round"/><text x="50" y="14" font-size="11" fill="#a8a298">z</text><text x="56" y="20" font-size="9" fill="#a8a298">z</text></symbol>
-  </defs>
-</svg>
+      /* Lulu showcase */
+      .lulu-box { background: linear-gradient(135deg, rgba(232,104,106,0.06), rgba(232,192,106,0.06)); border: 1px solid rgba(240,238,232,0.1); padding: 40px 32px; margin-bottom: 64px; border-radius: 4px; }
+      .lulu-box h3 { font-family: var(--display); font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.01em; text-align: center; }
+      .lulu-box h3 em { font-style: normal; color: var(--coral); }
+      .lulu-sub { font-size: 13px; color: var(--dim); font-family: var(--mono); margin-bottom: 28px; text-align: center; }
+      .lulu-poses { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+      .lulu-poses svg { width: 78px; height: 78px; background: var(--bg2); border: 1px solid var(--faint); border-radius: 12px; padding: 6px; }
+      .lulu-quote { font-family: var(--display); font-style: italic; font-size: 16px; color: var(--white); max-width: 540px; margin: 0 auto; line-height: 1.6; text-align: center; font-weight: 400; }
+      .lulu-quote b { font-style: normal; color: var(--coral); font-weight: 700; }
 
-<div class="wrap">
+      /* Section title */
+      .section-title { font-family: var(--display); font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin: 64px 0 28px; padding-bottom: 12px; border-bottom: 1px solid var(--faint); }
 
-  <nav class="top">
-    <a href="/" class="logo"><span class="logo-mark">w</span><span>weilin.hu</span></a>
-    <div>
-      <a href="/projets.html">PROJETS</a>
-      <a href="/blog.html" class="active">BLOG</a>
-      <a href="/contact.html">CONTACT</a>
-    </div>
-  </nav>
+      /* Steps timeline */
+      .steps { display: flex; flex-direction: column; gap: 16px; margin-bottom: 64px; }
+      .step { display: grid; grid-template-columns: 56px 1fr auto; gap: 24px; padding: 24px; background: var(--bg2); border: 1px solid var(--faint); border-radius: 4px; align-items: start; transition: border-color 0.2s; }
+      .step:hover { border-color: rgba(240,238,232,0.18); }
+      .step.phase1 { border-left: 3px solid var(--peach); }
+      .step.phase2 { border-left: 3px solid var(--gold); }
+      .step.phase3 { border-left: 3px solid var(--mint); }
+      .step-num { font-family: var(--display); font-size: 32px; font-weight: 800; color: var(--dim); line-height: 1; }
+      .phase1 .step-num { color: var(--peach); }
+      .phase2 .step-num { color: var(--gold); }
+      .phase3 .step-num { color: var(--mint); }
+      .step-body { min-width: 0; }
+      .step-phase { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--dim); text-transform: uppercase; margin-bottom: 6px; }
+      .step-title { font-family: var(--display); font-size: 17px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+      .step-desc { font-size: 14px; line-height: 1.7; color: rgba(240,238,232,0.75); font-weight: 300; }
+      .step-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+      .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; padding: 4px 9px; border-radius: 99px; text-transform: uppercase; }
+      .tag-tool { background: rgba(232,104,106,0.1); color: var(--coral); border: 1px solid rgba(232,104,106,0.25); }
+      .tag-ok { background: rgba(126,207,192,0.1); color: var(--mint); border: 1px solid rgba(126,207,192,0.25); }
+      .tag-stack { background: rgba(232,192,106,0.1); color: var(--gold); border: 1px solid rgba(232,192,106,0.25); }
+      .step-time { text-align: right; flex-shrink: 0; }
+      .time-pill { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--white); line-height: 1; letter-spacing: -0.02em; }
+      .time-unit { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 3px; }
 
-  <a href="/blog.html" class="back">← Retour au blog</a>
+      /* Tools grid */
+      .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 64px; }
+      .tool-card { background: var(--bg2); border: 1px solid var(--faint); padding: 22px 18px; border-radius: 4px; text-align: center; transition: border-color 0.2s; }
+      .tool-card:hover { border-color: rgba(240,238,232,0.2); }
+      .tool-icon { font-size: 26px; margin-bottom: 10px; }
+      .tool-name { font-family: var(--display); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+      .tool-use { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--dim); text-transform: uppercase; }
 
-  <div class="tag-chain">PROJETS · DESIGN · IA</div>
+      /* Lesson box */
+      .lesson-box { background: var(--faint); border: 1px solid rgba(240,238,232,0.1); border-left: 3px solid var(--coral); padding: 32px 36px; margin-bottom: 48px; }
+      .lesson-box h3 { font-family: var(--display); font-size: 20px; font-weight: 800; margin-bottom: 18px; letter-spacing: -0.01em; }
+      .lesson-list { list-style: none; }
+      .lesson-list li { font-size: 14px; line-height: 1.7; color: rgba(240,238,232,0.8); padding: 10px 0; border-bottom: 1px dashed rgba(240,238,232,0.06); padding-left: 22px; position: relative; font-weight: 300; }
+      .lesson-list li::before { content: '→'; position: absolute; left: 0; color: var(--coral); font-weight: 700; }
+      .lesson-list li:last-child { border-bottom: 0; }
+      .lesson-list li b { color: var(--white); font-weight: 700; }
 
-  <h1 class="post-title">
-    Miam ! v2 —<br>
-    j'ai refait toute mon app <em>en une après-midi</em>
-  </h1>
+      /* Post footer */
+      .post-footer { margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--faint); }
+      .post-footer p { font-family: var(--display); font-size: 16px; font-style: italic; color: var(--dim); line-height: 1.6; margin-bottom: 24px; font-weight: 400; }
+      .post-footer p a { color: var(--coral); text-decoration: none; border-bottom: 1px solid rgba(232,104,106,0.3); transition: border-color 0.2s; }
+      .post-footer p a:hover { border-color: var(--coral); }
+      .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+      .btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; padding: 11px 22px; border: 1px solid rgba(240,238,232,0.2); color: var(--dim); text-decoration: none; text-transform: uppercase; border-radius: 999px; transition: all 0.2s; }
+      .btn:hover { border-color: var(--white); color: var(--white); }
+      .btn-primary { background: var(--coral); border-color: var(--coral); color: var(--bg); }
+      .btn-primary:hover { background: transparent; color: var(--coral); }
 
-  <div class="meta">
-    <span><a href="https://miamfr.app" target="_blank">miamfr.app</a></span>
-    <span class="dot">·</span>
-    <span>~6h — d'audit à mise en ligne</span>
-    <span class="dot">·</span>
-    <span>27 avril 2026</span>
-  </div>
+      footer { border-top: 1px solid var(--faint); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+      footer span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--dim); }
 
-  <div class="stack">
-    <span>Claude (Cowork)</span>
-    <span>Cloudflare Workers</span>
-    <span>Gemini Vision</span>
-    <span>OpenFoodFacts</span>
-    <span>Fraunces</span>
-    <span>SVG · PWA</span>
-  </div>
+      @media (max-width: 760px) {
+        nav { padding: 1.2rem 1.5rem; }
+        .nav-burger { display: block; }
+        .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 2rem; gap: 0.8rem; border-bottom: 1px solid rgba(240,238,232,0.05); }
+        .nav-links.open { display: flex; }
+        .wrap { padding: 96px 24px 80px; }
+        .time-banner { flex-direction: column; align-items: flex-start; padding: 20px 24px; gap: 14px; }
+        .time-arrow { margin-left: 0; text-align: left; }
+        .step { grid-template-columns: 44px 1fr; gap: 16px; padding: 20px; }
+        .step-time { grid-column: 1 / -1; text-align: left; display: flex; gap: 8px; align-items: baseline; padding-top: 6px; border-top: 1px solid var(--faint); }
+        .tools-grid { grid-template-columns: 1fr 1fr; }
+        .lulu-poses svg { width: 60px; height: 60px; }
+      }
+    </style>
+  </head>
+  <body>
 
-  <div class="callout">
-    <div class="big">~6h</div>
-    <div class="body">
-      D'un audit complet de l'ancienne version… à <b>miamfr.app v2</b> en ligne, avec une mascotte, 10 recettes, l'IA photo, et une nouvelle philosophie produit.
-    </div>
-    <div class="stamp">
-      10:30 → 12:00 · Audit<br>
-      14:00 → 16:30 · Refonte<br>
-      16:30 → 17:00 · Lulu<br>
-      17:00 → 17:00 · Live
-    </div>
-  </div>
+    <!-- ===== Lulu SVG sprite ===== -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="lulu" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q16 40 14 28" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="14" cy="26" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="14" cy="26" r="1.4" fill="#231811"/><path d="M28 53 Q26 42 26 32" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="26" cy="30" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="26" cy="30" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2.2" ry="1.4" fill="#FFA088"/><path d="M14 63 Q18 65.5 22 63" stroke="#231811" stroke-width="1.3" fill="none" stroke-linecap="round"/></symbol>
+        <symbol id="lulu-curious" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q14 36 16 18" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="16" cy="16" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="16" cy="16" r="1.4" fill="#231811"/><path d="M28 53 Q24 36 28 20" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="28" cy="18" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="28" cy="18" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2" ry="1.3" fill="#FFA088"/><path d="M14 63 L22 63" stroke="#231811" stroke-width="1.2" stroke-linecap="round"/><text x="2" y="22" font-size="11" fill="#FFB070">✦</text></symbol>
+        <symbol id="lulu-thinking" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><g transform="rotate(8 46 38)"><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/></g><path d="M20 53 Q15 38 18 24" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="18" cy="22" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="18" cy="22" r="1.4" fill="#231811"/><path d="M28 53 Q26 40 28 30" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="28" cy="28" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="28" cy="28" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2" ry="1.3" fill="#FFA088"/><path d="M16 64 L20 64" stroke="#231811" stroke-width="1.2" stroke-linecap="round"/><text x="60" y="18" font-size="14" fill="#E8686A" font-style="italic" font-weight="700">?</text></symbol>
+        <symbol id="lulu-running" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><line x1="2" y1="40" x2="10" y2="40" stroke="#FFB070" stroke-width="1.6" stroke-linecap="round"/><line x1="0" y1="50" x2="8" y2="50" stroke="#FFB070" stroke-width="1.4" stroke-linecap="round"/><line x1="2" y1="60" x2="10" y2="60" stroke="#FFB070" stroke-width="1.4" stroke-linecap="round"/><g transform="rotate(-6 40 60)"><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q24 42 30 36" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="30" cy="34" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="30" cy="34" r="1.4" fill="#231811"/><path d="M28 53 Q32 44 38 38" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="38" cy="36" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><circle cx="38" cy="36" r="1.4" fill="#231811"/><ellipse cx="18" cy="63" rx="2.2" ry="1.4" fill="#FFA088"/><path d="M14 62 Q18 65 22 62" stroke="#231811" stroke-width="1.3" fill="none" stroke-linecap="round"/></g></symbol>
+        <symbol id="lulu-cheering" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q8 36 4 14" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="4" cy="12" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><text x="0" y="6" font-size="10" fill="#FFB070">✦</text><path d="M28 53 Q34 38 38 16" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="38" cy="14" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><text x="34" y="8" font-size="10" fill="#FFB070">✦</text><path d="M2 19 Q4 17 6 19" stroke="#231811" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M36 19 Q38 17 40 19" stroke="#231811" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="18" cy="62" rx="2.2" ry="1.4" fill="#FFA088"/><path d="M13 62 Q18 67 23 62" stroke="#231811" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol>
+        <symbol id="lulu-sleepy" viewBox="0 0 80 80"><ellipse cx="40" cy="73" rx="24" ry="2.5" fill="rgba(0,0,0,.3)"/><path d="M10 64 Q10 54 22 53 L66 53 Q72 53 72 62 Q72 70 64 70 L18 70 Q10 70 10 64 Z" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1.4"/><circle cx="46" cy="38" r="26" fill="#E76A2C" stroke="#9C3812" stroke-width="1"/><circle cx="46" cy="38" r="22" fill="#FF8B4F"/><path d="M46 38 m -16 0 a 16 16 0 1 1 32 0 a 12 12 0 1 1 -24 0 a 8 8 0 1 1 16 0 a 4 4 0 1 1 -8 0" fill="none" stroke="#B8451B" stroke-width="2.2"/><ellipse cx="36" cy="26" rx="6" ry="3" fill="white" opacity=".5" transform="rotate(-30 36 26)"/><path d="M20 53 Q14 50 12 44" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="12" cy="42" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><path d="M28 53 Q26 52 26 48" stroke="#F8D5B0" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="26" cy="46" r="3.2" fill="#F8D5B0" stroke="#C28B5A" stroke-width="1"/><path d="M10 41 Q12 42.5 14 41" stroke="#231811" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M24 45 Q26 46.5 28 45" stroke="#231811" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M14 63 L22 63" stroke="#231811" stroke-width="1.2" stroke-linecap="round"/><text x="50" y="14" font-size="11" fill="#a8a298">z</text><text x="56" y="20" font-size="9" fill="#a8a298">z</text></symbol>
+      </defs>
+    </svg>
 
-  <!-- ===================================== -->
-  <h2>Le <em>point de départ</em></h2>
+    <nav>
+      <a href="index.html" class="nav-logo"><span class="nav-avatar"><img src="avatar.png" alt="Weilin"></span>weilin.hu</a>
+      <button class="nav-burger" aria-label="Menu">☰</button>
+      <ul class="nav-links">
+        <li><a href="projets.html">Projets</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
 
-  <p>J'avais une app de tracking calorique faite il y a quelques mois avec Lovable — <a href="https://miamfr.app" target="_blank">miamfr.app</a>. Elle marchait. Mais elle n'avait pas d'âme. C'était <em>encore</em> une app calorique de plus.</p>
+    <div class="wrap">
+      <a href="blog.html" class="back-link">← Retour au blog</a>
 
-  <p>Aujourd'hui, j'ai voulu la reprendre. Pas pour ajouter trois fonctionnalités. Pour la <span class="em">repenser entièrement</span>.</p>
-
-  <p class="lead">L'objectif : que l'app ne dise plus « tu as dépassé », mais « tu es là, c'est déjà bien ».</p>
-
-  <!-- ===================================== -->
-  <h2>Le <em>jour J</em>, heure par heure</h2>
-
-  <div class="timeline-section">
-
-    <div class="timeline-row">
-      <div class="time">10:30</div>
-      <div class="what">
-        <b>Audit complet de la v1.</b>
-        <span class="sub">Claude ouvre miamfr.app dans le browser, clique partout, prend des notes. Résultat : <b>11 bugs fonctionnels</b> + <b>9 problèmes UX</b> identifiés en 90 minutes.</span>
+      <div class="post-header">
+        <p class="post-category">Projets — Design · IA</p>
+        <h1 class="post-title">Miam ! v2<br>j'ai refait toute mon app <em>en une après-midi</em></h1>
+        <div class="post-meta">
+          <span><span class="meta-dot"></span><a href="https://miamfr.app" style="color:inherit;text-decoration:none">miamfr.app</a></span>
+          <span><span class="meta-dot" style="background:var(--coral)"></span>~6h — d'audit à mise en ligne</span>
+          <span><span class="meta-dot" style="background:var(--gold)"></span>Claude · Cloudflare · Gemini</span>
+        </div>
       </div>
+
+      <div class="time-banner">
+        <div class="time-banner-number">~6h</div>
+        <div class="time-banner-text">
+          <h3>D'un audit complet à miamfr.app v2 en ligne</h3>
+          <p>Une mascotte escargot, 6 poses, 10 recettes, l'IA photo, et la mise en ligne sur Cloudflare Workers — en une après-midi avec Claude (Cowork) qui pilote mon browser pendant que je décide.</p>
+        </div>
+        <div class="time-arrow">10:30 → Audit<br>14:00 → Refonte<br>17:00 → Live ✓</div>
+      </div>
+
+      <!-- ===== Lulu showcase ===== -->
+      <div class="lulu-box">
+        <h3>Voici <em>Lulu</em></h3>
+        <p class="lulu-sub">Une mascotte. 6 poses. Un manifesto.</p>
+        <div class="lulu-poses">
+          <svg viewBox="0 0 80 80"><use href="#lulu-sleepy"/></svg>
+          <svg viewBox="0 0 80 80"><use href="#lulu"/></svg>
+          <svg viewBox="0 0 80 80"><use href="#lulu-curious"/></svg>
+          <svg viewBox="0 0 80 80"><use href="#lulu-running"/></svg>
+          <svg viewBox="0 0 80 80"><use href="#lulu-cheering"/></svg>
+          <svg viewBox="0 0 80 80"><use href="#lulu-thinking"/></svg>
+        </div>
+        <p class="lulu-quote">« <b>Doucement, mais sûrement.</b> Manger lentement, c'est goûter deux fois. Faire les choses sans pression, c'est aller plus loin. »</p>
+      </div>
+
+      <!-- ===== Steps ===== -->
+      <h2 class="section-title">Le jour J — heure par heure</h2>
+
+      <div class="steps">
+
+        <div class="step phase1">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Comprendre</div>
+            <div class="step-title">Audit complet de la v1</div>
+            <div class="step-desc">Claude ouvre miamfr.app dans le browser, clique partout, prend des notes. Résultat : 11 bugs fonctionnels et 9 problèmes UX identifiés en 90 minutes — sans que je tape une ligne.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">Claude · Cowork</span>
+              <span class="tag tag-ok">11 bugs · 9 UX</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">10:30</div><div class="time-unit">→ 12:00</div></div>
+        </div>
+
+        <div class="step phase1">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 1 — Synthèse</div>
+            <div class="step-title">Dashboard d'audit interactif</div>
+            <div class="step-desc">Un HTML cliquable avec onglets : bugs, UX, comparaison concurrentielle (MyFitnessPal, Yazio, Cal AI, Foodvisor), suggestions de redesign. C'est ce livrable qui m'a fait dire « OK, on refait toute l'app ».</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">HTML · CSS</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">12:00</div><div class="time-unit">→ 14:00</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Construire</div>
+            <div class="step-title">v2 : refonte architecture complète</div>
+            <div class="step-desc">PWA single-file en HTML/CSS/JS pur. Pas de framework. localStorage. Onboarding 3 étapes. 6 écrans. Recherche OpenFoodFacts. Tous les bugs de la v1 corrigés en passant.</div>
+            <div class="step-tags">
+              <span class="tag tag-stack">PWA · single-file</span>
+              <span class="tag tag-stack">OpenFoodFacts</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">14:00</div><div class="time-unit">→ 15:30</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Visuel</div>
+            <div class="step-title">v2.1 : passage de design</div>
+            <div class="step-desc">Fraunces variable font pour les grands titres. Texture papier subtile. Palette beige/orange/prune. Custom SVG icons pour la nav. Mode sombre sans rechargement (le fameux bug qu'on déteste tous).</div>
+            <div class="step-tags">
+              <span class="tag tag-stack">Fraunces</span>
+              <span class="tag tag-stack">SVG · CSS</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">15:30</div><div class="time-unit">→ 16:00</div></div>
+        </div>
+
+        <div class="step phase2">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 2 — Identité</div>
+            <div class="step-title">Naissance de Lulu l'Escargot</div>
+            <div class="step-desc">4 candidates de mascotte : une baguette, un renard, un escargot, un bol. J'ai présenté à Claude. Il a refusé les 3 premières. Verdict : « L'escargot, c'est ta philosophie en 1 forme. » 6 poses dessinées, brand bible écrite.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">SVG inline</span>
+              <span class="tag tag-ok">6 poses · brand bible</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">16:00</div><div class="time-unit">→ 16:45</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — IA</div>
+            <div class="step-title">Reconnaissance photo réelle</div>
+            <div class="step-desc">Intégration Gemini Vision en mode BYOK (gratuit). Tu prends une photo de ton plat, le modèle estime calories + macros + portion en JSON, tu vérifies, tu logges. Tout reste sur l'appareil.</div>
+            <div class="step-tags">
+              <span class="tag tag-stack">Gemini Vision</span>
+              <span class="tag tag-stack">BYOK</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">16:45</div><div class="time-unit">→ 17:00</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — Mise en ligne</div>
+            <div class="step-title">Cloudflare Workers + custom domain</div>
+            <div class="step-desc">Drag-drop des 5 fichiers dans Cloudflare. Custom domain miamfr.app branché. Nameservers transférés depuis Namecheap vers Cloudflare. SSL automatique via Let's Encrypt. <b>5 minutes</b> entre « j'upload » et « live en HTTPS ».</div>
+            <div class="step-tags">
+              <span class="tag tag-stack">Cloudflare Workers</span>
+              <span class="tag tag-ok">SSL auto</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">17:00</div><div class="time-unit">→ 17:30</div></div>
+        </div>
+
+        <div class="step phase3">
+          <div class="step-num">8</div>
+          <div class="step-body">
+            <div class="step-phase">Phase 3 — Polish</div>
+            <div class="step-title">Recettes, BMI, Petit mot de Lulu</div>
+            <div class="step-desc">10 recettes françaises healthy avec ajout au journal en un clic. Carte BMI déplacée vers Réglages (sortie de la page d'accueil pour réduire l'anxiété). « Petit mot de Lulu » qui apparaît aux nouveaux utilisateurs avec la philosophie du produit.</div>
+            <div class="step-tags">
+              <span class="tag tag-tool">10 recettes · BMI</span>
+            </div>
+          </div>
+          <div class="step-time"><div class="time-pill">17:30</div><div class="time-unit">live ✓</div></div>
+        </div>
+
+      </div>
+
+      <!-- ===== Tools ===== -->
+      <h2 class="section-title">La stack</h2>
+
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">🤖</div>
+          <div class="tool-name">Claude · Cowork</div>
+          <div class="tool-use">Audit · Code · Deploy</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">☁️</div>
+          <div class="tool-name">Cloudflare Workers</div>
+          <div class="tool-use">Hosting · CDN · SSL</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📷</div>
+          <div class="tool-name">Gemini Vision</div>
+          <div class="tool-use">IA photo · BYOK</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🥕</div>
+          <div class="tool-name">OpenFoodFacts</div>
+          <div class="tool-use">Database · 2M produits</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔤</div>
+          <div class="tool-name">Fraunces</div>
+          <div class="tool-use">Variable font</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📦</div>
+          <div class="tool-name">Single-file PWA</div>
+          <div class="tool-use">137 KB · 0 framework</div>
+        </div>
+      </div>
+
+      <!-- ===== Lesson ===== -->
+      <div class="lesson-box">
+        <h3>Ce qu'il faut retenir</h3>
+        <ul class="lesson-list">
+          <li><b>L'audit avant la refonte.</b> Avant d'écrire une ligne de code, lister tous les défauts. Ça transforme un projet vague en cahier des charges précis. Le dashboard d'audit lui-même devient un livrable</li>
+          <li><b>La mascotte n'est pas décorative — c'est le manifesto.</b> « Un escargot » résume mon positionnement produit en un mot. Toutes les décisions de design ensuite : « Lulu ferait ça ? »</li>
+          <li><b>Le single-file PWA, c'est de l'or.</b> 137 KB, pas de build step, pas de framework, pas de dépendances. Je peux l'ouvrir dans 5 ans, double-cliquer, ça marche</li>
+          <li><b>Cloudflare Workers > VPS pour les apps statiques.</b> J'avais préparé un script de déploiement nginx sur mon Hostinger VPS. Au final : drag-drop sur Cloudflare, 5 minutes, custom domain, HTTPS auto</li>
+          <li><b>Travailler avec un agent change la nature du travail.</b> Claude a piloté mon browser, fait l'audit, écrit le code, déployé, configuré le DNS. Mon job sur cette journée : <b>décider</b>, pas <b>typer</b></li>
+        </ul>
+      </div>
+
+      <!-- ===== Footer ===== -->
+      <div class="post-footer">
+        <p>Si tu testes <a href="https://miamfr.app">miamfr.app</a> et que tu as des retours — Lulu (et moi) on prend tout. Avec une cuillère, doucement.</p>
+        <div class="actions">
+          <a href="https://miamfr.app" target="_blank" class="btn btn-primary">Tester Miam !</a>
+          <a href="blog.html" class="btn">← Retour au blog</a>
+        </div>
+      </div>
+
     </div>
 
-    <div class="timeline-row">
-      <div class="time">12:00</div>
-      <div class="what">
-        <b>Dashboard d'audit interactif.</b>
-        <span class="sub">Un HTML cliquable : bugs / UX / comparaison concurrentielle (MyFitnessPal, Yazio, Cal AI, Foodvisor) / suggestions de redesign. C'est ce qui m'a fait dire « OK, on refait ».</span>
-      </div>
-    </div>
+    <footer>
+      <span>© Weilin Hu</span>
+      <span>Entre deux mondes.</span>
+      <span>Bordeaux, France</span>
+    </footer>
 
-    <div class="timeline-row">
-      <div class="time">14:00</div>
-      <div class="what">
-        <b>v2 — refonte architecture.</b>
-        <span class="sub">PWA single-file en HTML/CSS/JS. localStorage. Onboarding 3 étapes. 6 écrans. Recherche OpenFoodFacts. Toutes les bugs de la v1 corrigées.</span>
-      </div>
-    </div>
+    <script>
+      const burger = document.querySelector('.nav-burger');
+      if (burger) burger.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
+      document.querySelectorAll('a[href]').forEach(a => {
+        if (a.hostname === location.hostname && !a.href.includes('#') && a.target !== '_blank') {
+          a.addEventListener('click', e => { e.preventDefault(); document.body.classList.add("leaving"); setTimeout(() => window.location.href = a.href, 350); });
+        }
+      });
+    </script>
 
-    <div class="timeline-row">
-      <div class="time">15:30</div>
-      <div class="what">
-        <b>v2.1 — passage de design.</b>
-        <span class="sub">Fraunces variable font. Texture papier. Palette beige/orange/prune. Custom SVG icons pour la nav. Mode sombre sans rechargement.</span>
-      </div>
-    </div>
-
-    <div class="timeline-row">
-      <div class="time">16:00</div>
-      <div class="what">
-        <b>Naissance de Lulu.</b>
-        <span class="sub">4 candidates de mascotte (baguette, escargot, renard, bol). L'escargot gagne. 6 poses différentes. Bible de marque (personnalité, voix, scénarios).</span>
-      </div>
-    </div>
-
-    <div class="timeline-row">
-      <div class="time">16:45</div>
-      <div class="what">
-        <b>IA photo réelle.</b>
-        <span class="sub">Intégration Gemini Vision (BYOK, gratuit). Tu prends une photo, le modèle estime calories + macros, tu vérifies, tu logges.</span>
-      </div>
-    </div>
-
-    <div class="timeline-row">
-      <div class="time">17:00</div>
-      <div class="what">
-        <b>Mise en ligne sur Cloudflare Workers.</b>
-        <span class="sub">Drag-drop des fichiers. Custom domain miamfr.app branché. Nameservers Namecheap → Cloudflare. SSL automatique. <b>5 minutes</b> entre « j'upload » et « live ».</span>
-      </div>
-    </div>
-
-    <div class="timeline-row">
-      <div class="time">17:30</div>
-      <div class="what">
-        <b>Polish final.</b>
-        <span class="sub">10 recettes françaises healthy ajoutées. Carte BMI déplacée vers Réglages (sortie de la page d'accueil). Petit mot de Lulu pour les nouveaux utilisateurs.</span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ===================================== -->
-  <h2><em>Lulu</em>, la mascotte qui change tout</h2>
-
-  <div class="lulu-showcase">
-    <div class="lulu-poses">
-      <svg viewBox="0 0 80 80"><use href="#lulu-sleepy"/></svg>
-      <svg viewBox="0 0 80 80"><use href="#lulu"/></svg>
-      <svg viewBox="0 0 80 80"><use href="#lulu-curious"/></svg>
-      <svg viewBox="0 0 80 80"><use href="#lulu-running"/></svg>
-      <svg viewBox="0 0 80 80"><use href="#lulu-cheering"/></svg>
-      <svg viewBox="0 0 80 80"><use href="#lulu-thinking"/></svg>
-    </div>
-    <div class="lulu-quote">
-      « <b>Doucement, mais sûrement.</b> Manger lentement, c'est goûter deux fois. Faire les choses sans pression, c'est aller plus loin. »<br>
-      <span style="font-size:13px;color:var(--ink3)">— Lulu l'Escargot</span>
-    </div>
-  </div>
-
-  <p>L'idée : un escargot. Pas par hasard.</p>
-
-  <p>Toutes les apps caloriques de la planète veulent que tu fasses <span class="em">vite</span>. Compte vite. Brûle vite. Maigris vite. Cette pression est exactement ce qui pousse les gens à abandonner ces apps en 14 jours.</p>
-
-  <p>Lulu fait l'inverse. Lulu est <em>lent</em>, et le revendique. La coquille, c'est la circonférence d'un journal alimentaire. Les antennes, c'est sa curiosité. Le sourire, c'est l'absence de jugement.</p>
-
-  <blockquote>
-    <b>6 poses</b> selon l'heure et le contexte — endormi à 23h, joyeux quand tu enchaînes 3 jours de streak, curieux dans les Astuces, en mouvement dans les Dépenses caloriques. Une mascotte qui <b>vit avec toi</b> au lieu d'être un sticker.
-  </blockquote>
-
-  <!-- ===================================== -->
-  <h2>Ce que je <em>retiens</em></h2>
-
-  <ol class="takeaways">
-    <li>
-      <div>
-        <b>L'audit avant la refonte.</b>
-        <span>Avant d'écrire une ligne de code, j'ai listé tous les défauts de la v1. Ça transforme un « projet vague » en « cahier des charges précis ». Bonus : le dashboard d'audit lui-même est devenu un livrable.</span>
-      </div>
-    </li>
-    <li>
-      <div>
-        <b>La mascotte n'est pas décorative — c'est le manifesto.</b>
-        <span>« Un escargot » résume mon positionnement produit en un mot. Cela m'évite 50 lignes de pitch deck et 200 d'About page. Toute décision de design ensuite : « Lulu ferait ça ? »</span>
-      </div>
-    </li>
-    <li>
-      <div>
-        <b>Le single-file PWA, c'est de l'or.</b>
-        <span>Tout le projet tient dans un fichier HTML de 137 KB. Pas de build step, pas de framework, pas de dépendances. Je peux l'ouvrir dans 5 ans, double-cliquer, ça marche.</span>
-      </div>
-    </li>
-    <li>
-      <div>
-        <b>Cloudflare Workers > VPS pour les apps statiques.</b>
-        <span>J'avais préparé un script de déploiement nginx sur mon Hostinger VPS. Au final : drag-drop dans Cloudflare, custom domain, HTTPS auto. <b>5 minutes</b>. Le bon outil au bon moment.</span>
-      </div>
-    </li>
-    <li>
-      <div>
-        <b>Travailler avec un agent change la nature du travail.</b>
-        <span>Claude (Cowork) a piloté mon browser, fait l'audit, écrit le code, déployé, configuré DNS. Mon job sur cette journée : <em>décider</em>, pas <em>typer</em>. C'est le futur du travail créatif.</span>
-      </div>
-    </li>
-  </ol>
-
-  <!-- ===================================== -->
-  <h2>La <em>suite</em></h2>
-
-  <p>Le produit est en ligne. Maintenant le vrai travail commence — pas le code, mais la <span class="em">distribution</span>.</p>
-
-  <div class="timeline-section" style="margin-top:24px">
-    <div class="timeline-row">
-      <div class="time">Cette semaine</div>
-      <div class="what">
-        <b>Beta testing.</b>
-        <span class="sub">Faire tester par 5-10 amis. Récolter les premiers retours. Repérer les frictions.</span>
-      </div>
-    </div>
-    <div class="timeline-row">
-      <div class="time">Mois 1</div>
-      <div class="what">
-        <b>@petitlulu.app sur TikTok + Instagram.</b>
-        <span class="sub">Un post / jour avec Lulu — recettes saines, mini-tips, scénarios de la vraie vie. Le contenu est le carburant, l'app est l'aboutissement.</span>
-      </div>
-    </div>
-    <div class="timeline-row">
-      <div class="time">Mois 2-3</div>
-      <div class="what">
-        <b>Mood × insights.</b>
-        <span class="sub">Le vrai différenciateur : croiser ce que tu manges et comment tu te sens. « Tu manges +400 kcal les jours où tu te sens 😞. » Aucun concurrent ne le fait.</span>
-      </div>
-    </div>
-    <div class="timeline-row">
-      <div class="time">Mois 4-6</div>
-      <div class="what">
-        <b>Coach IA + iOS wrapper.</b>
-        <span class="sub">Un petit récap hebdomadaire écrit par Lulu, en français, sans jugement. Et un wrapper Capacitor pour aller chercher les calories d'Apple Watch.</span>
-      </div>
-    </div>
-  </div>
-
-  <hr>
-
-  <p class="end">
-    Si tu testes <a href="https://miamfr.app">miamfr.app</a> et que tu as des retours — Lulu (et moi) on prend tout. Avec une cuillère, doucement.
-  </p>
-
-</div>
-</body>
+  </body>
 </html>
