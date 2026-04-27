@@ -2,7 +2,7 @@
 // 骂醒 · Engine · 所有 smash-* 页面共享的游戏引擎
 // ================================================================
 // 这个文件包含所有内容无关的基础设施：
-//   - SFX（Web Audio API 8-bit 音效 + SpeechSynthesis 人声）
+//   - SFX（Web Audio API 8-bit 音效 + Edge Neural TTS 真人声，本地 SpeechSynthesis 兜底）
 //   - 共享工具（smartTruncate / setupCoinAmbient）
 // v2（骂醒购物脑/焦虑脑等）新建 smash-XXX.html 时只需 <script src="smash-engine.js">
 // + 在页面里定义自己的 personas / levels / angles / 文案 HTML。
@@ -62,13 +62,16 @@ const SFX = (() => {
     src.stop(t + dur + 0.02);
   }
 
-  function speak(text, { pitch=0.3, rate=0.65, vol=1.0, lang='en-US' }={}) {
-    if (muted) return;
+  // ----- 云端 TTS（Edge Neural 真人声）+ 本地 SpeechSynthesis 兜底 -----
+  const TTS_URL = (typeof window !== 'undefined' && window.SMASH_TTS_URL)
+    || 'https://smash-api.weilinhu.com/tts';
+  let _cloudSource = null;   // 当前播放的 AudioBufferSourceNode
+  let _cloudGen = 0;         // 代际计数：旧请求晚到了不要播
+  const _ttsCache = new Map(); // text+voice → AudioBuffer，避免 KO 等短句重复请求
+
+  function _localSpeak(clean, { pitch=0.3, rate=0.65, vol=1.0, lang='en-US' }={}) {
     if (!('speechSynthesis' in window)) return;
-    const clean = (text || '').replace(/\*+/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
-    if (!clean.trim()) return;
     try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
-    // iOS/Safari 在 cancel() 之后立刻 speak() 有时被 drop，延迟一 tick 最稳
     const fire = () => {
       try {
         const u = new SpeechSynthesisUtterance(clean);
@@ -76,14 +79,12 @@ const SFX = (() => {
         window.speechSynthesis.speak(u);
       } catch (e) { /* ignore */ }
     };
-    // 如果 voices 还没加载完（某些浏览器首次进入），等 voiceschanged
     if (window.speechSynthesis.getVoices().length === 0) {
       const onReady = () => {
         window.speechSynthesis.removeEventListener('voiceschanged', onReady);
         setTimeout(fire, 50);
       };
       window.speechSynthesis.addEventListener('voiceschanged', onReady);
-      // 兜底：0.8s 内 voices 还没来也强跑
       setTimeout(() => {
         window.speechSynthesis.removeEventListener('voiceschanged', onReady);
         fire();
@@ -93,9 +94,69 @@ const SFX = (() => {
     }
   }
 
+  async function _cloudSpeak(clean, opts, gen) {
+    const c = ensure();
+    if (!c) throw new Error('no audio ctx');
+    const cacheKey = `${opts.voice}|${clean}`;
+    let audioBuf = _ttsCache.get(cacheKey);
+    if (!audioBuf) {
+      const res = await fetch(TTS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: clean,
+          voice: opts.voice,
+          pitch: opts.edgePitch || '+0Hz',
+          rate:  opts.edgeRate  || '+0%',
+          volume:opts.edgeVol   || '+0%',
+        }),
+      });
+      if (!res.ok) throw new Error(`tts ${res.status}`);
+      const arr = await res.arrayBuffer();
+      audioBuf = await new Promise((resolve, reject) =>
+        c.decodeAudioData(arr.slice(0), resolve, reject));
+      // 短句缓存（KO/Fight 等）；长句不缓存，避免内存堆积
+      if (clean.length <= 30) _ttsCache.set(cacheKey, audioBuf);
+    }
+    if (gen !== _cloudGen || muted) return; // 已被覆盖或静音
+    const src = c.createBufferSource();
+    src.buffer = audioBuf;
+    const gain = c.createGain();
+    gain.gain.value = opts.vol ?? 1.0;
+    src.connect(gain).connect(c.destination);
+    src.start();
+    _cloudSource = src;
+    src.onended = () => { if (_cloudSource === src) _cloudSource = null; };
+  }
+
+  function speak(text, opts = {}) {
+    if (muted) return;
+    const clean = (text || '').replace(/\*+/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
+    if (!clean.trim()) return;
+
+    // 终止上一段（不论本地还是云端）
+    shutUp();
+    const gen = ++_cloudGen;
+
+    if (opts.voice) {
+      _cloudSpeak(clean, opts, gen).catch(() => {
+        // 云端失败 → 本地 TTS 兜底，保证一定有声
+        if (gen === _cloudGen && !muted) _localSpeak(clean, opts);
+      });
+    } else {
+      _localSpeak(clean, opts);
+    }
+  }
+
   function shutUp() {
-    if (!('speechSynthesis' in window)) return;
-    try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    }
+    if (_cloudSource) {
+      try { _cloudSource.stop(); } catch (e) { /* ignore */ }
+      _cloudSource = null;
+    }
+    _cloudGen++;
   }
 
   // ========== AMBIENT BED (CRT 电流嗡鸣，永恒底噪) ==========
@@ -250,7 +311,7 @@ const SFX = (() => {
     muted = !muted;
     localStorage.setItem('smash_sfx_muted', muted ? '1' : '0');
     // 静音时 ambient 立即停；恢复时如果仍被需要，重启
-    if (muted) _ambDown();
+    if (muted) { _ambDown(); shutUp(); }
     else if (ambWanted) _ambUp();
     return muted;
   }

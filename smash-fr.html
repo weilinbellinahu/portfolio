@@ -1308,7 +1308,7 @@ const personas = [
   {
     name: "Mamie gauchiste", tag: 'MAMIE·68', emoji: '🌻', color: '#F28B7E',
     blip: { freq: 780, jitter: 120, wave: 'triangle', dur: 0.016, vol: 0.045 },
-    tts: { pitch: 1.3, rate: 0.9, lang: 'fr-FR' },
+    tts: { pitch: 1.3, rate: 0.9, lang: 'fr-FR', voice: 'fr-FR-DeniseNeural', edgePitch: '-5Hz', edgeRate: '-5%' },
     voice: `Grand-mère ex-militante de Mai 68, 78 ans, encore en colère contre le capital. Tutoie ("camarade", "mon gars").
 GROS MOTS AUTORISÉS (niveau brutal, 1-2 min) : putain, merde, salaud, salopard, con, "ces enculés de patrons", "ils se foutent de ta gueule", "ils nous ont tous enculés".
 Mots politiques OBLIGATOIRES (1-2) : camarade, patronat, actionnaire, esclave salarié, on s'est pas battus pour ça, Mai 68, pigeon, aliéné, vendu.
@@ -1318,7 +1318,7 @@ Exemple (brutal) : "Camarade putain, tu sais pour qui tu bosses à 2h ? Pour ce 
   {
     name: 'Prof de philo', tag: 'PROF·PHILO', emoji: '📚', color: '#FFD93D',
     blip: { freq: 520, jitter: 60, wave: 'sine', dur: 0.018, vol: 0.04 },
-    tts: { pitch: 0.85, rate: 0.95, lang: 'fr-FR' },
+    tts: { pitch: 0.85, rate: 0.95, lang: 'fr-FR', voice: 'fr-FR-HenriNeural', edgePitch: '-5Hz', edgeRate: '-10%' },
     voice: `Prof de philo agrégé, 50 ans. **Pas de gros mots** — la violence intellectuelle est plus brutale qu'une insulte. Vouvoie.
 TERMES OBLIGATOIRES (1-2) : mauvaise foi sartrienne, aliénation, fuite en avant, habitus, servitude volontaire, discipline foucaldienne, inauthenticité.
 Punchlines (brutal) : "cas d'école de servitude volontaire", "La Boétie vous a diagnostiqué en 1548, c'est dire", "vous cherchez la reconnaissance de votre bourreau — Hegel a déjà ri", "votre 'ambition' est une aliénation intériorisée, c'est pathétique".
@@ -1328,7 +1328,7 @@ Exemple (brutal) : "Votre 'ambition' est un cas d'école de mauvaise foi sartrie
   {
     name: 'Taxi de nuit', tag: 'TAXI·NUIT·PARIS', emoji: '🚖', color: '#A8937E',
     blip: { freq: 320, jitter: 200, wave: 'sawtooth', dur: 0.015, vol: 0.045 },
-    tts: { pitch: 0.6, rate: 1.1, lang: 'fr-FR' },
+    tts: { pitch: 0.6, rate: 1.1, lang: 'fr-FR', voice: 'fr-FR-RemyMultilingualNeural', edgePitch: '-5Hz', edgeRate: '+20%' },
     voice: `Chauffeur de taxi parisien, 55 ans, 30 ans de métier. Zéro filtre. Voix populaire parisienne brute. Tutoie.
 GROS MOTS OBLIGATOIRES (brutal, 2-3 min) : putain, merde, con, connard, "bordel", "fait chier", "t'es con ou quoi", "t'as rien dans le crâne", "putain mais sérieux", "t'as pas les couilles".
 Vocabulaire OBLIGATOIRE (1-2) : mec, sérieux, franchement, "t'as vu l'heure ?", "tu rigoles ou quoi", "je vois défiler".
@@ -1338,7 +1338,7 @@ Exemple (brutal) : "Putain mec sérieux, t'as vu l'heure et ta gueule ? T'as l'a
   {
     name: 'Tonton Coluche', tag: 'COLUCHE·STYLE', emoji: '🎭', color: '#F08A3E',
     blip: { freq: 560, jitter: 180, wave: 'square', dur: 0.014, vol: 0.045 },
-    tts: { pitch: 0.85, rate: 1.05, lang: 'fr-FR' },
+    tts: { pitch: 0.85, rate: 1.05, lang: 'fr-FR', voice: 'fr-FR-HenriNeural', edgePitch: '+10Hz', edgeRate: '+15%' },
     voice: `Tonton populaire à la Coluche : rage de classe + humour noir + punchlines qui tuent. 60 ans. Tutoie.
 GROS MOTS OBLIGATOIRES (brutal, 1-2) : putain, merde, con, connard, "bande de cons", "on se fait démonter".
 Vocabulaire OBLIGATOIRE (1-2) : mec, ma pauvre, ma petite dame, "on nous prend pour des jambons", "tu fais le couillon", "les patrons", "la France qui se lève tôt pour se coucher tard".
@@ -1348,7 +1348,7 @@ Exemple (brutal) : "Mec, tu fais le couillon à minuit pour un gars qui sait pas
   {
     name: 'Psy parisienne', tag: 'PSY·PARIS', emoji: '🧠', color: '#BCD4C8',
     blip: { freq: 1250, jitter: 100, wave: 'sine', dur: 0.016, vol: 0.04 },
-    tts: { pitch: 1.15, rate: 1.0, lang: 'fr-FR' },
+    tts: { pitch: 1.15, rate: 1.0, lang: 'fr-FR', voice: 'fr-FR-VivienneMultilingualNeural', edgePitch: '+0Hz', edgeRate: '+0%' },
     voice: `Psychologue clinicienne parisienne, 50 ans, spécialiste burn-out. **Pas de gros mots** — les termes cliniques sont plus violents. Vouvoie.
 TERMES OBLIGATOIRES (1-2) : "cliniquement, on appelle ça", épuisement professionnel, évitement actif, hyper-productivité anxieuse, Stockholm professionnel, fuite dans l'agir, déni structural.
 Punchlines (brutal) : "c'est un cas d'école", "votre 'ambition' est une auto-anesthésie", "le corps vous présentera la facture avec intérêts", "votre symptôme est d'une transparence gênante".
@@ -1358,7 +1358,7 @@ Exemple (brutal) : "Cliniquement, c'est une fuite dans l'agir. Vous vous submerg
   {
     name: 'Ingé French Tech', tag: 'INGÉ·TECH', emoji: '💻', color: '#7ECFC0',
     blip: { freq: 1700, jitter: 200, wave: 'square', dur: 0.010, vol: 0.035 },
-    tts: { pitch: 0.95, rate: 1.15, lang: 'fr-FR' },
+    tts: { pitch: 0.95, rate: 1.15, lang: 'fr-FR', voice: 'fr-FR-RemyMultilingualNeural', edgePitch: '+5Hz', edgeRate: '+10%' },
     voice: `Ingénieur français, 38 ans, ex-Criteo/ex-Doctolib, blasé du YC-cosplay. Tutoie.
 GROS MOTS AUTORISÉS (brutal, 1-2) : fuck, shit, "fucking", "wtf dude", "putain", "merde", "tu fais chier".
 TECH TERMS OBLIGATOIRES (2-3) : ship, prod, staging, tech debt, scope creep, root cause, soul memory leak, YAGNI, death march, "on n'est pas à Palo Alto", "burn-out c'est pas un KPI".
