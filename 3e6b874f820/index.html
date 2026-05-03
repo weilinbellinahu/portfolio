@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>招商仪表盘 · 3 个方向 PROPOSAL</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", sans-serif; background: #0a0e1a; color: #e2e8f0; padding: 32px 16px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 { font-size: 26px; margin-bottom: 8px; background: linear-gradient(90deg, #3b82f6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .intro { color: #94a3b8; margin-bottom: 36px; font-size: 14px; }
+
+  .option {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .option-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #1e293b;
+    background: linear-gradient(135deg, #0f172a, #1a2540);
+  }
+  .option-num {
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+  .option-title { font-size: 19px; font-weight: 700; display: inline-block; vertical-align: middle; }
+  .option-tag { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; margin-left: 12px; vertical-align: middle; }
+  .tag-pipe { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .tag-pro { background: rgba(168,85,247,0.15); color: #c084fc; }
+  .tag-cmd { background: rgba(239,68,68,0.15); color: #f87171; }
+
+  .option-desc { color: #94a3b8; font-size: 13px; margin-top: 8px; line-height: 1.6; }
+  .option-when { color: #fbbf24; font-size: 12px; margin-top: 6px; }
+  .option-body { padding: 24px; background: #060912; }
+
+  /* ========== 方向 1: 管道看板 (Pipedrive 风格) ========== */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .pipe-col { background: #111827; border-radius: 10px; padding: 10px 8px; min-height: 360px; }
+  .pipe-col-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px 8px;
+    border-bottom: 2px solid;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .pipe-col.待联系 .pipe-col-head { border-color: #6b7280; color: #9ca3af; }
+  .pipe-col.邮件 .pipe-col-head { border-color: #3b82f6; color: #60a5fa; }
+  .pipe-col.回复 .pipe-col-head { border-color: #22c55e; color: #4ade80; }
+  .pipe-col.微信 .pipe-col-head { border-color: #eab308; color: #facc15; }
+  .pipe-col.谈判 .pipe-col-head { border-color: #f97316; color: #fb923c; }
+  .pipe-col.入驻 .pipe-col-head { border-color: #10b981; color: #34d399; }
+  .pipe-col.拒绝 .pipe-col-head { border-color: #ef4444; color: #f87171; }
+  .pipe-col.无效 .pipe-col-head { border-color: #475569; color: #64748b; }
+
+  .pipe-card {
+    background: #1f2937;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    cursor: grab;
+    border-left: 3px solid #4b5563;
+  }
+  .pipe-card.imp { border-left-color: #fbbf24; }
+  .pipe-card-name { font-weight: 600; color: #f1f5f9; margin-bottom: 3px; }
+  .pipe-card-meta { color: #94a3b8; font-size: 10px; }
+
+  /* ========== 方向 2: 专业双栏 CRM ========== */
+  .pro-layout { display: grid; grid-template-columns: 380px 1fr; gap: 16px; min-height: 600px; }
+  .pro-list { background: #0f172a; border-radius: 12px; overflow: hidden; }
+  .pro-list-head { padding: 14px 16px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+  .pro-search { background: #1e293b; padding: 6px 12px; border-radius: 6px; flex: 1; margin-right: 8px; font-size: 12px; color: #94a3b8; }
+  .pro-filter-tabs { display: flex; gap: 4px; padding: 8px 12px; border-bottom: 1px solid #1e293b; }
+  .pro-tab { padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+  .pro-tab.active { background: #3b82f6; color: white; }
+  .pro-tab.normal { background: transparent; color: #94a3b8; }
+  .pro-row { padding: 10px 14px; border-bottom: 1px solid #131c2c; cursor: pointer; }
+  .pro-row.selected { background: rgba(59,130,246,0.1); border-left: 3px solid #3b82f6; }
+  .pro-row-top { display: flex; justify-content: space-between; align-items: center; }
+  .pro-row-name { font-weight: 600; font-size: 13px; }
+  .pro-row-status { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .pro-row-meta { color: #64748b; font-size: 11px; margin-top: 4px; }
+
+  .pro-detail { background: #0f172a; border-radius: 12px; padding: 24px; }
+  .pro-detail-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .pro-detail-name { font-size: 22px; font-weight: 700; }
+  .pro-detail-sub { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+  .pro-detail-actions { display: flex; gap: 8px; }
+  .pro-btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; }
+  .pro-btn.primary { background: #3b82f6; color: white; }
+  .pro-btn.outline { background: transparent; border: 1px solid #334155; color: #cbd5e1; }
+
+  .pro-tabs { display: flex; gap: 16px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
+  .pro-tab2 { padding: 8px 0; font-size: 13px; color: #64748b; cursor: pointer; }
+  .pro-tab2.active { color: white; border-bottom: 2px solid #3b82f6; }
+
+  .pro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .pro-field { background: #1a2540; border-radius: 8px; padding: 10px 14px; }
+  .pro-field-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+  .pro-field-value { font-size: 13px; color: #e2e8f0; margin-top: 3px; }
+
+  .pro-timeline { background: #060912; border-radius: 10px; padding: 16px; }
+  .pro-timeline-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .pro-event { display: flex; gap: 12px; margin-bottom: 14px; font-size: 12px; }
+  .pro-event-dot { width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; margin-top: 6px; flex-shrink: 0; }
+  .pro-event-text { color: #cbd5e1; }
+  .pro-event-time { color: #64748b; font-size: 10px; margin-top: 2px; }
+
+  /* ========== 方向 3: 指挥中心 ========== */
+  .cmd-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .cmd-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .cmd-kpi { background: #0f172a; border-radius: 12px; padding: 16px; border: 1px solid #1e293b; }
+  .cmd-kpi-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cmd-kpi-value { font-size: 28px; font-weight: 700; margin-top: 6px; }
+  .cmd-kpi-trend { font-size: 11px; margin-top: 4px; }
+  .trend-up { color: #4ade80; }
+  .trend-down { color: #f87171; }
+
+  .cmd-funnel { background: #0f172a; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .cmd-funnel-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+  .cmd-funnel-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; }
+  .cmd-funnel-bar { height: 22px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 4px; display: flex; align-items: center; padding: 0 10px; color: white; font-weight: 600; font-size: 11px; }
+  .cmd-funnel-label { width: 80px; color: #cbd5e1; flex-shrink: 0; }
+
+  .cmd-action { background: #0f172a; border-radius: 12px; padding: 20px; }
+  .cmd-action-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .cmd-action-title { font-size: 14px; font-weight: 600; }
+  .cmd-mini-card { background: #1a2540; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 12px; }
+  .cmd-mini-card.urgent { border-left: 3px solid #ef4444; }
+  .cmd-mini-card.today { border-left: 3px solid #fbbf24; }
+  .cmd-card-name { font-weight: 600; }
+  .cmd-card-action { color: #94a3b8; font-size: 10px; margin-top: 3px; }
+
+  .cmd-right { display: flex; flex-direction: column; gap: 16px; }
+  .cmd-side { background: #0f172a; border-radius: 12px; padding: 18px; }
+  .cmd-chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 80px; margin-top: 12px; }
+  .cmd-bar-col { flex: 1; background: linear-gradient(180deg, #3b82f6, #1e40af); border-radius: 3px 3px 0 0; position: relative; }
+  .cmd-bar-label { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: 10px; color: #64748b; }
+
+  .vote-row { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(168,85,247,0.1)); border: 1px solid rgba(59,130,246,0.3); border-radius: 16px; padding: 24px; margin-top: 32px; text-align: center; }
+  .vote-row-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .vote-row-sub { color: #94a3b8; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>招商仪表盘 · 3 个完全不同方向</h1>
+<p class="intro">现在的版本太简陋。这里给你 3 个不同形态，每个都是真实 CRM 产品长出来的样式 — 你看哪个对、或者要混搭哪几块。</p>
+
+<!-- ========== 方向 1: 管道看板 ========== -->
+<div class="option">
+  <div class="option-header">
+    <span class="option-num">A</span>
+    <span class="option-title">管道看板（Pipedrive 风格）</span>
+    <span class="option-tag tag-pipe">视觉化漏斗</span>
+    <div class="option-desc">8 个状态横向排开，每条 lead 是张卡片，<strong>鼠标拖拽</strong>就能从一列拖到另一列（自动改状态、自动算下次跟进）。一眼看清楚漏斗哪段卡住了。</div>
+    <div class="option-when">→ 适合你想"看全貌"的时候。每天早上扫一眼，知道哪些卡在某阶段太久。</div>
+  </div>
+  <div class="option-body">
+    <div class="pipeline">
+      <div class="pipe-col 待联系">
+        <div class="pipe-col-head"><span>待联系</span><span>56</span></div>
+        <div class="pipe-card imp"><div class="pipe-card-name">⭐ Aqua Plus Europe</div><div class="pipe-card-meta">SPORT · Tier 1</div></div>
+        <div class="pipe-card imp"><div class="pipe-card-name">⭐ Toptool fr</div><div class="pipe-card-meta">AUTO · 100万</div></div>
+        <div class="pipe-card"><div class="pipe-card-name">fitking health</div><div class="pipe-card-meta">DIVERS</div></div>
+        <div class="pipe-card"><div class="pipe-card-name">miakiaus</div><div class="pipe-card-meta">LITERIE</div></div>
+      </div>
+      <div class="pipe-col 邮件">
+        <div class="pipe-col-head"><span>已发邮件</span><span>0</span></div>
+      </div>
+      <div class="pipe-col 回复">
+        <div class="pipe-col-head"><span>已回复</span><span>0</span></div>
+      </div>
+      <div class="pipe-col 微信">
+        <div class="pipe-col-head"><span>已加微信</span><span>0</span></div>
+      </div>
+      <div class="pipe-col 谈判">
+        <div class="pipe-col-head"><span>谈判中</span><span>0</span></div>
+      </div>
+      <div class="pipe-col 入驻">
+        <div class="pipe-col-head"><span>已入驻</span><span>0</span></div>
+      </div>
+      <div class="pipe-col 拒绝">
+        <div class="pipe-col-head"><span>已拒绝</span><span>0</span></div>
+      </div>
+      <div class="pipe-col 无效">
+        <div class="pipe-col-head"><span>无效</span><span>0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 方向 2: 专业双栏 CRM ========== -->
+<div class="option">
+  <div class="option-header">
+    <span class="option-num">B</span>
+    <span class="option-title">专业双栏 CRM（Salesforce / HubSpot 风格）</span>
+    <span class="option-tag tag-pro">深度操作</span>
+    <div class="option-desc">左侧紧凑卖家列表 + 顶部筛选条；右侧选中卖家的<strong>完整详情面板</strong>：基本信息、活动时间线、笔记、邮件历史、下一步动作。一屏全在。</div>
+    <div class="option-when">→ 适合你<strong>专注跟进单个 lead</strong> 的时候。打电话前 30 秒看完所有上下文。</div>
+  </div>
+  <div class="option-body">
+    <div class="pro-layout">
+      <div class="pro-list">
+        <div class="pro-list-head">
+          <div class="pro-search">🔍 搜索卖家、公司、法人</div>
+        </div>
+        <div class="pro-filter-tabs">
+          <div class="pro-tab active">全部 56</div>
+          <div class="pro-tab normal">⭐ 重要 12</div>
+          <div class="pro-tab normal">逾期 0</div>
+          <div class="pro-tab normal">今日 0</div>
+        </div>
+        <div class="pro-row selected">
+          <div class="pro-row-top"><div class="pro-row-name">⭐ Aqua Plus Europe</div><div class="pro-row-status">待联系</div></div>
+          <div class="pro-row-meta">SPORT · 100万 · 张志远</div>
+        </div>
+        <div class="pro-row">
+          <div class="pro-row-top"><div class="pro-row-name">⭐ Toptool fr</div><div class="pro-row-status">待联系</div></div>
+          <div class="pro-row-meta">AUTO · 100万 · 王力</div>
+        </div>
+        <div class="pro-row">
+          <div class="pro-row-top"><div class="pro-row-name">fitking health</div><div class="pro-row-status">待联系</div></div>
+          <div class="pro-row-meta">DIVERS · 50万</div>
+        </div>
+        <div class="pro-row">
+          <div class="pro-row-top"><div class="pro-row-name">miakiaus</div><div class="pro-row-status">待联系</div></div>
+          <div class="pro-row-meta">LITERIE</div>
+        </div>
+        <div class="pro-row">
+          <div class="pro-row-top"><div class="pro-row-name">vaydeer uk</div><div class="pro-row-status">待联系</div></div>
+          <div class="pro-row-meta">INFO · 100万 · 张锋</div>
+        </div>
+      </div>
+
+      <div class="pro-detail">
+        <div class="pro-detail-head">
+          <div>
+            <div class="pro-detail-name">⭐ Aqua Plus Europe</div>
+            <div class="pro-detail-sub">SPORT · Tier 1 CN · 张志远 · 18901234567</div>
+          </div>
+          <div class="pro-detail-actions">
+            <button class="pro-btn primary">已发邮件 +3 天</button>
+            <button class="pro-btn outline">加微信</button>
+            <button class="pro-btn outline">···</button>
+          </div>
+        </div>
+
+        <div class="pro-tabs">
+          <div class="pro-tab2 active">概览</div>
+          <div class="pro-tab2">活动</div>
+          <div class="pro-tab2">邮件</div>
+          <div class="pro-tab2">笔记</div>
+          <div class="pro-tab2">表单原文</div>
+        </div>
+
+        <div class="pro-grid">
+          <div class="pro-field"><div class="pro-field-label">注册资本</div><div class="pro-field-value">100 万人民币</div></div>
+          <div class="pro-field"><div class="pro-field-label">年销售额</div><div class="pro-field-value">200-500 万</div></div>
+          <div class="pro-field"><div class="pro-field-label">销售平台</div><div class="pro-field-value">亚马逊 · Cdiscount</div></div>
+          <div class="pro-field"><div class="pro-field-label">海外仓</div><div class="pro-field-value">已布局（欧洲）</div></div>
+          <div class="pro-field"><div class="pro-field-label">跨境经验</div><div class="pro-field-value">3-5 年</div></div>
+          <div class="pro-field"><div class="pro-field-label">计划入驻</div><div class="pro-field-value">1 个月内</div></div>
+        </div>
+
+        <div class="pro-timeline">
+          <div class="pro-timeline-title">活动时间线</div>
+          <div class="pro-event">
+            <div class="pro-event-dot"></div>
+            <div>
+              <div class="pro-event-text">通过在线表单提交申请</div>
+              <div class="pro-event-time">2026-04-30 17:46 · 来自 cdiscount-seller-form</div>
+            </div>
+          </div>
+          <div class="pro-event">
+            <div class="pro-event-dot" style="background:#fbbf24"></div>
+            <div>
+              <div class="pro-event-text">系统自动评分：85（高优先）</div>
+              <div class="pro-event-time">2026-04-30 17:47 · 来自 ScoutClaw 工作流</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 方向 3: 指挥中心 ========== -->
+<div class="option">
+  <div class="option-header">
+    <span class="option-num">C</span>
+    <span class="option-title">指挥中心（Mission Control 风格）</span>
+    <span class="option-tag tag-cmd">数据全景 + 行动队列</span>
+    <div class="option-desc">顶部 4 个 KPI 卡片（这周转化率/本月新增/平均响应时间/已入驻数）；中间漏斗图 + 趋势图；右侧"今天必做"行动队列。<strong>3 秒看清状态，1 秒进入行动</strong>。</div>
+    <div class="option-when">→ 适合你<strong>每天开始工作那一刻</strong>。看一眼就知道今天该聚焦什么、哪个数字在掉。</div>
+  </div>
+  <div class="option-body">
+    <div class="cmd-kpis">
+      <div class="cmd-kpi">
+        <div class="cmd-kpi-label">本周转化率</div>
+        <div class="cmd-kpi-value">12%</div>
+        <div class="cmd-kpi-trend trend-up">↑ 比上周 +3%</div>
+      </div>
+      <div class="cmd-kpi">
+        <div class="cmd-kpi-label">本月新增 Lead</div>
+        <div class="cmd-kpi-value">56</div>
+        <div class="cmd-kpi-trend trend-up">↑ 表单提交 +28</div>
+      </div>
+      <div class="cmd-kpi">
+        <div class="cmd-kpi-label">平均响应时间</div>
+        <div class="cmd-kpi-value">2.3 <span style="font-size:14px;color:#94a3b8">天</span></div>
+        <div class="cmd-kpi-trend trend-down">↓ 慢于目标 1 天</div>
+      </div>
+      <div class="cmd-kpi">
+        <div class="cmd-kpi-label">本月已入驻</div>
+        <div class="cmd-kpi-value">7</div>
+        <div class="cmd-kpi-trend trend-up">↑ 已达 KPI 70%</div>
+      </div>
+    </div>
+
+    <div class="cmd-grid">
+      <div>
+        <div class="cmd-funnel">
+          <div class="cmd-funnel-title">招商漏斗（点击任一段进入对应卖家列表）</div>
+          <div class="cmd-funnel-row">
+            <div class="cmd-funnel-label">待联系</div>
+            <div class="cmd-funnel-bar" style="width:100%">56 (100%)</div>
+          </div>
+          <div class="cmd-funnel-row">
+            <div class="cmd-funnel-label">已发邮件</div>
+            <div class="cmd-funnel-bar" style="width:60%">34 (60%)</div>
+          </div>
+          <div class="cmd-funnel-row">
+            <div class="cmd-funnel-label">已回复</div>
+            <div class="cmd-funnel-bar" style="width:35%">20 (35%)</div>
+          </div>
+          <div class="cmd-funnel-row">
+            <div class="cmd-funnel-label">已加微信</div>
+            <div class="cmd-funnel-bar" style="width:25%">14 (25%)</div>
+          </div>
+          <div class="cmd-funnel-row">
+            <div class="cmd-funnel-label">谈判中</div>
+            <div class="cmd-funnel-bar" style="width:18%">10 (18%)</div>
+          </div>
+          <div class="cmd-funnel-row">
+            <div class="cmd-funnel-label">已入驻</div>
+            <div class="cmd-funnel-bar" style="width:12%;background:linear-gradient(90deg,#22c55e,#16a34a)">7 (12%)</div>
+          </div>
+        </div>
+
+        <div class="cmd-side">
+          <div class="cmd-funnel-title">本月每日新增 Lead</div>
+          <div class="cmd-chart-bars">
+            <div class="cmd-bar-col" style="height:30%"><div class="cmd-bar-label">4/15</div></div>
+            <div class="cmd-bar-col" style="height:50%"></div>
+            <div class="cmd-bar-col" style="height:40%"></div>
+            <div class="cmd-bar-col" style="height:65%"></div>
+            <div class="cmd-bar-col" style="height:80%"></div>
+            <div class="cmd-bar-col" style="height:55%"></div>
+            <div class="cmd-bar-col" style="height:70%"></div>
+            <div class="cmd-bar-col" style="height:90%"></div>
+            <div class="cmd-bar-col" style="height:60%"><div class="cmd-bar-label">5/3</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-right">
+        <div class="cmd-action">
+          <div class="cmd-action-head">
+            <div class="cmd-action-title">🎯 今天必做</div>
+            <div style="font-size:11px;color:#64748b">3 件事</div>
+          </div>
+          <div class="cmd-mini-card urgent">
+            <div class="cmd-card-name">⭐ Aqua Plus Europe</div>
+            <div class="cmd-card-action">→ 推荐：发邮件（评分 85，响应慢于平均）</div>
+          </div>
+          <div class="cmd-mini-card today">
+            <div class="cmd-card-name">⭐ Toptool fr</div>
+            <div class="cmd-card-action">→ 推荐：加微信（已发邮件 3 天没回）</div>
+          </div>
+          <div class="cmd-mini-card">
+            <div class="cmd-card-name">vaydeer uk</div>
+            <div class="cmd-card-action">→ 推荐：跟进 KYC 材料</div>
+          </div>
+        </div>
+
+        <div class="cmd-side">
+          <div class="cmd-funnel-title">⚠️ 异常</div>
+          <div style="font-size:12px;color:#cbd5e1;margin-top:10px;">
+            <div style="margin-bottom:6px;">• 14 条 lead 待联系超过 7 天</div>
+            <div style="margin-bottom:6px;">• MODE 品类转化率 5%（低于平均）</div>
+            <div>• 本月响应时间慢于目标</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 让她选 -->
+<div class="vote-row">
+  <div class="vote-row-title">你选哪个？</div>
+  <div class="vote-row-sub">告诉我「A」「B」「C」 — 或者「A 的看板 + C 的 KPI 顶栏」混搭也行。<br>看不上的也直接说，我换思路。</div>
+</div>
+
+</div>
+</body>
+</html>
