@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>渠道测算器 · 精确版（基于公开价目表） | 尉琳说</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;}
+  .header{background:#161b22;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #30363d;position:sticky;top:0;z-index:100;}
+  .logo{font-size:17px;font-weight:600;color:#a78bfa;display:flex;align-items:center;gap:10px;}
+  .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;}
+  .header .tag{font-size:12px;color:#FB8C1E;}
+  .container{max-width:900px;margin:0 auto;padding:28px 18px 60px;}
+  .confidential{background:rgba(102,126,234,.08);border:1px solid rgba(102,126,234,.3);border-radius:8px;padding:11px 16px;font-size:12.5px;color:#a8b5e0;line-height:1.6;margin-bottom:20px;text-align:center;}
+  .page-title{text-align:center;margin-bottom:24px;}
+  .page-title h1{font-size:26px;font-weight:600;margin-bottom:8px;}
+  .page-title h1 span{color:#FB8C1E;}
+  .page-title p{font-size:13px;color:#8b949e;line-height:1.7;}
+  .section{background:#161b22;border:1px solid #30363d;border-radius:10px;margin-bottom:18px;overflow:hidden;}
+  .section-header{padding:13px 18px;background:#21262d;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;}
+  .section-body{padding:14px 18px;}
+  .form-row{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid #21262d;}
+  .form-row:last-child{border-bottom:none;}
+  .form-row .label{flex:1;font-size:13.5px;color:#c9d1d9;}
+  .form-row .label small{display:block;color:#6e7681;font-size:11px;margin-top:2px;}
+  .form-row input,.form-row select{width:130px;height:34px;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:0 10px;font-size:14px;color:#e6edf3;text-align:right;}
+  .form-row select{text-align:left;}
+  .form-row input:focus,.form-row select:focus{outline:none;border-color:#667eea;}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield;}
+  .form-row input[readonly]{background:#1c2333;color:#a78bfa;font-weight:600;border-style:dashed;}
+  .form-row .unit{width:28px;text-align:center;color:#6e7681;font-size:13px;}
+  .col2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:640px){.col2{grid-template-columns:1fr;}}
+  .mini{background:#161b22;border:1px solid #30363d;border-radius:10px;overflow:hidden;}
+  .mini-head{padding:11px 16px;font-size:14px;font-weight:700;}
+  .mini-head.warehouse{background:linear-gradient(135deg,rgba(102,126,234,.25),rgba(118,75,162,.18));color:#a78bfa;}
+  .mini-head.direct{background:rgba(251,140,30,.14);color:#FB8C1E;}
+  .mini-body{padding:10px 16px;}
+  .result{background:#161b22;border:1px solid #30363d;border-radius:10px;margin-top:18px;overflow:hidden;}
+  .result-head{padding:13px 18px;background:#21262d;font-size:15px;font-weight:600;}
+  .rtable{width:100%;border-collapse:collapse;}
+  .rtable th,.rtable td{padding:11px 14px;text-align:right;font-size:14px;border-bottom:1px solid #21262d;}
+  .rtable th:first-child,.rtable td:first-child{text-align:left;color:#8b949e;}
+  .rtable thead th{color:#c9d1d9;font-weight:600;}
+  .rtable thead th.wh{color:#a78bfa;}.rtable thead th.dr{color:#FB8C1E;}
+  .rtable tr.key td{background:rgba(102,126,234,.07);font-weight:700;font-size:15px;}
+  .rtable td.win{color:#3fb950;}
+  .verdict{margin:16px;padding:16px 18px;border-radius:10px;background:linear-gradient(135deg,rgba(102,126,234,.18),rgba(118,75,162,.12));border:1px solid rgba(102,126,234,.35);}
+  .verdict .v-main{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;}
+  .verdict .v-line{font-size:14px;color:#c9d1d9;margin:5px 0;}.verdict .v-line b{color:#fff;}
+  .trend{margin:0 16px 16px;padding:12px 16px;border-radius:8px;background:rgba(251,140,30,.08);border:1px solid rgba(251,140,30,.25);font-size:12.5px;color:#d6b489;line-height:1.7;}
+  .footer{text-align:center;color:#6e7681;font-size:12px;margin-top:26px;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo"><span class="logo-icon">尉</span> 尉琳说 · 渠道测算器（精确版）</div>
+  <div class="tag">基于 2026/4/29 法国仓公开价目表</div>
+</div>
+
+<div class="container">
+  <div class="confidential">📊 精确版 · 入仓侧基于 2026/4/29 法国仓公开价目表（标准配送签收）· 月单量档 × 重量段自动带费率（含燃油附加费）、仓储按体积×天数算。建议在你拿到自己的实际重量/单量数据后用。</div>
+
+  <div class="page-title">
+    <h1>入仓 vs <span>直邮</span> · 精确测算</h1>
+    <p>入仓尾程按「月单量档 + 重量段」自动带出真实费率（含燃油附加费）；仓储按体积×天数自动算。<br>售价填不含 VAT 到手价；VAT 两条都交、已省略。</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><span>①</span> 基础假设</div>
+    <div class="section-body" oninput="calc()">
+      <div class="form-row"><div class="label">单件售价 <small>不含 VAT 到手价</small></div><input id="price" type="number" value="25"><span class="unit">€</span></div>
+      <div class="form-row"><div class="label">采购 / 出厂成本（每件）</div><input id="cost" type="number" value="6"><span class="unit">€</span></div>
+      <div class="form-row"><div class="label">测试数量</div><input id="qty" type="number" value="200"><span class="unit">件</span></div>
+      <div class="form-row"><div class="label">平均每单件数</div><input id="upo" type="number" value="1" step="0.1"><span class="unit">件</span></div>
+    </div>
+  </div>
+
+  <div class="col2">
+    <div class="mini">
+      <div class="mini-head warehouse">🏠 入官方仓（法国仓 · 真实费率）</div>
+      <div class="mini-body">
+        <div class="form-row" onchange="calc()"><div class="label">月单量档</div>
+          <select id="w_tier"><option value="0">0–50 单/月</option><option value="1">51–250 单/月</option><option value="2" selected>251–750 单/月</option><option value="3">751–1500 单/月</option><option value="4">1501+ 单/月</option></select></div>
+        <div class="form-row" onchange="calc()"><div class="label">重量段（含包装实重）</div>
+          <select id="w_wt"></select></div>
+        <div class="form-row"><div class="label">尾程费/单 <small>自动：履约费×(1+燃油) + 多件拣货</small></div><input id="w_last_auto" readonly><span class="unit">€</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">单件体积（m³）<small>仓储 = 体积×天数×0.55€</small></div><input id="w_vol" type="number" value="0.004" step="0.001"><span class="unit">m³</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">预计在仓天数</div><input id="w_days" type="number" value="45"><span class="unit">天</span></div>
+        <div class="form-row"><div class="label">仓储费/件 <small>自动</small></div><input id="w_store_auto" readonly><span class="unit">€</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">头程大货运费（每件）<small>你的海运/空运分摊</small></div><input id="w_head" type="number" value="1.5"><span class="unit">€</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">入仓/上架+杂费（每件）<small>退货4€/单、EAN1€、超标6€等按需折进</small></div><input id="w_in" type="number" value="0.5"><span class="unit">€</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">平台佣金率</div><input id="w_comm" type="number" value="15"><span class="unit">%</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">退货率</div><input id="w_ret" type="number" value="5"><span class="unit">%</span></div>
+        <div class="form-row" oninput="calc()"><div class="label">预计售罄率</div><input id="w_sell" type="number" value="75"><span class="unit">%</span></div>
+      </div>
+    </div>
+
+    <div class="mini">
+      <div class="mini-head direct">✈️ 头程尾程直邮</div>
+      <div class="mini-body" oninput="calc()">
+        <div class="form-row"><div class="label">单票国际运费 头程+尾程（每单）</div><input id="d_ship" type="number" value="5.5"><span class="unit">€</span></div>
+        <div class="form-row"><div class="label">单票附加税费（每单）<small>类别数×单类；7月起≈5€/类</small></div><input id="d_tax" type="number" value="5"><span class="unit">€</span></div>
+        <div class="form-row"><div class="label">平台佣金率</div><input id="d_comm" type="number" value="15"><span class="unit">%</span></div>
+        <div class="form-row"><div class="label">退货率</div><input id="d_ret" type="number" value="8"><span class="unit">%</span></div>
+        <div class="form-row"><div class="label">预计售罄率</div><input id="d_sell" type="number" value="100"><span class="unit">%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="result-head">② 自动测算结果</div>
+    <table class="rtable">
+      <thead><tr><th>项目</th><th class="wh">入官方仓</th><th class="dr">头程尾程直邮</th></tr></thead>
+      <tbody id="rbody"></tbody>
+    </table>
+    <div class="verdict" id="verdict"></div>
+    <div class="trend">⚠ 直邮税费只增不减：现约 2€ → 7 月起 ≈5€（法 2+欧 3）→ 2028 正常关税。入仓费率相对固定，趋势在推向入仓。</div>
+  </div>
+
+  <div class="footer">尉琳说 · 渠道测算器（精确版）· 费率来源：法国仓价目表 2026/4/29（标准配送签收）· 燃油附加费 0-50/51-250 档 13%，251 单以上档 8%</div>
+</div>
+
+<script>
+// 法国仓 · 标准配送签收（€），列=[0-50,51-250,251-750,751-1500,1501+]
+const WT=[
+ ["0–100g",[6.97,6.76,6.56,6.10,5.67]],
+ ["100–250g",[6.97,6.76,6.56,6.10,5.67]],
+ ["250–500g",[7.55,7.33,7.11,6.61,6.15]],
+ ["500–750g",[7.75,7.52,7.30,6.78,6.31]],
+ ["750g–1kg",[7.96,7.72,7.49,6.97,6.48]],
+ ["1–2kg",[8.47,8.22,7.97,7.41,6.90]],
+ ["2–3kg",[10.54,10.22,9.91,9.22,8.58]],
+ ["3–4kg",[11.92,11.57,11.22,10.44,9.71]],
+ ["4–5kg",[12.84,12.46,12.08,11.24,10.45]],
+ ["5–6kg",[13.77,13.36,12.96,12.05,11.21]],
+ ["6–7kg",[14.70,14.26,13.83,12.87,11.97]],
+ ["7–8kg",[15.74,15.27,14.81,13.78,12.81]],
+ ["8–9kg",[16.44,15.95,15.47,14.38,13.38]],
+ ["9–10kg",[17.02,16.51,16.01,14.89,13.85]],
+ ["10–12kg",[18.06,17.52,16.99,15.80,14.70]],
+ ["12–14kg",[18.73,18.17,17.63,16.39,15.25]],
+ ["14–15kg",[19.64,19.05,18.48,17.19,15.98]],
+ ["15–20kg",[21.46,20.81,20.19,18.78,17.46]],
+ ["20–25kg",[23.05,22.35,21.68,20.17,18.76]],
+ ["25–30kg",[25.43,24.67,23.93,22.25,20.70]],
+];
+const FUEL=[0.13,0.13,0.08,0.08,0.08];
+const STORAGE_RATE=0.55; // €/m³/天 法国仓
+(function(){const s=document.getElementById('w_wt');s.innerHTML=WT.map((w,i)=>`<option value="${i}"${i===2?' selected':''}>${w[0]}</option>`).join('');})();
+
+document.querySelectorAll('input[type=number]').forEach(i=>i.setAttribute('inputmode','decimal'));
+function v(id){return parseFloat((document.getElementById(id).value||'').replace(',','.'))||0;}
+function eur(n){return (n<0?'-€':'€')+Math.abs(n).toFixed(2);}
+function pct(n){return (n*100).toFixed(1)+'%';}
+function calc(){
+  const price=v('price'),cost=v('cost'),qty=v('qty'),upo=Math.max(v('upo'),1);
+  const tier=parseInt(document.getElementById('w_tier').value);
+  const wi=parseInt(document.getElementById('w_wt').value);
+  const fulfill=WT[wi][1][tier]*(1+FUEL[tier]);
+  const multipick=Math.max(0,upo-1)*0.5;
+  const lastPerOrder=fulfill+multipick;
+  document.getElementById('w_last_auto').value=lastPerOrder.toFixed(2);
+  const storePU=v('w_vol')*v('w_days')*STORAGE_RATE;
+  document.getElementById('w_store_auto').value=storePU.toFixed(2);
+
+  const wLastPU=lastPerOrder/upo;
+  const wTotal=cost+v('w_head')+v('w_in')+storePU+wLastPU+price*v('w_comm')/100;
+  const wGross=price-wTotal,wGM=price?wGross/price:0,wEff=wGross*(1-v('w_ret')/100);
+  const wPrepaidPU=cost+v('w_head')+v('w_in')+storePU;
+  const wCap=wPrepaidPU*qty,wSold=qty*v('w_sell')/100;
+  const wProfit=wSold*wEff-(qty-wSold)*wPrepaidPU,wROI=wCap?wProfit/wCap:0;
+
+  const dTotal=cost+(v('d_ship')+v('d_tax'))/upo+price*v('d_comm')/100;
+  const dGross=price-dTotal,dGM=price?dGross/price:0,dEff=dGross*(1-v('d_ret')/100);
+  const dCap=cost*qty,dSold=qty*v('d_sell')/100,dProfit=dSold*dEff,dROI=dCap?dProfit/dCap:0;
+
+  const rows=[
+    ['单件总成本',eur(wTotal),eur(dTotal),false,null],
+    ['单件毛利',eur(wGross),eur(dGross),false,wGross>=dGross?'w':'d'],
+    ['单件毛利率',pct(wGM),pct(dGM),false,wGM>=dGM?'w':'d'],
+    ['有效单件毛利（扣退货）',eur(wEff),eur(dEff),false,null],
+    ['资金占用（测试批）',eur(wCap),eur(dCap),false,null],
+    ['总利润（测试批）',eur(wProfit),eur(dProfit),true,wProfit>=dProfit?'w':'d'],
+    ['资金回报率 ROI',pct(wROI),pct(dROI),true,wROI>=dROI?'w':'d'],
+  ];
+  document.getElementById('rbody').innerHTML=rows.map(r=>{
+    const wc=r[4]==='w'?' class="win"':'',dc=r[4]==='d'?' class="win"':'';
+    return `<tr${r[3]?' class="key"':''}><td>${r[0]}</td><td${wc}>${r[1]}</td><td${dc}>${r[2]}</td></tr>`;
+  }).join('');
+  const pW=wProfit>=dProfit?'入官方仓':'头程尾程直邮',rW=wROI>=dROI?'入官方仓':'头程尾程直邮',same=pW===rW;
+  document.getElementById('verdict').innerHTML=
+    `<div class="v-main">${same?'🏆 '+pW+'：两个维度都更优':'⚖️ 看你的目标取舍'}</div>`+
+    `<div class="v-line">总利润更高：<b>${pW}</b>（${eur(wProfit)} vs ${eur(dProfit)}）</div>`+
+    `<div class="v-line">资金回报更高：<b>${rW}</b>（${pct(wROI)} vs ${pct(dROI)}）</div>`+
+    (same?'':`<div class="v-line" style="margin-top:6px;color:#8b949e;">总利润看「${pW}」，资金周转看「${rW}」。</div>`);
+}
+calc();
+</script>
+</body>
+</html>
