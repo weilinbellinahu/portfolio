@@ -65,7 +65,7 @@
 
   <div class="page-title">
     <h1>入仓 vs <span>直邮</span> · 精确测算</h1>
-    <p>入仓尾程按「月单量档 + 重量段」自动带出真实费率（含燃油附加费）；仓储按体积×天数自动算。<br>售价填不含 VAT 到手价；VAT 两条都交、已省略。</p>
+    <p>入仓尾程按「月单量档 + 重量段」自动带出真实费率（含燃油附加费）；仓储按体积×天数自动算。<br>售价填不含 VAT 到手价；佣金按含 VAT 价（×1.20）算（行业惯例）。</p>
   </div>
 
   <div class="section">
@@ -155,8 +155,10 @@ document.querySelectorAll('input[type=number]').forEach(i=>i.setAttribute('input
 function v(id){return parseFloat((document.getElementById(id).value||'').replace(',','.'))||0;}
 function eur(n){return (n<0?'-€':'€')+Math.abs(n).toFixed(2);}
 function pct(n){return (n*100).toFixed(1)+'%';}
+const VAT_RATE=0.20; // 法国标准 VAT，平台佣金按含 VAT 价算
 function calc(){
   const price=v('price'),cost=v('cost'),qty=v('qty'),upo=Math.max(v('upo'),1);
+  const priceVAT=price*(1+VAT_RATE);
   const tier=parseInt(document.getElementById('w_tier').value);
   const wi=parseInt(document.getElementById('w_wt').value);
   const fulfill=WT[wi][1][tier]*(1+FUEL[tier]);
@@ -164,16 +166,16 @@ function calc(){
   const lastPerOrder=fulfill+multipick;
   document.getElementById('w_last_auto').value=lastPerOrder.toFixed(2);
   const storePU=v('w_vol')*v('w_days')*STORAGE_RATE;
-  document.getElementById('w_store_auto').value=storePU.toFixed(2);
+  document.getElementById('w_store_auto').value=storePU<0.01?storePU.toFixed(4):storePU.toFixed(2);
 
   const wLastPU=lastPerOrder/upo;
-  const wTotal=cost+v('w_head')+v('w_in')+storePU+wLastPU+price*v('w_comm')/100;
+  const wTotal=cost+v('w_head')+v('w_in')+storePU+wLastPU+priceVAT*v('w_comm')/100;
   const wGross=price-wTotal,wGM=price?wGross/price:0,wEff=wGross*(1-v('w_ret')/100);
   const wPrepaidPU=cost+v('w_head')+v('w_in')+storePU;
   const wCap=wPrepaidPU*qty,wSold=qty*v('w_sell')/100;
   const wProfit=wSold*wEff-(qty-wSold)*wPrepaidPU,wROI=wCap?wProfit/wCap:0;
 
-  const dTotal=cost+(v('d_ship')+v('d_tax'))/upo+price*v('d_comm')/100;
+  const dTotal=cost+(v('d_ship')+v('d_tax'))/upo+priceVAT*v('d_comm')/100;
   const dGross=price-dTotal,dGM=price?dGross/price:0,dEff=dGross*(1-v('d_ret')/100);
   const dCap=cost*qty,dSold=qty*v('d_sell')/100,dProfit=dSold*dEff,dROI=dCap?dProfit/dCap:0;
 
@@ -190,12 +192,21 @@ function calc(){
     const wc=r[4]==='w'?' class="win"':'',dc=r[4]==='d'?' class="win"':'';
     return `<tr${r[3]?' class="key"':''}><td>${r[0]}</td><td${wc}>${r[1]}</td><td${dc}>${r[2]}</td></tr>`;
   }).join('');
-  const pW=wProfit>=dProfit?'入官方仓':'头程尾程直邮',rW=wROI>=dROI?'入官方仓':'头程尾程直邮',same=pW===rW;
-  document.getElementById('verdict').innerHTML=
-    `<div class="v-main">${same?'🏆 '+pW+'：两个维度都更优':'⚖️ 看你的目标取舍'}</div>`+
-    `<div class="v-line">总利润更高：<b>${pW}</b>（${eur(wProfit)} vs ${eur(dProfit)}）</div>`+
-    `<div class="v-line">资金回报更高：<b>${rW}</b>（${pct(wROI)} vs ${pct(dROI)}）</div>`+
-    (same?'':`<div class="v-line" style="margin-top:6px;color:#8b949e;">总利润看「${pW}」，资金周转看「${rW}」。</div>`);
+  let verdictHTML='';
+  if(qty<=0){
+    verdictHTML=`<div class="v-main">📝 请先填「测试数量」</div><div class="v-line" style="color:#8b949e;">填了之后这里会自动算出两条渠道的总利润和资金回报对比。</div>`;
+  }else if(wProfit<0&&dProfit<0){
+    verdictHTML=`<div class="v-main">⚠️ 两条都亏，建议重新评估售价 / 成本</div>`+
+      `<div class="v-line">入仓亏 <b>${eur(wProfit)}</b> · 直邮亏 <b>${eur(dProfit)}</b>（少亏不等于划算）</div>`+
+      `<div class="v-line" style="color:#8b949e;margin-top:6px;">先把售价、成本或售罄率调到能赚的水位，再来对比渠道。</div>`;
+  }else{
+    const pW=wProfit>=dProfit?'入官方仓':'头程尾程直邮',rW=wROI>=dROI?'入官方仓':'头程尾程直邮',same=pW===rW;
+    verdictHTML=`<div class="v-main">${same?'🏆 '+pW+'：两个维度都更优':'⚖️ 看你的目标取舍'}</div>`+
+      `<div class="v-line">总利润更高：<b>${pW}</b>（${eur(wProfit)} vs ${eur(dProfit)}）</div>`+
+      `<div class="v-line">资金回报更高：<b>${rW}</b>（${pct(wROI)} vs ${pct(dROI)}）</div>`+
+      (same?'':`<div class="v-line" style="margin-top:6px;color:#8b949e;">总利润看「${pW}」，资金周转看「${rW}」。</div>`);
+  }
+  document.getElementById('verdict').innerHTML=verdictHTML;
 }
 calc();
 </script>
